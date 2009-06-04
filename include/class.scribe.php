@@ -35,11 +35,19 @@ class Scribe
             ),
             'class' => array(
                 'page' => TRUE,
-                'has_brief' => TRUE
+                'has_brief' => TRUE,
+                'starts_group' => TRUE,
+                'ends_group' => array('class')
             ),
             'page' => array(
                 'page' => TRUE
             ),
+            /*'group' => array(
+                'page' => FALSE,
+                'has_brief' => TRUE,
+                'starts_group' => TRUE,
+                'ends_group' => array('group')
+            ),*/
         ),
         
         'file_specs' => array(
@@ -92,7 +100,32 @@ class Scribe
      */
     function go()
     {
+        $args = array_slice($_SERVER['argv'], 1);
+        if (count($args) == 0) { $args = array('build'); }
+        
+        if (!is_callable(array($this, 'do_'.$args[0])))
+            { $this->error("Unknown command: " . $args[0]); return; }
+            
+        $this->{'do_'.$args[0]}(array_slice($args, 1));
+    }
+    
+    function do_build($args = array())
+    {
         $this->Project->build();
+    }
+    
+    function do_version($args = array())
+    {
+        echo "SourceScribe\n";
+    }
+    
+    function do_help($args = array())
+    {
+        echo "SourceScribe\n";
+        echo "Usage: ss [command] [options]\n";
+        echo "Commands:\n";
+        echo "  build        Builds documentation\n";
+        echo "  help         Shows this help screen\n";
     }
     
     /*

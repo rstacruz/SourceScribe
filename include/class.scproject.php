@@ -62,31 +62,32 @@ class ScProject
 
         $options = array('recursive' => 1, 'mask' => '/./', 'fullpath' => 1);
         $options = array_merge($this->src_path_options, $options);
-        $files = aeScandir($this->src_path, $options);
+        $files = aeScandir(realpath($this->src_path), $options);
             
         // Each of the files, parse them
-        foreach ($files as $file) {
-            // TODO: Check for output formats instead of passing it on to all
-            foreach ($this->Sc->Options['file_specs'] as $spec => $reader_name) {
-                if (preg_match("~$spec~", $file) != 0) {
-                    $this->Sc->status("Parsing $file with $reader_name");
-                    $reader = $this->Sc->Readers[$reader_name];
-                    $blocks = $reader->parse($file, $this);
-                    $this->data['blocks'] = array_merge($this->data['blocks'], $blocks);
-                    break;
-                }
-            }
-            
-            /*foreach ($this->Sc->Readers as $k => $reader)
+        foreach ($files as $file)
+        {
+            foreach ($this->Sc->Options['file_specs']
+                     as $spec => $reader_name)
             {
+                if (preg_match("~$spec~", $file) == 0) { continue; }
+                
+                // Show status
+                $file_min = substr(realpath($file),
+                    1 + strlen(realpath($this->src_path)));
+                $this->Sc->status("* [$reader_name] $file_min");
+                
+                $reader = $this->Sc->Readers[$reader_name];
                 $blocks = $reader->parse($file, $this);
                 $this->data['blocks'] = array_merge($this->data['blocks'], $blocks);
-            }*/
+                break;
+            }
         }
         
         // Spit out the outputs
-        foreach ($this->output as $driver => $path)
+        foreach ($this->output as $driver => $output_options)
         {
+            $path = $output_options['path'];
             // Make sure we have an output driver
             if (!isset($this->Sc->Outputs[$driver])) {
                 $this->Sc->notice('No output driver for ' . $driver . '.');
@@ -101,7 +102,7 @@ class ScProject
             if (!is_dir($path))
                 { return $this->Sc->error("Can't create folder for $driver output."); }
             
-            $output->run($this, $path);
+            $output->run($this, $path, $output_options);
         }
         
         $this->Sc->status('Build complete.');

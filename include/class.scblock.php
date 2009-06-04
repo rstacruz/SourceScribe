@@ -1,5 +1,10 @@
 <?php
 
+/*
+ * Class: ScBlock
+ * A block
+ */
+
 class ScBlock
 {
     var $_data;
@@ -44,9 +49,14 @@ class ScBlock
             $offset = array_search('', $this->_lines);
             if ($offset !== FALSE)
             {
+                // Break at the first blank line
                 $this->brief = array_slice($this->_lines, 0, $offset);
                 $this->brief = $this->mkdn($this->brief);
                 $this->_lines = array_slice($this->_lines, $offset+1);
+            } else {
+                // Everything is a brief description
+                $this->brief = $this->mkdn($this->_lines);
+                $this->_lines = array();
             }
         }
         

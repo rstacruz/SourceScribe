@@ -22,14 +22,14 @@ class DefaultReader extends ScReader
         $r_blocks = '(?:/\\*(?:.|[\\r\\n])+?\\*/)';
         
         preg_match_all("~($r_singles)|($r_blocks)~", $file, $m3);
-        foreach ($m3[0] as $k=> $block_text)
+        foreach ($m3[0] as $k => $block_text)
         {
             if ($m3[0][$k] == $m3[1][$k]) // Single
                 { $block_text = $this->_cleanSingle($block_text); }
-            else
+            else // Multiline
                 { $block_text = $this->_cleanBlock($block_text); }
             
-            // Make it
+            // Make it (let ScBlock parse it)
             $block = new ScBlock($block_text);
             if ($block->valid) { $blocks[] = $block; }
         }
