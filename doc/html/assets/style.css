@@ -54,33 +54,36 @@ a img     { border: 0; }
         { font-family: arial, helvetica, sans-serif; font-size: 1em; }
         
     body
-        { font-size: 0.75em; line-height: 1.45em;
+        { font-size: 0.8em; line-height: 1.45em;
         background: #ddd; color: #333; padding: 10px; }
         
     #all
         { width: 740px; margin: 0 auto; text-align: left; position: relative; }
         
     .block
-        { background: white; margin: 10px 0; padding: 0 0 10px 0; }
+        { background: white; margin: 30px 0; padding: 10px 0 10px 0; border: solid 1px #ccc; }
 
     .block .type 
         { padding: 4px; background: #ddd; color: #888; margin: 0 0 10px 0; font-size: 0.8em; }
         
     .block h2
-        { font-size: 2.5em; font-weight: normal; }
+        { font-size: 1.9em; font-weight: normal; margin-bottom: 0.5em; margin-top: 0.5em; }
         
     .blocktype-property h2
-        { font-size: 1.6em; }
+        { font-size: 1.5em; font-weight: bold; }
         
     .blocktype-class h2
         { background: #888; line-height: 1.4em; overflow: hidden; margin: 0 0 1em 0; padding: 10px; color: #fff; }
+    
+    .blocktype-function h2
+        { color: #888; }
         
     .block h2,
     .block .brief,
     .block .description
         { margin-left: 10px; margin-right: 10px; }
         
-    .brief { font-size: 1.2em; }
+    .brief { font-size: 1.2em; color: #888; }
     dl { overflow: hidden; margin-left: 10px; }
     dt { width: 20%; font-weight: bold; float: left; clear: left; }
     dd { width: 75%; float: left; margin-bottom: 0.5em; }
@@ -88,14 +91,39 @@ a img     { border: 0; }
     
     pre { background: #f5f5ee; padding: 5px 9px; border: solid 1px #f0f0e0; font-size: 1em; line-height: 1.5em; }
     code { font-family: monaco, 'lucida console', monospace; }
+    pre code { font-size: 1em; background: transparent; padding: 0; border: 0; }
     
     .block h3
         { height: 1px; background: transparent; border: 0; border-top: solid 1px #ccc; position: relative; margin: 2em 0 0px 0; font-size: 1em; }
     .block h3 span
         { position: absolute; left: 0; top: 6px; color: #888; display: block; width: 100px; }
-    .block p, .block dl, .block ul, .block ol, .block pre
+    .block p, .block dl, .block pre
         { margin-top: 0; margin-left: 120px; }
+    .block ul, .block ol
+        { margin-top: 0; margin-left: 140px; }
+    .block dl p,
+    .block ul ul, .block ul ol, .block ul p,
+    .block ol ul, .block ol ol, .block ol p,
+    .block pre p
+        { margin-left: 0; }
+        
+    .block ul ul, .block ul ol,
+    .block ol ul, .block ol ol
+        { margin-left: 2em; }
     .block .brief
         { margin-left: 10px; }
     .block .brief p
         { display: inline; margin: 0; padding: 0; }
+        
+    code
+        { background: #eee; font-size: 0.9em; padding: 1px 4px; border: solid 1px #ddd; border-top: 0; border-left: 0; }
+
+    .block-c
+        { background: #aaa; position: relative; left: 3px; top: 3px; }
+          
+    .block-c .block
+        { position: relative; top: -3px; left: -3px; }
+          
+          
+    /* Index */
+    .index .type { color: #888; font-size: 0.9em; margin-left: 5px; background: white; }

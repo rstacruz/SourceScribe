@@ -1,18 +1,18 @@
 <?php
 
 /*
- * Class: Screader
+ * Class: ScReader
  * Yeah!
  */
-class Screader
+class ScReader
 {
     var $Sc;
     
     /*
-     * Function: Screader()
+     * Constructor: ScReader()
      * Constructor. Called by Scribe::Scribe()
      */ 
-    function Screader(&$Sc)
+    function ScReader(&$Sc)
     {
         $this->Sc =& $Sc;
     }

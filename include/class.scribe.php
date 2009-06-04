@@ -8,8 +8,10 @@ class Scribe
     var $Readers = array();
     var $Outputs = array();
     
-    var $Options = array(
-        'type_keywords' => array(
+    var $Options = array
+    (
+        'type_keywords' => array
+        (
             'function'    => 'function',
             'constructor' => 'function',
             'ctor'        => 'function',
@@ -19,13 +21,14 @@ class Scribe
             'property'    => 'property',
             'var'         => 'property',
             'class'       => 'class',
-            'file'        => 'class',
             'page'        => 'page',
             'section'     => 'page',
-            'module'      => 'page',
+            'module'      => 'module',
+            'file'        => 'module',
         ),
         
-        'block_types' => array(
+        'block_types' => array
+        (
             'function' => array(
                 'page' => TRUE,
                 'has_brief' => TRUE
@@ -37,11 +40,15 @@ class Scribe
             'class' => array(
                 'page' => TRUE,
                 'has_brief' => TRUE,
-                'starts_group' => TRUE,
-                'ends_group' => array('class')
+                'starts_group_for' => array('property', 'function'),
+            ),
+            'module' => array(
+                'page' => TRUE,
+                'has_brief' => TRUE,
+                'starts_group_for' => array('page', 'class', 'function'),
             ),
             'page' => array(
-                'page' => TRUE
+                'page' => TRUE,
             ),
             /*'group' => array(
                 'page' => FALSE,

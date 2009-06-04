@@ -21,6 +21,14 @@ class ScBlock
     var $content;
     var $brief;
     
+    // Property: $_index
+    // Reference to it's location in the index tree.
+    var $_index;
+    
+    // Property: $_parent
+    // Reference to the parent in the index tree.
+    var $_parent;
+    
     function ScBlock($str)
     {
         global $Sc;
@@ -99,6 +107,21 @@ class ScBlock
     function getBrief()
     {
         return $this->brief;
+    }
+    
+    function getTypeData($p = NULL)
+    {
+        global $Sc;
+        if (!isset($Sc->Options['block_types'])) { return; }
+        if (!isset($Sc->Options['block_types'][(string) $this->type])) { return; }
+        
+        $type = $Sc->Options['block_types'][(string) $this->type];
+        if (is_string($p)) {
+            if (isset($type[$p])) { return $type[$p]; }
+            else { return NULL; }
+        }
+            
+        return $type;
     }
     
     function mkdn($lines)
