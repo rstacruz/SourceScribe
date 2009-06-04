@@ -1,5 +1,7 @@
 <?php
 
+// Class: Scribe
+// Yeah.
 class Scribe
 {
     var $Project;
@@ -20,6 +22,30 @@ class Scribe
             'page'        => 'page',
             'section'     => 'page',
             'module'      => 'page',
+        ),
+        
+        'block_types' => array(
+            'function' => array(
+                'page' => TRUE,
+                'has_brief' => TRUE
+            ),
+            'property' => array(
+                'page' => FALSE,
+                'has_brief' => TRUE
+            ),
+            'class' => array(
+                'page' => TRUE,
+                'has_brief' => TRUE
+            ),
+            'page' => array(
+                'page' => TRUE
+            ),
+        ),
+        
+        'file_specs' => array(
+            '\.php$' => 'default',
+            '\.inc$' => 'default',
+            '\.doc.txt$' => 'default'
         )
     );
     

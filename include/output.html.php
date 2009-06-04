@@ -10,6 +10,7 @@ class HtmlOutput extends ScOutput
         {
             echo '<div>';
             echo '<h1>' . $block->getTitle() . '</h1>';
+            echo '<strong>'.$block->getBrief().'</strong>';
             echo $block->getContent();
             echo '</div>';
             echo '<hr/>';

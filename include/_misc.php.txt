@@ -1,5 +1,11 @@
-<?php
-// Only for ss
+global	$MarkdownPHPVersion, $MarkdownSyntaxVersion,
+		$md_empty_element_suffix, $md_tab_width,
+		$md_nested_brackets_depth, $md_nested_brackets, 
+		$md_escape_table, $md_backslash_escape_table, 
+		$md_list_level;
+
+$md_empty_element_suffix = " />";     # Change to ">" for HTML output
+$md_tab_width = 4;
 
 function _TokenizeHTML($str) {
 

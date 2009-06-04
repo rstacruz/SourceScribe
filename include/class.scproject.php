@@ -67,12 +67,21 @@ class ScProject
         // Each of the files, parse them
         foreach ($files as $file) {
             // TODO: Check for output formats instead of passing it on to all
-            foreach ($this->Sc->Readers as $k => $reader)
+            foreach ($this->Sc->Options['file_specs'] as $spec => $reader_name) {
+                if (preg_match("~$spec~", $file) != 0) {
+                    $this->Sc->status("Parsing $file with $reader_name");
+                    $reader = $this->Sc->Readers[$reader_name];
+                    $blocks = $reader->parse($file, $this);
+                    $this->data['blocks'] = array_merge($this->data['blocks'], $blocks);
+                    break;
+                }
+            }
+            
+            /*foreach ($this->Sc->Readers as $k => $reader)
             {
-                $this->Sc->status("Parsing $file with $k");
                 $blocks = $reader->parse($file, $this);
                 $this->data['blocks'] = array_merge($this->data['blocks'], $blocks);
-            }
+            }*/
         }
         
         // Spit out the outputs

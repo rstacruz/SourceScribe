@@ -1,21 +1,16 @@
 #!/usr/bin/php
 <?php error_reporting(0);
+global	$MarkdownPHPVersion, $MarkdownSyntaxVersion,
+		$md_empty_element_suffix, $md_tab_width,
+		$md_nested_brackets_depth, $md_nested_brackets, 
+		$md_escape_table, $md_backslash_escape_table, 
+		$md_list_level;
+
+$md_empty_element_suffix = " />";     # Change to ">" for HTML output
+$md_tab_width = 4;
 
 function _TokenizeHTML($str) {
-#
-#   Parameter:  String containing HTML markup.
-#   Returns:    An array of the tokens comprising the input
-#               string. Each token is either a tag (possibly with nested,
-#               tags contained therein, such as <a href="<MTFoo>">, or a
-#               run of text between tags. Each element of the array is a
-#               two-element array; the first is either 'tag' or 'text';
-#               the second is the actual value.
-#
-#
-#   Regular expression derived from the _tokenize() subroutine in 
-#   Brad Choate's MTRegex plugin.
-#   <http://www.bradchoate.com/past/mtregex.php>
-#
+
 	$index = 0;
 	$tokens = array();
 
@@ -35,7 +30,6 @@ function _TokenizeHTML($str) {
 
 	return $tokens;
 }
-
 class ScBlock
 {
     var $_data;
@@ -56,8 +50,17 @@ class ScBlock
         
         $title_line = $this->_lines[0];
         if (strpos($title_line, ':') === FALSE) { return; }
-        $this->type  = trim(substr($title_line, 0, strpos($title_line, ':')+1));
+        $type_str    = trim(substr($title_line, 0, strpos($title_line, ':')));
         $this->title = trim(substr($title_line, strpos($title_line, ':')+1, 99999)); 
+
+        // Get the type keyword.
+        // For instance, in ("Class: MyClass"), it's 'class'
+        // Then check if it exists in the defined type_keywords
+        $type_str = trim(strtolower($type_str));
+        if (!in_array($type_str, array_keys($Sc->Options['type_keywords'])))
+            { return; }
+        
+        $this->type = $Sc->Options['type_keywords'][$type_str];
         
         $this->content = $this->mkdn(array_slice($this->_lines, 1));
         $this->valid = TRUE;
@@ -77,6 +80,10 @@ class ScBlock
     {
         if (is_array($lines)) { $str = implode("\n", $lines); }
         else { $str = (string) $lines; }
+        
+        // Convert "Usage:" to H2's
+        $str = preg_replace('~[\\r\\n]([A-Za-z0-9\- ]+):[\\r\\n]~s',
+            "\n## \\1\n\n", $str);
         return markdown($str);
     }
 }
@@ -166,12 +173,21 @@ class ScProject
         // Each of the files, parse them
         foreach ($files as $file) {
             // TODO: Check for output formats instead of passing it on to all
-            foreach ($this->Sc->Readers as $k => $reader)
+            foreach ($this->Sc->Options['file_specs'] as $spec => $reader_name) {
+                if (preg_match("~$spec~", $file) != 0) {
+                    $this->Sc->status("Parsing $file with $reader_name");
+                    $reader = $this->Sc->Readers[$reader_name];
+                    $blocks = $reader->parse($file, $this);
+                    $this->data['blocks'] = array_merge($this->data['blocks'], $blocks);
+                    break;
+                }
+            }
+            
+            /*foreach ($this->Sc->Readers as $k => $reader)
             {
-                $this->Sc->status("Parsing $file with $k");
                 $blocks = $reader->parse($file, $this);
                 $this->data['blocks'] = array_merge($this->data['blocks'], $blocks);
-            }
+            }*/
         }
         
         // Spit out the outputs
@@ -199,6 +215,8 @@ class ScProject
     }
 }
 
+// Class: Scribe
+// Yeah.
 class Scribe
 {
     var $Project;
@@ -219,6 +237,27 @@ class Scribe
             'page'        => 'page',
             'section'     => 'page',
             'module'      => 'page',
+        ),
+        
+        'block_types' => array(
+            'function' => array(
+                'page' => TRUE
+            ),
+            'property' => array(
+                'page' => FALSE
+            ),
+            'class' => array(
+                'page' => TRUE
+            ),
+            'page' => array(
+                'page' => TRUE
+            ),
+        ),
+        
+        'file_specs' => array(
+            '\.php$' => 'default',
+            '\.inc$' => 'default',
+            '\.doc.txt$' => 'default'
         )
     );
     
