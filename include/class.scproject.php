@@ -18,12 +18,15 @@ class ScProject
     var $output;
     
     // The data!
-    var $data;
+    var $data = array(
+        'blocks' => array()
+    );
     
     /*
      * Function: ScProject()
      * The constructor.
      */
+     
     function ScProject(&$Sc)
     {
         $this->Sc =& $Sc;
@@ -57,17 +60,18 @@ class ScProject
         // Scan the files
         $this->Sc->status('Scanning files...');
 
-        $options = array('recursive' => 1, 'fullpath' => 1);
-        $files = aeScandir($this->src_path,
-            array_merge($this->src_path_options, $options));
+        $options = array('recursive' => 1, 'mask' => '/./', 'fullpath' => 1);
+        $options = array_merge($this->src_path_options, $options);
+        $files = aeScandir($this->src_path, $options);
             
         // Each of the files, parse them
         foreach ($files as $file) {
             // TODO: Check for output formats instead of passing it on to all
-            foreach ($this->Sc->Parsers as $k => $parser)
+            foreach ($this->Sc->Readers as $k => $reader)
             {
                 $this->Sc->status("Parsing $file with $k");
-                $parser->parse($file, $this);
+                $blocks = $reader->parse($file, $this);
+                $this->data['blocks'] = array_merge($this->data['blocks'], $blocks);
             }
         }
         
@@ -88,6 +92,7 @@ class ScProject
             if (!is_dir($path))
                 { return $this->Sc->error("Can't create folder for $driver output."); }
             
+            $output->run($this, $path);
         }
         
         $this->Sc->status('Build complete.');

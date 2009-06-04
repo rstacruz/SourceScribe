@@ -1,19 +1,99 @@
 #!/usr/bin/php
-<?php
+<?php error_reporting(0);
+
+function _TokenizeHTML($str) {
+#
+#   Parameter:  String containing HTML markup.
+#   Returns:    An array of the tokens comprising the input
+#               string. Each token is either a tag (possibly with nested,
+#               tags contained therein, such as <a href="<MTFoo>">, or a
+#               run of text between tags. Each element of the array is a
+#               two-element array; the first is either 'tag' or 'text';
+#               the second is the actual value.
+#
+#
+#   Regular expression derived from the _tokenize() subroutine in 
+#   Brad Choate's MTRegex plugin.
+#   <http://www.bradchoate.com/past/mtregex.php>
+#
+	$index = 0;
+	$tokens = array();
+
+	$match = '(?s:<!(?:--.*?--\s*)+>)|'.	# comment
+			 '(?s:<\?.*?\?>)|'.				# processing instruction
+			 								# regular tags
+			 '(?:<[/!$]?[-a-zA-Z0-9:]+\b(?>[^"\'>]+|"[^"]*"|\'[^\']*\')*>)'; 
+
+	$parts = preg_split("{($match)}", $str, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+	foreach ($parts as $part) {
+		if (++$index % 2 && $part != '') 
+			$tokens[] = array('text', $part);
+		else
+			$tokens[] = array('tag', $part);
+	}
+
+	return $tokens;
+}
+
+class ScBlock
+{
+    var $_data;
+    var $valid = FALSE;
+    
+    var $type;
+    var $title;
+    var $content;
+    
+    function ScBlock($str)
+    {
+        global $Sc;
+        
+        // Get the lines
+        $this->_data = $str;
+        $lines = str_replace(array("\r\n","\r"), array("\n","\n"), $str);
+        $this->_lines = explode("\n", $str);
+        
+        $title_line = $this->_lines[0];
+        if (strpos($title_line, ':') === FALSE) { return; }
+        $this->type  = trim(substr($title_line, 0, strpos($title_line, ':')+1));
+        $this->title = trim(substr($title_line, strpos($title_line, ':')+1, 99999)); 
+        
+        $this->content = $this->mkdn(array_slice($this->_lines, 1));
+        $this->valid = TRUE;
+    }
+    
+    function getContent()
+    {
+        return $this->content;
+    }
+    
+    function getTitle()
+    {
+        return $this->title;
+    }
+    
+    function mkdn($lines)
+    {
+        if (is_array($lines)) { $str = implode("\n", $lines); }
+        else { $str = (string) $lines; }
+        return markdown($str);
+    }
+}
 
 /*
- * Class: ScParser
+ * Class: Screader
  * Yeah!
  */
-class ScParser
+class Screader
 {
     var $Sc;
     
     /*
-     * Function: ScParser()
+     * Function: Screader()
      * Constructor. Called by Scribe::Scribe()
      */ 
-    function ScParser(&$Sc)
+    function Screader(&$Sc)
     {
         $this->Sc =& $Sc;
     }
@@ -37,12 +117,15 @@ class ScProject
     var $output;
     
     // The data!
-    var $data;
+    var $data = array(
+        'blocks' => array()
+    );
     
     /*
      * Function: ScProject()
      * The constructor.
      */
+     
     function ScProject(&$Sc)
     {
         $this->Sc =& $Sc;
@@ -76,17 +159,18 @@ class ScProject
         // Scan the files
         $this->Sc->status('Scanning files...');
 
-        $options = array('recursive' => 1, 'fullpath' => 1);
-        $files = aeScandir($this->src_path,
-            array_merge($this->src_path_options, $options));
+        $options = array('recursive' => 1, 'mask' => '/./', 'fullpath' => 1);
+        $options = array_merge($this->src_path_options, $options);
+        $files = aeScandir($this->src_path, $options);
             
         // Each of the files, parse them
         foreach ($files as $file) {
             // TODO: Check for output formats instead of passing it on to all
-            foreach ($this->Sc->Parsers as $k => $parser)
+            foreach ($this->Sc->Readers as $k => $reader)
             {
                 $this->Sc->status("Parsing $file with $k");
-                $parser->parse($file, $this);
+                $blocks = $reader->parse($file, $this);
+                $this->data['blocks'] = array_merge($this->data['blocks'], $blocks);
             }
         }
         
@@ -107,6 +191,7 @@ class ScProject
             if (!is_dir($path))
                 { return $this->Sc->error("Can't create folder for $driver output."); }
             
+            $output->run($this, $path);
         }
         
         $this->Sc->status('Build complete.');
@@ -117,7 +202,7 @@ class ScProject
 class Scribe
 {
     var $Project;
-    var $Parsers = array();
+    var $Readers = array();
     var $Outputs = array();
     
     var $Options = array(
@@ -167,8 +252,8 @@ class Scribe
         }
         
         $this->Project = new ScProject($this);
-        $this->Parsers ['default']= new DefaultParser($this);
-        $this->Outputs['html'] = new HtmlOutput($this);
+        $this->Readers['default'] = new DefaultReader($this);
+        $this->Outputs['html']    = new HtmlOutput($this);
     }
     
     /*
@@ -191,6 +276,8 @@ class Scribe
      *    This is called by any function that needs to generate an error.
      * 
      * ## Example
+     * 
+     *     OH yeah
      *     $Sc->error("Printer on fire!");
      */
     function error($error)
@@ -223,48 +310,72 @@ class ScOutput
 
 class HtmlOutput extends ScOutput
 {
-    function run($project)
+    function run($project, $path)
     {
+        $index_file = $path . '/index.html';
+        ob_start();
+        foreach ($project->data['blocks'] as $block)
+        {
+            echo '<div>';
+            echo '<h1>' . $block->getTitle() . '</h1>';
+            echo $block->getContent();
+            echo '</div>';
+            echo '<hr/>';
+        }
+        file_put_contents($index_file, ob_get_clean());
     }
 }
 
 /*
- * Class: DefaultParser
- * The default parser.
+ * Class: DefaultReader
+ * The default reader.
  */
-class DefaultParser extends ScParser
+class DefaultReader extends ScReader
 {
     /*
      * Function: parse()
+     * Parses a file.
      * Called by ScProject::build().
      */
     function parse($path, $project)
     {
+        $blocks = array();
+        
+        // Get contents, and find comment blocks.
         $file = file_get_contents($path);
-        $single_char = "(?://|#)";
-        $r_singles = "(?:[\\r\\n^][ \\t]*{$single_char}[ ]*(.+)){2,}";
-        preg_match_all("~$r_singles~", $file, $m1);
-        $this->_cleanSingle($m1[0]);
+        $single_char = "(?://[/!]?|#)";
+        $r_singles = "(?:[\\r\\n^][ \\t]*{$single_char}[ ]*.*){2,}";
+        $r_blocks = '(?:/\\*(?:.|[\\r\\n])+?\\*/)';
         
-        $r_blocks = '(?:/\\*((?:.|[\\r\\n])*?)\\*/)';
-        preg_match_all("~$r_blocks~", $file, $m2);
-        $this->_cleanBlock($m2[0]);
+        preg_match_all("~($r_singles)|($r_blocks)~", $file, $m3);
+        foreach ($m3[0] as $k=> $block_text)
+        {
+            if ($m3[0][$k] == $m3[1][$k]) // Single
+                { $block_text = $this->_cleanSingle($block_text); }
+            else
+                { $block_text = $this->_cleanBlock($block_text); }
+            
+            // Make it
+            $block = new ScBlock($block_text);
+            if ($block->valid) { $blocks[] = $block; }
+        }
         
-        if ($m1 != array(array(),array())) {
-            print_r($m1[0]);
-        }
-        if ($m2 != array(array(),array())) {
-            print_r($m2[0]);
-        }
+        return $blocks;
     }
     
+    // Input are arrays
     function _cleanSingle($string)
     {
+        $string = preg_replace('~^[ \\t]*(?://|#) ?~sm', '', $string);
+        $string = trim($string);
         return $string;
     }
     
+    // Input are arrays
     function _cleanBlock($string)
     {
+        $string = preg_replace('~^[ \\t]*/?\\*\\**!*(?: |/$)?~sm', '', $string);
+        $string = trim($string);
         return $string;
     }
 }

@@ -3,7 +3,7 @@
 class Scribe
 {
     var $Project;
-    var $Parsers = array();
+    var $Readers = array();
     var $Outputs = array();
     
     var $Options = array(
@@ -53,8 +53,8 @@ class Scribe
         }
         
         $this->Project = new ScProject($this);
-        $this->Parsers ['default']= new DefaultParser($this);
-        $this->Outputs['html'] = new HtmlOutput($this);
+        $this->Readers['default'] = new DefaultReader($this);
+        $this->Outputs['html']    = new HtmlOutput($this);
     }
     
     /*
@@ -77,6 +77,8 @@ class Scribe
      *    This is called by any function that needs to generate an error.
      * 
      * ## Example
+     * 
+     *     OH yeah
      *     $Sc->error("Printer on fire!");
      */
     function error($error)
