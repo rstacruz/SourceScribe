@@ -9,7 +9,9 @@ class DefaultReader extends ScReader
     /*
      * Function: parse()
      * Parses a file.
-     * Called by ScProject::build().
+     * 
+     * Description:
+     *   Called by ScProject::build().
      */
     function parse($path, $project)
     {
@@ -31,7 +33,7 @@ class DefaultReader extends ScReader
             
             // Make it (let ScBlock parse it)
             $block = new ScBlock($block_text);
-            if ($block->valid) { $blocks[] = $block; }
+            if ($block->valid) { $blocks[$block->id] = $block; }
         }
         
         return $blocks;

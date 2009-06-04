@@ -20,6 +20,7 @@ class Scribe
             'var'         => 'property',
             'class'       => 'class',
             'page'        => 'page',
+            'file'        => 'page',
             'section'     => 'page',
             'module'      => 'page',
         ),
@@ -117,6 +118,14 @@ class Scribe
     function do_version($args = array())
     {
         echo "SourceScribe\n";
+    }
+    
+    function do_open()
+    {
+        $path = $this->Project->cwd . DS .
+                $this->Project->output['html']['path'] . DS .
+                'index.html';
+        system("open $path");
     }
     
     function do_help($args = array())

@@ -10,6 +10,12 @@ class ScBlock
     var $_data;
     var $valid = FALSE;
     
+    // Property: $typename
+    // The name of the type as defined in the first line
+    var $typename = '';
+    
+    // Property: $type
+    // The proper name of the type
     var $type;
     var $title;
     var $content;
@@ -33,6 +39,7 @@ class ScBlock
         // Then check if it exists in the defined type_keywords
         $type_str    = trim(substr($title_line, 0, strpos($title_line, ':')));
         $this->title = trim(substr($title_line, strpos($title_line, ':')+1, 99999)); 
+        $this->typename = $type_str;
         $type_str = trim(strtolower($type_str));
         $this->_lines = array_slice($this->_lines, 1);
         
@@ -62,6 +69,21 @@ class ScBlock
         
         $this->content = $this->mkdn($this->_lines);
         $this->valid = TRUE;
+        $this->id = $this->_toID($this->title);
+        
+        unset($this->_lines);
+        unset($this->_data);
+    }
+    
+    function _toID($p, $limit=128, $underscore = '', $lower = FALSE)
+    {	
+    	preg_match_all('/[^a-zA-Z0-9]+|(.)/',$p, $m);
+    	$ff = ''; $f = '';
+    	foreach ($m[1] as $ch)  { $ff .= ($ch != '') ? $ch : ' '; }
+    	//foreach (explode(' ', trim($ff)) as $word)
+    	//    { $f .= strtoupper(substr($word,0,1)) . (substr($word,1)); }
+    	$f = str_replace(' ', '_', trim($ff));
+    	return substr($f, 0, $limit);
     }
     
     function getContent()
@@ -85,8 +107,14 @@ class ScBlock
         else { $str = (string) $lines; }
         
         // Convert "Usage:" to H2's
-        $str = preg_replace('~[\\r\\n]([A-Za-z0-9\- ]+):[\\r\\n]~s',
+        $str = preg_replace('~(?:^|\\r|\\n)([A-Za-z0-9\- ]+):[\\r\\n]~sm',
             "\n## \\1\n\n", $str);
+            
+        // Convert to dl/dt/dd
+        $str = preg_replace('~([^\\r\\n])[ \\t]*([a-zA-Z0-9_$]*) +- (.*?)([\\r\\n$])~s',
+            "\\1\n\\2\n: \\3\\4", $str);
+        
+        // return '<pre>' . htmlentities($str) . '</pre>';
         return markdown($str);
     }
 }

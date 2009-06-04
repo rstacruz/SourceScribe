@@ -40,14 +40,19 @@ class ScProject
         // Check source
         if (is_null($this->src_path))
             { $this->src_path = $this->cwd; }
-            
-        // Try it as a relative URL
-        if (!is_dir($this->src_path))
-            { $this->src_path = realpath($this->cwd . DS . $this->src_path); }
         
-        // Else, uh oh
-        if (!is_dir($this->src_path))
-            { return $Sc->error('src_path is invalid.'); }
+        // Check if all paths are valid
+        $this->src_path = (array) $this->src_path;
+        foreach ($this->src_path as $k => $path)
+        {
+            // Try as a relative path
+            if (!is_dir($this->src_path[$k]))
+                { $this->src_path = realpath($this->cwd . DS . $this->src_path); } 
+                
+            // If invalid, die
+            if (!is_dir($this->src_path[$k]))
+                { return $Sc->error('src_path is invalid: ' . $path); }
+        }
     }
     
     /*
@@ -62,25 +67,28 @@ class ScProject
 
         $options = array('recursive' => 1, 'mask' => '/./', 'fullpath' => 1);
         $options = array_merge($this->src_path_options, $options);
-        $files = aeScandir(realpath($this->src_path), $options);
-            
-        // Each of the files, parse them
-        foreach ($files as $file)
+        foreach ((array) $this->src_path as $path)
         {
-            foreach ($this->Sc->Options['file_specs']
-                     as $spec => $reader_name)
+            $files = aeScandir($path, $options);
+            
+            // Each of the files, parse them
+            foreach ($files as $file)
             {
-                if (preg_match("~$spec~", $file) == 0) { continue; }
+                foreach ($this->Sc->Options['file_specs']
+                         as $spec => $reader_name)
+                {
+                    if (preg_match("~$spec~", $file) == 0) { continue; }
                 
-                // Show status
-                $file_min = substr(realpath($file),
-                    1 + strlen(realpath($this->src_path)));
-                $this->Sc->status("* [$reader_name] $file_min");
+                    // Show status
+                    $file_min = substr(realpath($file),
+                        1 + strlen(realpath($this->cwd)));
+                    $this->Sc->status("* [$reader_name] $file_min");
                 
-                $reader = $this->Sc->Readers[$reader_name];
-                $blocks = $reader->parse($file, $this);
-                $this->data['blocks'] = array_merge($this->data['blocks'], $blocks);
-                break;
+                    $reader = $this->Sc->Readers[$reader_name];
+                    $blocks = $reader->parse($file, $this);
+                    $this->data['blocks'] = array_merge($this->data['blocks'], $blocks);
+                    break;
+                }
             }
         }
         
