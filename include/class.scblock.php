@@ -69,7 +69,7 @@ class ScBlock
         
         $this->content = $this->mkdn($this->_lines);
         $this->valid = TRUE;
-        $this->id = $this->_toID($this->title);
+        $this->id = $this->_toID($this->type) . '.' . $this->_toID($this->title);
         
         unset($this->_lines);
         unset($this->_data);
@@ -111,10 +111,13 @@ class ScBlock
             "\n## \\1\n\n", $str);
             
         // Convert to dl/dt/dd
-        $str = preg_replace('~([^\\r\\n])[ \\t]*([a-zA-Z0-9_$]*) +- (.*?)([\\r\\n$])~s',
-            "\\1\n\\2\n: \\3\\4", $str);
+        $str = preg_replace('~ *([a-zA-Z0-9_\$\.\*]+) +- (.*?)([\\r\\n$])~s',
+            "\n\\1\n: \\2\\3", $str);
         
         // return '<pre>' . htmlentities($str) . '</pre>';
-        return markdown($str);
+        $str = markdown($str);
+        $str = preg_replace('~(<h[1-6]>)(.*?)(</h[1-6]>)~s', '\\1<span>\\2</span>\\3', $str);
+        
+        return $str;
     }
 }

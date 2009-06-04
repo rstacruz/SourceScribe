@@ -55,20 +55,26 @@ a img     { border: 0; }
         
     body
         { font-size: 0.75em; line-height: 1.45em;
-        background: #eee; color: #333; padding: 10px; }
+        background: #ddd; color: #333; padding: 10px; }
         
     #all
-        { width: 600px; margin: 0 auto; text-align: left; padding: 10px; position: relative; }
+        { width: 740px; margin: 0 auto; text-align: left; position: relative; }
         
-    
     .block
-        { background: white; margin: 10px 0; padding: 0 0 10px 0; border: solid 1px #ddd; }
+        { background: white; margin: 10px 0; padding: 0 0 10px 0; }
 
     .block .type 
         { padding: 4px; background: #ddd; color: #888; margin: 0 0 10px 0; font-size: 0.8em; }
         
     .block h2
         { font-size: 2.5em; font-weight: normal; }
+        
+    .blocktype-property h2
+        { font-size: 1.6em; }
+        
+    .blocktype-class h2
+        { background: #888; line-height: 1.4em; overflow: hidden; margin: 0 0 1em 0; padding: 10px; color: #fff; }
+        
     .block h2,
     .block .brief,
     .block .description
@@ -77,8 +83,19 @@ a img     { border: 0; }
     .brief { font-size: 1.2em; }
     dl { overflow: hidden; margin-left: 10px; }
     dt { width: 20%; font-weight: bold; float: left; clear: left; }
-    dd { width: 75%; float: left; }
+    dd { width: 75%; float: left; margin-bottom: 0.5em; }
     h3 { color: #888; border-bottom: solid 1px #ddd; padding-bottom: 5px; margin-top: 20px; }
     
     pre { background: #f5f5ee; padding: 5px 9px; border: solid 1px #f0f0e0; font-size: 1em; line-height: 1.5em; }
     code { font-family: monaco, 'lucida console', monospace; }
+    
+    .block h3
+        { height: 1px; background: transparent; border: 0; border-top: solid 1px #ccc; position: relative; margin: 2em 0 0px 0; font-size: 1em; }
+    .block h3 span
+        { position: absolute; left: 0; top: 6px; color: #888; display: block; width: 100px; }
+    .block p, .block dl, .block ul, .block ol, .block pre
+        { margin-top: 0; margin-left: 120px; }
+    .block .brief
+        { margin-left: 10px; }
+    .block .brief p
+        { display: inline; margin: 0; padding: 0; }

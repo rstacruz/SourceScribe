@@ -29,6 +29,7 @@ class HtmlOutput extends ScOutput
         $index_file = $path . '/index.html';
         ob_start();
         $blocks = $project->data['blocks'];
+        $index = $project->data['index'];
         include($template_path. '/index.tpl');
         file_put_contents($index_file, ob_get_clean());
     }

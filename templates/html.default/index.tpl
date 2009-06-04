@@ -7,10 +7,18 @@
 </head>
 <body>
     <div id="all">
+        <div class="block index">
+            <ul>
+            <?php foreach ($index as $id => $data) { ?>
+                <li><?php echo $id; ?></li>
+            <?php } ?>
+            </ul>
+        </div>
+        
         <?php foreach ($blocks as $bid => $block) { ?>
-            <div class="block">
+            <div class="block block-<?php echo strtolower($block->typename) ?> blocktype-<?php echo strtolower($block->type) ?>">
                 <p class="type"><?php echo $block->typename ?></p>
-                <h2><?php echo $block->getTitle(); ?></h2>
+                <h2><span><?php echo $block->getTitle(); ?></span></h2>
                 <div class="brief"><?php echo $block->getBrief(); ?></div>
                 <div class="description"><?php echo str_replace(array('h2>'), array('h3>'), $block->getContent()); ?></div>
             </div>

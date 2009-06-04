@@ -32,11 +32,8 @@ class DefaultReader extends ScReader
                 { $block_text = $this->_cleanBlock($block_text); }
             
             // Make it (let ScBlock parse it)
-            $block = new ScBlock($block_text);
-            if ($block->valid) { $blocks[$block->id] = $block; }
+            $project->register(new ScBlock($block_text));
         }
-        
-        return $blocks;
     }
     
     // Input are arrays

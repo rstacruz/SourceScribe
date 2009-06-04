@@ -17,9 +17,41 @@ class ScProject
     var $src_path_options = array();
     var $output;
     
-    // The data!
+    /*
+     * Property: $data
+     * The data.
+     *
+     * Description:
+     *   This is an associative array with the following keys below.
+     *
+     *   blocks   - Array. The list of blocks.
+     *   index    - Array. The index
+     *
+     * Blocks:
+     *   The `blocks` list is an associative array of `AeBlock` instances.
+     *   It is populated by the readers.
+     *
+     * Index:
+     *   LOL, I don't know yet.
+     * 
+     * Example data:
+     *   Here's a possible data:
+     * 
+     *     $data = array
+     *     (
+     *       'blocks' => array(
+     *         'id1' => ScBlock,
+     *         'id2' => ScBlock,
+     *         ...
+     *       ),
+     *       'index' => array(
+     *       ),
+     *     );
+     */
+    
     var $data = array(
-        'blocks' => array()
+        'blocks' => array(),
+        'index' => array()
     );
     
     /*
@@ -86,7 +118,6 @@ class ScProject
                 
                     $reader = $this->Sc->Readers[$reader_name];
                     $blocks = $reader->parse($file, $this);
-                    $this->data['blocks'] = array_merge($this->data['blocks'], $blocks);
                     break;
                 }
             }
@@ -115,5 +146,20 @@ class ScProject
         
         $this->Sc->status('Build complete.');
 
+    }
+    
+    function register($block)
+    {
+        if (is_string($block))
+            { $block = new ScBlock($block); }
+        
+        // Die if not valid
+        if (!$block->valid) { return; }
+        
+        // Register to blocks
+        $this->data['blocks'][$block->id] = $block;
+        
+        $this->data['index'][$block->id] = 
+            array('block' => &$block);
     }
 }
