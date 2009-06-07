@@ -3,7 +3,7 @@
     include dirname(__FILE__) . '/header.php';
 ?>
     <div id="index">
-        <ul><li>
+        <?php if (!is_array($tree)) { ?><ul><li><?php } ?>
         <?php if (!is_callable('show_single_index')) { function show_single_index($node, $depth, $block) { ?>
             
             <?php if (is_callable(array($node, 'getTitle'))) { ?>
@@ -21,8 +21,8 @@
                 </ul>
             <?php } ?>
         <?php } } ?>
-        </li></ul>
         <?php show_single_index($tree, 0, $blocks[0]); ?>
+        <?php if (!is_array($tree)) { ?></li></ul><?php } ?>
     </div>
 
     <div id="all">

@@ -7,6 +7,11 @@
 
 class ScBlock
 {
+    // ========================================================================
+    // Private properties
+    // [All below are grouped under "Private properties"]
+    // ========================================================================
+     
     var $_data;
     var $valid = FALSE;
     
@@ -38,6 +43,16 @@ class ScBlock
     // Property: $_children
     var $_children = array();
     
+    // ========================================================================
+    // Constructor
+    // [All below are grouped under "Constructor"]
+    // ========================================================================
+    
+    /*
+     * Constructor: ScBlock()
+     * Yes.
+     */
+     
     function ScBlock($str)
     {
         if (is_callable(array($str, 'getID')))
@@ -98,16 +113,32 @@ class ScBlock
         unset($this->_data);
     }
     
-    function _toID($p, $limit=128, $underscore = '', $lower = FALSE)
-    {	
-    	preg_match_all('/[^a-zA-Z0-9]+|(.)/',$p, $m);
-    	$ff = ''; $f = '';
-    	foreach ($m[1] as $ch)  { $ff .= ($ch != '') ? $ch : ' '; }
-    	//foreach (explode(' ', trim($ff)) as $word)
-    	//    { $f .= strtoupper(substr($word,0,1)) . (substr($word,1)); }
-    	$f = str_replace(' ', '_', trim($ff));
-    	return substr($f, 0, $limit);
+    /*
+     * Function: factory()
+     * Creates an ScBlock instance with the right class as needed.
+     * [Static]
+     *
+     * Usage:
+     * > ScBlock::factory()
+     *
+     * Returns:
+     *   Unspecified.
+     * 
+     */
+
+    function& factory($input)
+    {
+        $return = new ScBlock($input);
+        $classname = $return->getTypeData('block_class');
+        if (!is_null($classname))
+            { $returnx = new $classname($return); return $returnx; }
+        return $return;
     }
+    
+    // ========================================================================
+    // Group: Content methods
+    // [All below are grouped under "Content methods"]
+    // ========================================================================
     
     /*
      * Function: getContent()
@@ -212,6 +243,28 @@ class ScBlock
         return $type;
     }
     
+    
+    // ========================================================================
+    // Group: Private methods
+    // [All below are grouped under "Private methods"]
+    // ========================================================================
+    
+    /*
+     * Function: _toID()
+     * Uhm.
+     */
+     
+    function _toID($p, $limit=128, $underscore = '', $lower = FALSE)
+    {	
+    	preg_match_all('/[^a-zA-Z0-9]+|(.)/',$p, $m);
+    	$ff = ''; $f = '';
+    	foreach ($m[1] as $ch)  { $ff .= ($ch != '') ? $ch : ' '; }
+    	//foreach (explode(' ', trim($ff)) as $word)
+    	//    { $f .= strtoupper(substr($word,0,1)) . (substr($word,1)); }
+    	$f = str_replace(' ', '_', trim($ff));
+    	return substr($f, 0, $limit);
+    }
+
     /*
      * Function: toHTML()
      * Processes plaintext (ripped from the source files) and converts them
@@ -265,27 +318,10 @@ class ScBlock
         return;
     }
     
-    /*
-     * Function: factory()
-     * Creates an ScBlock instance with the right class as needed.
-     * [Static]
-     *
-     * Usage:
-     * > ScBlock::factory()
-     *
-     * Returns:
-     *   Unspecified.
-     * 
-     */
-
-    function& factory($input)
-    {
-        $return = new ScBlock($input);
-        $classname = $return->getTypeData('block_class');
-        if (!is_null($classname))
-            { $returnx = new $classname($return); return $returnx; }
-        return $return;
-    }
+    // ========================================================================
+    // Traversion methods
+    // [All below are grouped under "Traversion methods"]
+    // ========================================================================
     
     /*
      * Function: getChildren()

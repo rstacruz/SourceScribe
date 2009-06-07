@@ -35,6 +35,7 @@ class HtmlOutput extends ScOutput
         
         // Output
         $this->out_full($path, $project, $template_path);
+        $this->out_content_index($path, $project, $template_path);
         $this->out_singles($path, $project, $template_path);
     }
     
@@ -53,6 +54,27 @@ class HtmlOutput extends ScOutput
         $tree   = $project->data['tree'];
         $assets_path = 'assets/';
         include($template_path. '/full.php');
+        
+        // Out
+        $output = ob_get_clean();
+        file_put_contents($index_file, $output);
+    }
+    
+    /*
+     * Function: out_full()
+     * Outputs the single-file megaindex.
+     */
+     
+    function out_content_index($path, $project, $template_path)
+    {
+        $index_file = $path . '/index.html';
+        ob_start();
+        
+        // Template
+        $blocks = $project->data['blocks'];
+        $tree   = $project->data['tree'];
+        $assets_path = 'assets/';
+        include($template_path. '/content_index.php');
         
         // Out
         $output = ob_get_clean();
