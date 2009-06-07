@@ -20,20 +20,66 @@ class HtmlOutput extends ScOutput
             { $Sc->error("Can't find template " . $output_options['template']); }
         
         // Make the assets folder
-        @mkdir($path . '/assets', 0744, true);
+        foreach (array('assets', 's') as $folder)
+        {
+            @mkdir("$path/$folder", 0744, TRUE);
+            foreach(glob("$path/$folder/*") as $file)
+                { @unlink($file); }
+        }
+        
+        // Fill the assets folder
         foreach (glob($template_path . DS . 'assets' . DS . '*') as $file)
         {
             @copy($file, $path.DS.'assets'.DS.basename($file));
         }
         
+        // Output
+        $this->out_full($path, $project, $template_path);
+        $this->out_singles($path, $project, $template_path);
+    }
+    
+    /*
+     * Function: out_full()
+     * Outputs the single-file megaindex.
+     */
+     
+    function out_full($path, $project, $template_path)
+    {
         $index_file = $path . '/index.html';
         ob_start();
+        
+        // Template
         $blocks = $project->data['blocks'];
-        $tree = $project->data['tree'];
-        include($template_path. '/index.tpl');
+        $tree   = $project->data['tree'];
+        $assets_path = 'assets/';
+        include($template_path. '/full.php');
         
         // Out
         $output = ob_get_clean();
         file_put_contents($index_file, $output);
+    }
+    
+    /*
+     * Function: out_singles()
+     * Outputs single files
+     */
+     
+    function out_singles($path, $project, $template_path)
+    {
+        global $Sc;
+        foreach ($project->data['blocks'] as $block)
+        {
+            $index_file = $path . '/s/' . $block->getID() . '.html';
+            ob_start();
+        
+            // Template
+            $blocks = array($block);
+            $assets_path = '../assets/';
+            include($template_path. '/single.php');
+        
+            // Out
+            $output = ob_get_clean();
+            file_put_contents($index_file, $output);
+        }
     }
 }

@@ -31,24 +31,31 @@ class Scribe
         (
             'function' => array(
                 'page' => TRUE,
-                'has_brief' => TRUE
+                'has_brief' => TRUE,
+                'parent_in_id' => array('class'),
+                'short' => 'fn',
             ),
-            'property' => array(
+            'var' => array(
                 'page' => FALSE,
-                'has_brief' => TRUE
+                'has_brief' => TRUE,
+                'parent_in_id' => array('class'),
+                'short' => 'v',
             ),
             'class' => array(
                 'page' => TRUE,
                 'has_brief' => TRUE,
                 'starts_group_for' => array('var', 'function'),
+                'short' => 'cl',
             ),
             'module' => array(
                 'page' => TRUE,
                 'has_brief' => TRUE,
                 'starts_group_for' => array('page', 'class', 'function', 'var'),
+                'short' => 'm',
             ),
             'page' => array(
                 'page' => TRUE,
+                'short' => '',
             ),
             /*'group' => array(
                 'page' => FALSE,

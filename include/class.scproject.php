@@ -237,9 +237,6 @@ class ScProject
         // Die if not valid
         if (!$block->valid) { return; }
         
-        // Register to blocks
-        $this->data['blocks'][$block->id] =& $block;
-        
         // Register to where?
         $parent = NULL;
         
@@ -264,12 +261,31 @@ class ScProject
         array_unshift($this->__ancestry, &$block);
         
         // Is it alone?
-        if (count($this->__ancestry) == 1)
+        if (count($this->__ancestry) <= 1)
             { $this->data['tree'][] =& $block; }
+            
+        // Register to all blocks
+        $this->data['blocks'][$block->getID()] = &$block;
     }
     
     function registerStart()
     {
         $this->__ancestry = array();
+    }
+    
+    /*
+     * Function: getName()
+     * Returns the name of the project.
+     *
+     * Usage:
+     * > $this->getName()
+     *
+     * Returns:
+     *   Unspecified.
+     */
+
+    function getName()
+    {
+        return $this->name;
     }
 }

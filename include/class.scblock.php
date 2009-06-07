@@ -21,6 +21,10 @@ class ScBlock
     var $content;
     var $brief;
     
+    // Property: $_id
+    // Read only
+    var $_id = null;
+    
     // Property: $_index
     // Reference to it's location in the index tree.
     var $_index;
@@ -80,7 +84,6 @@ class ScBlock
         
         $this->content = $this->mkdn($this->_lines);
         $this->valid = TRUE;
-        $this->id = $this->_toID($this->type) . '.' . $this->_toID($this->title);
         
         unset($this->_lines);
         unset($this->_data);
@@ -112,6 +115,11 @@ class ScBlock
         return $this->brief;
     }
     
+    /*
+     * Function: getTypeData()
+     * Returns the data for the type in the class, as defined in `$Sc->Options`.
+     */
+     
     function getTypeData($p = NULL)
     {
         global $Sc;
@@ -207,11 +215,27 @@ class ScBlock
     }
     
     /*
+     * Function: getParent()
+     * Returns the parent node.
+     *
+     * Usage:
+     * > $block->getParent()
+     *
+     * Returns:
+     *   The parent (ScBlock instance).
+     */
+
+    function& getParent()
+    {
+        return $this->_parent;
+    }
+    
+    /*
      * Function: getID()
      * Returns the unique ID string for this node.
      *
      * Usage:
-     * > $this->getID()
+     * > $block->getID()
      *
      * Returns:
      *   Unspecified.
@@ -219,6 +243,30 @@ class ScBlock
 
     function getID()
     {
-        return $this->id;
+        if (is_null($this->_id))
+        {
+            // Initialize
+            $id_tokens = array();
+            $parent =& $this->getParent();
+            $td = $this->getTypeData();
+            
+            // Add the parent as another suffix, if we want it there
+            if ((isset($td['parent_in_id'])) &&
+                (is_callable(array($parent, 'getTypeData'))) &&
+                (in_array(strtolower($parent->type), $td['parent_in_id'])))
+            {
+                $id_tokens[] = $this->_toID($parent->title);
+            }
+            
+            // Add a suffix of the abbreviation of the type
+            // (e.g., "function" => "fn")
+            if (isset($td['short']))
+                { $id_tokens[] = $this->_toID($td['short']); }
+            
+            // Add our own title, and finalize
+            $id_tokens[] = $this->_toID($this->title);
+            $this->_id = implode('.', $id_tokens);
+        }
+        return $this->_id;
     }
 }
