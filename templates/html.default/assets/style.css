@@ -83,8 +83,12 @@ a img     { border: 0; }
         
     .block h2,
     .block .brief,
-    .block .description
+    .block .description,
+    .block .members
         { margin-left: 10px; margin-right: 10px; }
+        
+    .block p.parent
+        { margin-left: 10px; font-size: 0.9em; border-bottom: solid 1px #ccc; padding-bottom: 5px; }
         
     .brief { font-size: 1.2em; color: #888; }
     dl { overflow: hidden; margin-left: 10px; }

@@ -75,6 +75,14 @@ class HtmlOutput extends ScOutput
             // Template
             $blocks = array($block);
             $assets_path = '../assets/';
+            $id = $block->getID();
+            if ($block->hasParent())
+            {
+                $parent = $block->getParent();
+                $tree = $parent; //->getChildren();
+            }
+            else
+                { $tree = $project->data['tree']; }
             include($template_path. '/single.php');
         
             // Out

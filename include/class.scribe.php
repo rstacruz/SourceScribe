@@ -45,6 +45,7 @@ class Scribe
                 'page' => TRUE,
                 'has_brief' => TRUE,
                 'starts_group_for' => array('var', 'function'),
+                'block_class' => 'ScClassBlock',
                 'short' => 'cl',
             ),
             'module' => array(

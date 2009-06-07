@@ -15,7 +15,9 @@ class ScBlock
     var $typename = '';
     
     // Property: $type
-    // The proper name of the type
+    // The proper name of the type.
+    // Description:
+    // Access this via getType() and getTypeData().
     var $type;
     var $title;
     var $content;
@@ -38,6 +40,13 @@ class ScBlock
     
     function ScBlock($str)
     {
+        if (is_callable(array($str, 'getID')))
+        {
+            foreach ($str as $k => $v)
+                { $this->{$k} = $v; }
+            return;
+        }
+            
         global $Sc;
         
         // Get the lines
@@ -73,16 +82,16 @@ class ScBlock
             {
                 // Break at the first blank line
                 $this->brief = array_slice($this->_lines, 0, $offset);
-                $this->brief = $this->mkdn($this->brief);
+                $this->brief = $this->toHTML($this->brief);
                 $this->_lines = array_slice($this->_lines, $offset+1);
             } else {
                 // Everything is a brief description
-                $this->brief = $this->mkdn($this->_lines);
+                $this->brief = $this->toHTML($this->_lines);
                 $this->_lines = array();
             }
         }
         
-        $this->content = $this->mkdn($this->_lines);
+        $this->content = $this->toHTML($this->_lines);
         $this->valid = TRUE;
         
         unset($this->_lines);
@@ -100,19 +109,87 @@ class ScBlock
     	return substr($f, 0, $limit);
     }
     
+    /*
+     * Function: getContent()
+     * Returns the content of the block in HTML format.
+     * 
+     * Description:
+     *   This also consults the virtual (overridable) functions
+     *   `getPreContent()` and `getPostContent()` before returning the final
+     *   output.
+     * 
+     * See also:
+     *  - getPreContent()
+     *  - getPostContent()
+     */
+     
     function getContent()
     {
-        return $this->content;
+        return $this->getPreContent() . $this->content . $this->getPostContent();
     }
     
+    /*
+     * Function: getPreContent()
+     * Virtual function that lets subclasses make content before the content.
+     * 
+     * See also:
+     *  - getContent()
+     *  - getPostContent()
+     */
+     
+    function getPreContent()
+    {
+        return '';
+    }
+    
+    /*
+     * Function: getPreContent()
+     * Virtual function that lets subclasses make content before the content.
+     * 
+     * See also:
+     *  - getContent()
+     *  - getPreContent()
+     */
+     
+    function getPostContent()
+    {
+        return '';
+    }
+    
+    /*
+     * Function: getTitle()
+     * TBD
+     */
+     
     function getTitle()
     {
         return $this->title;
     }
     
+    /*
+     * Function: getBrief()
+     * TBD
+     */
+     
     function getBrief()
     {
         return $this->brief;
+    }
+    
+    /*
+     * Function: getType()
+     * To be documented.
+     *
+     * Usage:
+     * > $this->getType()
+     *
+     * Returns:
+     *   Unspecified.
+     */
+
+    function getType()
+    {
+        return $this->type;
     }
     
     /*
@@ -135,7 +212,16 @@ class ScBlock
         return $type;
     }
     
-    function mkdn($lines)
+    /*
+     * Function: toHTML()
+     * Processes plaintext (ripped from the source files) and converts them
+     * to HTML.
+     * 
+     * Description:
+     *   This relies on the Markdown library to parse out the content.
+     */
+     
+    function toHTML($lines)
     {
         if (is_array($lines)) { $str = implode("\n", $lines); }
         else { $str = (string) $lines; }
@@ -195,6 +281,9 @@ class ScBlock
     function& factory($input)
     {
         $return = new ScBlock($input);
+        $classname = $return->getTypeData('block_class');
+        if (!is_null($classname))
+            { $returnx = new $classname($return); return $returnx; }
         return $return;
     }
     
@@ -228,6 +317,22 @@ class ScBlock
     function& getParent()
     {
         return $this->_parent;
+    }
+    
+    /*
+     * Function: hasParent()
+     * Checks if the current block has a parent.
+     *
+     * Usage:
+     * > $this->hasParent()
+     *
+     * Returns:
+     *   Unspecified.
+     */
+
+    function hasParent()
+    {
+        return (is_null($this->_parent)) ? FALSE : TRUE;
     }
     
     /*
@@ -268,5 +373,42 @@ class ScBlock
             $this->_id = implode('.', $id_tokens);
         }
         return $this->_id;
+    }
+    
+    /*
+     * Function: getMemberLists()
+     * To be documented.
+     *
+     * Usage:
+     * > $this->getMemberLists()
+     *
+     * Returns:
+     *   Unspecified.
+     */
+
+    function& getMemberLists()
+    {
+        $f = array();
+        foreach ($this->getChildren() as $node)
+        {
+            $type = $node->getType();
+            if (!isset($f[$type]))
+            {
+                $f[$type] = array();
+                $f[$type]['title'] = 'Member ' . $type . 's';
+                $f[$type]['members'] = array();
+            }
+            
+            $f[$type]['members'][] = $node;
+        }
+        return $f;
+    }
+}
+
+class ScClassBlock extends ScBlock
+{
+    function getBrief()
+    {
+        return parent::getBrief();
     }
 }
