@@ -18,8 +18,8 @@ class Scribe
             'destructor'  => 'function',
             'dtor'        => 'function',
             'method'      => 'function',
-            'property'    => 'property',
-            'var'         => 'property',
+            'property'    => 'var',
+            'var'         => 'var',
             'class'       => 'class',
             'page'        => 'page',
             'section'     => 'page',
@@ -40,12 +40,12 @@ class Scribe
             'class' => array(
                 'page' => TRUE,
                 'has_brief' => TRUE,
-                'starts_group_for' => array('property', 'function'),
+                'starts_group_for' => array('var', 'function'),
             ),
             'module' => array(
                 'page' => TRUE,
                 'has_brief' => TRUE,
-                'starts_group_for' => array('page', 'class', 'function'),
+                'starts_group_for' => array('page', 'class', 'function', 'var'),
             ),
             'page' => array(
                 'page' => TRUE,
@@ -127,10 +127,13 @@ class Scribe
         echo "SourceScribe\n";
     }
     
-    function do_open()
+    function do_open($args = array())
     {
+        $output_key = array_keys($this->Project->output);
+        $output_key = $output_key[0];
+        $output = $this->Project->output[$output_key];
         $path = $this->Project->cwd . DS .
-                $this->Project->output['html']['path'] . DS .
+                $output['path'] . DS .
                 'index.html';
         system("open $path");
     }

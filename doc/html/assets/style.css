@@ -58,7 +58,10 @@ a img     { border: 0; }
         background: #ddd; color: #333; padding: 10px; }
         
     #all
-        { width: 740px; margin: 0 auto; text-align: left; position: relative; }
+        { width: 700px; float: left; margin: 0 10px; text-align: left; position: relative; }
+    
+    #index
+        { width: 250px; float: left; margin: 0 10px; }
         
     .block
         { background: white; margin: 30px 0; padding: 10px 0 10px 0; border: solid 1px #ccc; }
@@ -69,7 +72,7 @@ a img     { border: 0; }
     .block h2
         { font-size: 1.9em; font-weight: normal; margin-bottom: 0.5em; margin-top: 0.5em; }
         
-    .blocktype-property h2
+    .blocktype-var h2
         { font-size: 1.5em; font-weight: bold; }
         
     .blocktype-class h2
@@ -97,13 +100,14 @@ a img     { border: 0; }
         { height: 1px; background: transparent; border: 0; border-top: solid 1px #ccc; position: relative; margin: 2em 0 0px 0; font-size: 1em; }
     .block h3 span
         { position: absolute; left: 0; top: 6px; color: #888; display: block; width: 100px; }
-    .block p, .block dl, .block pre
+    .block p, .block dl, .block pre, .block blockquote
         { margin-top: 0; margin-left: 120px; }
     .block ul, .block ol
-        { margin-top: 0; margin-left: 140px; }
+        { margin-top: 0; margin-left: 140px; } 
     .block dl p,
     .block ul ul, .block ul ol, .block ul p,
     .block ol ul, .block ol ol, .block ol p,
+    .block blockquote ul, .block blockquote ol, .block blockquote p,
     .block pre p
         { margin-left: 0; }
         
@@ -126,4 +130,12 @@ a img     { border: 0; }
           
           
     /* Index */
-    .index .type { color: #888; font-size: 0.9em; margin-left: 5px; background: white; }
+    #index .type { color: #888; font-size: 0.9em; margin-left: 5px; background: transparent; }
+    #index a { color: #222; border-bottom: dotted 1px #888; padding: 0; font-weight: bold; }
+    #index ul ul a, #index ul ul a strong { font-weight: normal; border: 0; }
+    #index ul { margin-left: 0.9em; }
+    #index ul li { list-style-type: none; list-style: none; overflow: hidden; clear: left; }
+    #index ul li strong { float: left; }
+    #index ul li .type { float: right; } 
+    
+    a.anchor { display: block; height: 0.1px; width: 0.1px; }

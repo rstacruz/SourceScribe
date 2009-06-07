@@ -32,7 +32,7 @@ class DefaultReader extends ScReader
                 { $block_text = $this->_cleanBlock($block_text); }
             
             // Make it (let ScBlock parse it)
-            $project->register(new ScBlock($block_text));
+            $project->register($block_text);
         }
     }
     
@@ -52,3 +52,9 @@ class DefaultReader extends ScReader
         return $string;
     }
 }
+
+/*
+ * Class: TsClass
+ * Test
+ */
+ 

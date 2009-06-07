@@ -11,15 +11,42 @@
 
 class ScProject
 {
+    /*
+     * Group: Properties
+     */
+     
     var $Sc;
     
     var $cwd;
     var $config_file;
     
-    // From config
+    /*
+     * Group: Configurable properties
+     */
+     
     var $src_path = NULL;
     var $src_path_options = array();
     var $output;
+    
+    /*
+     * Property: $name
+     * The name of the project.
+     */
+     
+    var $name;
+    
+    /*
+     * Group: Temporary properties
+     */
+     
+    /*
+     * Property: $_ancestry
+     * Temporary property.
+     * 
+     * Used by `register()`.
+     */
+     
+    var $__ancestry = array();
     
     /*
      * Property: $data
@@ -155,16 +182,22 @@ class ScProject
         
         // Spit out the outputs.
         // Do this for every output defined...
-        foreach ($this->output as $driver => $output_options)
+        foreach ($this->output as $id => $output_options)
         {
             // Make sure we have an output driver
+            if (!isset($output_options['driver']))
+                { return $this->Sc->error("No driver defined for output $id"); }
+                
+            // Make sure the driver exists
+            $driver = $output_options['driver'];
             if (!isset($this->Sc->Outputs[$driver])) {
                 $this->Sc->notice('No output driver for ' . $driver . '.');
                 continue;
             }
             
             // Initialize
-            $this->Sc->status('Writing ' . $driver . ' output...');
+            $this->Sc->status('Writing ' . $driver . ' output' .
+                (($driver!=$id)?" ($id)":'') . '...');
             $path   = $output_options['path'];
             $output = $this->Sc->Outputs[$driver];
 
@@ -183,26 +216,23 @@ class ScProject
     }
     
     /*
-     * Property: $_ancestry
-     * Temporary property.
-     * 
-     * Used by register.
-     */
-     
-    var $_ancestry;
-    
-    /*
      * Function: register()
      * Registers a block.
      * 
      * Description:
      *   This is called by readers.
+     * 
+     *   Sample input would be something like below.
+     *
+     *     "Function: test()\nDescription.\n\nEtc etc"
      */
      
     function register($block)
     {
+        global $Sc;
+        
         if (is_string($block))
-            { $block = new ScBlock($block); }
+            { $block = ScBlock::factory($block); }
         
         // Die if not valid
         if (!$block->valid) { return; }
@@ -211,35 +241,35 @@ class ScProject
         $this->data['blocks'][$block->id] =& $block;
         
         // Register to where?
-        $index_parent =& $this->data['index'];
-        $changed = 0;
+        $parent = NULL;
         
-        // Maybe it can be registered elsewhere?
-        for ($i=0; $i < count($this->_ancestry); ++$i) {
-            $ancestor =& $this->_ancestry[$i];
-            $childtypes = $ancestor['_data']->getTypeData('starts_group_for');
-            if (in_array($block->type, (array) $childtypes)) {
-                $index_parent =& $ancestor;
-                array_splice($this->_ancestry, 0, $i);
-                $changed = 1; break;
+        // Find the ancestor.
+        for ($i=0; $i < count($this->__ancestry); ++$i)
+        {
+            $ancestor =& $this->__ancestry[$i];
+            $childtypes = $ancestor->getTypeData('starts_group_for');
+            if (in_array($block->type, (array) $childtypes))
+            {
+                $ancestor->registerChild($block);
+                break;
             }
         }
         
-        // Remove last if not changed
-        if (!$changed) { array_shift($this->_ancestry); }
-        
-        // Register index
-        $index_parent[$block->id] = array('_data' => &$block);
-        
-        $block->_index = &$index_parent[$block->id];
-        $block->_parent = &$index_parent;
+        // Remove the vestegial ancestors
+        // [e,d,c,b,a], 0, 2 => [c,b,a]
+        array_splice($this->__ancestry, 0, $i);
 
-        // [2,3,4], 1 => [1,2,3,4]
-        array_unshift($this->_ancestry, &$index_parent[$block->id]);
+        // Add us
+        // [b,c,d], a => [a,b,c,d]
+        array_unshift($this->__ancestry, &$block);
+        
+        // Is it alone?
+        if (count($this->__ancestry) == 1)
+            { $this->data['tree'][] =& $block; }
     }
     
     function registerStart()
     {
-        $this->_ancestry = array();
+        $this->__ancestry = array();
     }
 }

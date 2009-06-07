@@ -2,151 +2,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title></title>
+    <title>SourceScribe</title>
     <link rel="stylesheet" href="assets/style.css" type="text/css" media="screen" charset="utf-8" />
 </head>
 <body>
-    <div id="all">
-        <div class="block index">
+
+        <div id="index">
                                         
                         <ul>    
-                                                        <li>
-                                        
-                            <strong>ScBlock</strong>
-                <span class="type">class</span>
-                        <ul>    
-                                                                            <li>
-                                        
-                            <strong>$typename</strong>
-                <span class="type">property</span>
-                        <ul>    
-                                                </ul>
-                                </li>
-                                                        <li>
-                                        
-                            <strong>$type</strong>
-                <span class="type">property</span>
-                        <ul>    
-                                                </ul>
-                                </li>
-                            </ul>
-                                </li>
-                                                        <li>
-                                        
-                            <strong>ScReader</strong>
-                <span class="type">class</span>
-                        <ul>    
-                                                                            <li>
-                                        
-                            <strong>ScReader()</strong>
-                <span class="type">constructor</span>
-                        <ul>    
-                                                </ul>
-                                </li>
-                            </ul>
-                                </li>
-                                                        <li>
-                                        
-                            <strong>ScProject</strong>
-                <span class="type">class</span>
-                        <ul>    
-                                                                            <li>
-                                        
-                            <strong>$data</strong>
-                <span class="type">property</span>
-                        <ul>    
-                                                </ul>
-                                </li>
-                                                        <li>
-                                        
-                            <strong>ScProject()</strong>
-                <span class="type">function</span>
-                        <ul>    
-                                                </ul>
-                                </li>
-                                                        <li>
-                                        
-                            <strong>build()</strong>
-                <span class="type">function</span>
-                        <ul>    
-                                                </ul>
-                                </li>
-                                                        <li>
-                                        
-                            <strong>$_ancestry</strong>
-                <span class="type">property</span>
-                        <ul>    
-                                                </ul>
-                                </li>
-                                                        <li>
-                                        
-                            <strong>register()</strong>
-                <span class="type">function</span>
-                        <ul>    
-                                                </ul>
-                                </li>
-                            </ul>
-                                </li>
-                                                        <li>
-                                        
-                            <strong>Scribe</strong>
-                <span class="type">class</span>
-                        <ul>    
-                                                                            <li>
-                                        
-                            <strong>$_config</strong>
-                <span class="type">property</span>
-                        <ul>    
-                                                </ul>
-                                </li>
-                                                        <li>
-                                        
-                            <strong>Scribe()</strong>
-                <span class="type">function</span>
-                        <ul>    
-                                                </ul>
-                                </li>
-                                                        <li>
-                                        
-                            <strong>go()</strong>
-                <span class="type">function</span>
-                        <ul>    
-                                                </ul>
-                                </li>
-                                                        <li>
-                                        
-                            <strong>error()</strong>
-                <span class="type">function</span>
-                        <ul>    
-                                                </ul>
-                                </li>
-                                                        <li>
-                                        
-                            <strong>notice()</strong>
-                <span class="type">function</span>
-                        <ul>    
-                                                </ul>
-                                </li>
-                            </ul>
-                                </li>
-                                                        <li>
-                                        
-                            <strong>DefaultReader</strong>
-                <span class="type">class</span>
-                        <ul>    
-                                                                            <li>
-                                        
-                            <strong>parse()</strong>
-                <span class="type">function</span>
-                        <ul>    
-                                                </ul>
-                                </li>
-                            </ul>
-                                </li>
                             </ul>
                     </div>
-        
+    <div id="all">
                     <div class="block-c"><div class="block block-class blocktype-class">
+            <a name="class.ScBlock" class="anchor"></a>
                 <!--<p class="type">Class</p>-->
                 <h2><span>ScBlock</span></h2>
                 <div class="brief"><p>A block</p>
@@ -154,7 +22,8 @@
                 <div class="description">
 </div>
             </div></div>
-                    <div class="block-c"><div class="block block-property blocktype-property">
+                    <div class="block-c"><div class="block block-property blocktype-var">
+            <a name="var.typename" class="anchor"></a>
                 <!--<p class="type">Property</p>-->
                 <h2><span>$typename</span></h2>
                 <div class="brief"><p>The name of the type as defined in the first line</p>
@@ -162,7 +31,8 @@
                 <div class="description">
 </div>
             </div></div>
-                    <div class="block-c"><div class="block block-property blocktype-property">
+                    <div class="block-c"><div class="block block-property blocktype-var">
+            <a name="var.type" class="anchor"></a>
                 <!--<p class="type">Property</p>-->
                 <h2><span>$type</span></h2>
                 <div class="brief"><p>The proper name of the type</p>
@@ -170,7 +40,61 @@
                 <div class="description">
 </div>
             </div></div>
+                    <div class="block-c"><div class="block block-property blocktype-var">
+            <a name="var.index" class="anchor"></a>
+                <!--<p class="type">Property</p>-->
+                <h2><span>$_index</span></h2>
+                <div class="brief"><p>Reference to it's location in the index tree.</p>
+</div>
+                <div class="description">
+</div>
+            </div></div>
+                    <div class="block-c"><div class="block block-property blocktype-var">
+            <a name="var.parent" class="anchor"></a>
+                <!--<p class="type">Property</p>-->
+                <h2><span>$_parent</span></h2>
+                <div class="brief"><p>Reference to the parent in the index tree.</p>
+</div>
+                <div class="description">
+</div>
+            </div></div>
+                    <div class="block-c"><div class="block block-function blocktype-function">
+            <a name="function.registerChild" class="anchor"></a>
+                <!--<p class="type">Function</p>-->
+                <h2><span>registerChild()</span></h2>
+                <div class="brief"><p>Registers a child block</p>
+</div>
+                <div class="description"><h3><span>Usage</span></h3>
+
+<blockquote>
+  <p>$this->registerChild()</p>
+</blockquote>
+
+<h3><span>Returns</span></h3>
+
+<p>Unspecified.</p>
+</div>
+            </div></div>
+                    <div class="block-c"><div class="block block-function blocktype-function">
+            <a name="function.factory" class="anchor"></a>
+                <!--<p class="type">Function</p>-->
+                <h2><span>factory()</span></h2>
+                <div class="brief"><p>Creates an ScBlock instance with the right class as needed.
+[Static]</p>
+</div>
+                <div class="description"><h3><span>Usage</span></h3>
+
+<blockquote>
+  <p>ScBlock::factory()</p>
+</blockquote>
+
+<h3><span>Returns</span></h3>
+
+<p>Unspecified.</p>
+</div>
+            </div></div>
                     <div class="block-c"><div class="block block-class blocktype-class">
+            <a name="class.ScReader" class="anchor"></a>
                 <!--<p class="type">Class</p>-->
                 <h2><span>ScReader</span></h2>
                 <div class="brief"><p>Yeah!</p>
@@ -179,6 +103,7 @@
 </div>
             </div></div>
                     <div class="block-c"><div class="block block-constructor blocktype-function">
+            <a name="function.ScReader" class="anchor"></a>
                 <!--<p class="type">Constructor</p>-->
                 <h2><span>ScReader()</span></h2>
                 <div class="brief"><p>Constructor. Called by Scribe::Scribe()</p>
@@ -187,6 +112,7 @@
 </div>
             </div></div>
                     <div class="block-c"><div class="block block-class blocktype-class">
+            <a name="class.ScProject" class="anchor"></a>
                 <!--<p class="type">Class</p>-->
                 <h2><span>ScProject</span></h2>
                 <div class="brief"><p>The project.</p>
@@ -197,7 +123,26 @@
   constructor.</p>
 </div>
             </div></div>
-                    <div class="block-c"><div class="block block-property blocktype-property">
+                    <div class="block-c"><div class="block block-property blocktype-var">
+            <a name="var.name" class="anchor"></a>
+                <!--<p class="type">Property</p>-->
+                <h2><span>$name</span></h2>
+                <div class="brief"><p>The name of the project.</p>
+</div>
+                <div class="description">
+</div>
+            </div></div>
+                    <div class="block-c"><div class="block block-property blocktype-var">
+            <a name="var.ancestry" class="anchor"></a>
+                <!--<p class="type">Property</p>-->
+                <h2><span>$_ancestry</span></h2>
+                <div class="brief"><p>Temporary property.</p>
+</div>
+                <div class="description"><p>Used by <code>register()</code>.</p>
+</div>
+            </div></div>
+                    <div class="block-c"><div class="block block-property blocktype-var">
+            <a name="var.data" class="anchor"></a>
                 <!--<p class="type">Property</p>-->
                 <h2><span>$data</span></h2>
                 <div class="brief"><p>The data.</p>
@@ -241,6 +186,7 @@
 </div>
             </div></div>
                     <div class="block-c"><div class="block block-function blocktype-function">
+            <a name="function.ScProject" class="anchor"></a>
                 <!--<p class="type">Function</p>-->
                 <h2><span>ScProject()</span></h2>
                 <div class="brief"><p>The constructor.</p>
@@ -254,6 +200,7 @@
 </div>
             </div></div>
                     <div class="block-c"><div class="block block-function blocktype-function">
+            <a name="function.build" class="anchor"></a>
                 <!--<p class="type">Function</p>-->
                 <h2><span>build()</span></h2>
                 <div class="brief"><p>Builds the project.</p>
@@ -277,15 +224,8 @@
 </ol>
 </div>
             </div></div>
-                    <div class="block-c"><div class="block block-property blocktype-property">
-                <!--<p class="type">Property</p>-->
-                <h2><span>$_ancestry</span></h2>
-                <div class="brief"><p>Temporary property.</p>
-</div>
-                <div class="description"><p>Used by register.</p>
-</div>
-            </div></div>
                     <div class="block-c"><div class="block block-function blocktype-function">
+            <a name="function.register" class="anchor"></a>
                 <!--<p class="type">Function</p>-->
                 <h2><span>register()</span></h2>
                 <div class="brief"><p>Registers a block.</p>
@@ -293,9 +233,15 @@
                 <div class="description"><h3><span>Description</span></h3>
 
 <p>This is called by readers.</p>
+
+<p>Sample input would be something like below.</p>
+
+<pre><code>"Function: test()\nDescription.\n\nEtc etc"
+</code></pre>
 </div>
             </div></div>
                     <div class="block-c"><div class="block block-class blocktype-class">
+            <a name="class.Scribe" class="anchor"></a>
                 <!--<p class="type">Class</p>-->
                 <h2><span>Scribe</span></h2>
                 <div class="brief"><p>Yeah.</p>
@@ -303,7 +249,8 @@
                 <div class="description">
 </div>
             </div></div>
-                    <div class="block-c"><div class="block block-property blocktype-property">
+                    <div class="block-c"><div class="block block-property blocktype-var">
+            <a name="var.config" class="anchor"></a>
                 <!--<p class="type">Property</p>-->
                 <h2><span>$_config</span></h2>
                 <div class="brief"><p>Raw data from the scribe.conf file (after being YAML-parsed).</p>
@@ -312,6 +259,7 @@
 </div>
             </div></div>
                     <div class="block-c"><div class="block block-function blocktype-function">
+            <a name="function.Scribe" class="anchor"></a>
                 <!--<p class="type">Function</p>-->
                 <h2><span>Scribe()</span></h2>
                 <div class="brief"><p>Constructor.</p>
@@ -320,6 +268,7 @@
 </div>
             </div></div>
                     <div class="block-c"><div class="block block-function blocktype-function">
+            <a name="function.go" class="anchor"></a>
                 <!--<p class="type">Function</p>-->
                 <h2><span>go()</span></h2>
                 <div class="brief"><p>Starts the build process.</p>
@@ -330,6 +279,7 @@
 </div>
             </div></div>
                     <div class="block-c"><div class="block block-function blocktype-function">
+            <a name="function.error" class="anchor"></a>
                 <!--<p class="type">Function</p>-->
                 <h2><span>error()</span></h2>
                 <div class="brief"><p>Spits out an error and dies.</p>
@@ -346,6 +296,7 @@ $Sc-&gt;error("Printer on fire!");
 </div>
             </div></div>
                     <div class="block-c"><div class="block block-function blocktype-function">
+            <a name="function.notice" class="anchor"></a>
                 <!--<p class="type">Function</p>-->
                 <h2><span>notice()</span></h2>
                 <div class="brief"><p>Test</p>
@@ -354,6 +305,7 @@ $Sc-&gt;error("Printer on fire!");
 </div>
             </div></div>
                     <div class="block-c"><div class="block block-class blocktype-class">
+            <a name="class.DefaultReader" class="anchor"></a>
                 <!--<p class="type">Class</p>-->
                 <h2><span>DefaultReader</span></h2>
                 <div class="brief"><p>The default reader.</p>
@@ -362,6 +314,7 @@ $Sc-&gt;error("Printer on fire!");
 </div>
             </div></div>
                     <div class="block-c"><div class="block block-function blocktype-function">
+            <a name="function.parse" class="anchor"></a>
                 <!--<p class="type">Function</p>-->
                 <h2><span>parse()</span></h2>
                 <div class="brief"><p>Parses a file.</p>
@@ -369,6 +322,15 @@ $Sc-&gt;error("Printer on fire!");
                 <div class="description"><h3><span>Description</span></h3>
 
 <p>Called by ScProject::build().</p>
+</div>
+            </div></div>
+                    <div class="block-c"><div class="block block-class blocktype-class">
+            <a name="class.TsClass" class="anchor"></a>
+                <!--<p class="type">Class</p>-->
+                <h2><span>TsClass</span></h2>
+                <div class="brief"><p>Test</p>
+</div>
+                <div class="description">
 </div>
             </div></div>
             </div>

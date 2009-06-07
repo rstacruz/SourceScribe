@@ -29,6 +29,9 @@ class ScBlock
     // Reference to the parent in the index tree.
     var $_parent;
     
+    // Property: $_children
+    var $_children = array();
+    
     function ScBlock($str)
     {
         global $Sc;
@@ -142,5 +145,80 @@ class ScBlock
         $str = preg_replace('~(<h[1-6]>)(.*?)(</h[1-6]>)~s', '\\1<span>\\2</span>\\3', $str);
         
         return $str;
+    }
+    
+    /*
+     * Function: registerChild()
+     * Registers a block as a child of this block.
+     *
+     * Usage:
+     * > $block->registerChild($child)
+     * 
+     * Parameters:
+     *   $child   - (ScBlock) The child.
+     * 
+     * Description:
+     *   This is called by `ScProject::register()`.
+     *
+     * Returns:
+     *   Nothing.
+     */
+
+    function registerChild(&$child_block)
+    {
+        $this->_children[] =& $child_block;
+        $child_block->_parent =& $this;
+        return;
+    }
+    
+    /*
+     * Function: factory()
+     * Creates an ScBlock instance with the right class as needed.
+     * [Static]
+     *
+     * Usage:
+     * > ScBlock::factory()
+     *
+     * Returns:
+     *   Unspecified.
+     * 
+     */
+
+    function& factory($input)
+    {
+        $return = new ScBlock($input);
+        return $return;
+    }
+    
+    /*
+     * Function: getChildren()
+     * Returns the list of children.
+     *
+     * Usage:
+     * > $block->getChildren()
+     *
+     * Returns:
+     *   An array of ScBlock instances.
+     */
+
+    function& getChildren()
+    {
+        return $this->_children;
+    }
+    
+    /*
+     * Function: getID()
+     * Returns the unique ID string for this node.
+     *
+     * Usage:
+     * > $this->getID()
+     *
+     * Returns:
+     *   Unspecified.
+     */
+
+    function getID()
+    {
+        return $this->id;
     }
 }
