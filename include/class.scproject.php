@@ -104,8 +104,8 @@ class ScProject
     {
         $this->Sc =& $Sc;
         // Get the CWD.
-        $this->cwd = getcwd();
-        
+        $this->cwd = $Sc->cwd;
+
         // Load config
         foreach ($Sc->_config['project'] as $k => $v)
             { $this->{$k} = $v; }
@@ -120,11 +120,11 @@ class ScProject
         {
             // Try as a relative path
             if (!is_dir($this->src_path[$k]))
-                { $this->src_path = realpath($this->cwd . DS . $this->src_path); } 
-                
+                { $this->src_path[$k] = ($this->cwd . DS . $path); } 
+            
             // If invalid, die
             if (!is_dir($this->src_path[$k]))
-                { return $Sc->error('src_path is invalid: ' . $path); }
+                { return $Sc->error('src_path is invalid: "' . $path . '"'); }
         }
     }
     

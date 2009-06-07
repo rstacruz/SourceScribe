@@ -10,8 +10,8 @@ class DefaultReader extends ScReader
      * Function: parse()
      * Parses a file.
      * 
-     * Description:
-     *   Called by ScProject::build().
+     * References:
+     *   Called by [[ScProject::build()]] on every file in the project.
      */
     function parse($path, $project)
     {

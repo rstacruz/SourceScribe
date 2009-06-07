@@ -32,15 +32,41 @@ class ScBlock
     // Read only
     var $_id = null;
     
-    // Property: $_index
-    // Reference to it's location in the index tree.
-    var $_index;
-    
-    // Property: $_parent
-    // Reference to the parent in the index tree.
+    /*
+     * Property: $_parent
+     * Reference to the parent in the index tree.
+     *
+     * Description:
+     *   This is a private variable only used by the `ScBlock` class.
+     *
+     *   - To get the parent of the block, use [[getParent()]].
+     *   - To register a block as a child of another block,
+     *     use [[registerChild()]].
+     * 
+     * See also:
+     *  - [[getParent()]]
+     *  - [[getChildren()]]
+     *  - [[registerChild()]]
+     */
     var $_parent;
     
-    // Property: $_children
+    /*
+     * Property: $_children
+     *   An array of references to `ScBlock` instances that are the children of
+     *   the current block.
+     *
+     * Description:
+     *   This is a private variable only used by the `ScBlock` class.
+     *
+     *   - To get the children of the block, use [[getChildren()]].
+     *   - To register a block as a child of another block,
+     *     use [[registerChild()]].
+     * 
+     * See also:
+     *  - [[getParent()]]
+     *  - [[getChildren()]]
+     *  - [[registerChild()]]
+     */
     var $_children = array();
     
     // ========================================================================

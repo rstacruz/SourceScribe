@@ -58,12 +58,6 @@ class Scribe
                 'page' => TRUE,
                 'short' => '',
             ),
-            /*'group' => array(
-                'page' => FALSE,
-                'has_brief' => TRUE,
-                'starts_group' => TRUE,
-                'ends_group' => array('group')
-            ),*/
         ),
         
         'file_specs' => array(
@@ -86,13 +80,15 @@ class Scribe
     function Scribe()
     {
         $this->cwd = getcwd();
-        $this->config_file = $this->cwd . DS . 'sourcescribe.conf';
+        $this->config_file = $this->findConfigFile();
         
         // Die if no config
         if (!is_file($this->config_file)) {
             $this->error('No config file found');
             return;
         }
+        
+        $this->cwd = dirname($this->config_file);
         $this->_config = yaml($this->config_file);
         
         if ( (!is_array($this->_config)) ||
@@ -107,6 +103,36 @@ class Scribe
         $this->Outputs['html']    = new HtmlOutput($this);
     }
     
+    /*
+     * Function: findConfigFile()
+     * Tries to find the configuration file.
+     *
+     * Usage:
+     *     $this->findConfigFile()
+     *
+     * Returns:
+     *   The configuration file as a string if found, otherwise an empty string.
+     * 
+     * References:
+     *   Used by [[Scribe::Scribe()]].
+     */
+
+    function findConfigFile()
+    {
+        $names = array('sourcescribe.conf', 'scribe.conf', 'ss.conf');
+        $path = explode(DS, realpath($this->cwd));
+        for ($i = count($path); $i >= 1; --$i)
+        {
+            $current_path = implode(DS, array_slice($path, 0, $i));
+            foreach ($names as $name)
+            {
+                if (is_file($current_path . DS . $name))
+                    { return realpath($current_path . DS . $name); }
+            }
+        }
+        
+        return '';
+    }
     /*
      * Function: go()
      * Starts the build process.
