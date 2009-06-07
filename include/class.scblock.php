@@ -200,12 +200,12 @@ class ScBlock
     }
     
     /*
-     * Function: getPreContent()
+     * Function: getPostContent()
      * Virtual function that lets subclasses make content before the content.
      * 
      * See also:
-     *  - getContent()
-     *  - getPreContent()
+     *  - [[getContent()]]
+     *  - [[getPreContent()]]
      */
      
     function getPostContent()
@@ -457,8 +457,11 @@ class ScBlock
      * To be documented.
      *
      * Usage:
-     * > $this->getMemberLists()
+     *     $this->getMemberLists()
      *
+     * Description:
+     *   Used by outputs (...)
+     * 
      * Returns:
      *   Unspecified.
      */
