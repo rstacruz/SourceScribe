@@ -1,12 +1,15 @@
 <?php
-
 /*
  * Class: ScProject
  * The project.
  * 
  * Description:
- *   This is a sub-singleton of class Scribe, and is initialized on it's
- *   constructor.
+ *   This is a sub-singleton of class [[Scribe]], and is initialized on it's
+ *   constructor. It may be accessed through the main singleton (the `$Sc`
+ *   global variable) using something like the example below.
+ * 
+ *      global $Sc;
+ *      echo "The project's name is:" . $Sc->Project->getName();
  */
 
 class ScProject
@@ -43,57 +46,58 @@ class ScProject
      * Property: $_ancestry
      * Temporary property.
      * 
-     * Used by `register()`.
+     * Used by [[register()]].
      */
      
     var $__ancestry = array();
     
     /*
      * Property: $data
-     * The data.
+     * Storage for all blocks associated with the project.
      *
+     * Sample data:
+     *   
+     *     $data = array
+     *     (
+     *       'blocks' => array( ScBlock, ScBlock, ScBlock, ... ),
+     *       'tree'   => array( ScBlock, ScBlock, ScBlock, ... ),
+     *       'home'   => ScBlock
+     *     );
+     * 
      * Description:
      *   This is an associative array with the following keys below.
      *
-     *   blocks   - Array. The list of blocks.
-     *   index    - Array. The index
-     *
-     * Blocks:
-     *   The `blocks` list is an associative array of `AeBlock` instances.
-     *   It is populated by the readers.
-     *
-     * Index:
-     *   LOL, I don't know yet.
+     *   blocks   - Array of [[ScBlock]]s. The list of blocks.
+     *   home     - [[ScBlock]] instance. the main root block (i.e., home page)
+     *   tree     - Array of [[ScBlock]]s. The list of "root" blocks
      * 
-     * Example data:
-     *   Here's a possible data:
-     * 
-     *     $data = array
-     *     (
-     *       'blocks' => array(
-     *         'id1' => ScBlock,
-     *         'id2' => ScBlock,
-     *         ...
-     *       ),
-     *       'index' => array(
-     *       ),
-     *     );
+     * Usage:
+     *   - To add blocks, use [[register()]].
      */
     
-    var $data = array(
+    var $data = array
+    (
         'blocks' => array(),
-        'index' => array()
+        'tree'   => array(),
+        'home'   => NULL
     );
     
     /*
      * Function: ScProject()
      * The constructor.
      * 
-     * Description:
-     *   This is called by Scribe::Scribe(). This is responsible for checking
-     *   project configuration and inspecting the source paths.
+     * Usage:
+     *     Don't
      * 
-     *   This will not call build(). It is called separately.
+     * Description:
+     *   This ctor is responsible for checking project configuration and
+     *   inspecting the source paths.
+     * 
+     *   This will not call [[build()]]. It is issued separately by the
+     *   bootstrapper.
+     * 
+     * References:
+     *   This is called on startup via [[Scribe::Scribe()]].
      */
      
     function ScProject(&$Sc)
@@ -135,7 +139,7 @@ class ScProject
      *   1. The source path is scanned for files recursively, and it'll
      *      delegate each file to it's respective `reader` to be read.
      * 
-     *   2. These readers will parse out the files and call `register()` when
+     *   2. These readers will parse out the files and call [[register()]] when
      *      it finds a block.
      *   
      *   3. It checks the outputs to be made (defined in the configuration
@@ -144,6 +148,11 @@ class ScProject
      * 
      *   This is called when the user types `ss build` in the command line
      *   (or just plain `ss` as it's the default action).
+     * 
+     * References:
+     *   This is called by the default action of [[class Scribe]],
+     *   namely [[Scribe::do_build()]]. Being the default action, this fires
+     *   up when the user types `ss` in the command line.
      */
      
     function build()
@@ -278,10 +287,10 @@ class ScProject
      * Returns the name of the project.
      *
      * Usage:
-     * > $this->getName()
+     *      $this->getName()
      *
      * Returns:
-     *   Unspecified.
+     *   The name of the project as defined in the configuration file.
      */
 
     function getName()

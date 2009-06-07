@@ -1,5 +1,5 @@
 <?php
-    $title = $project->getName();
+    $title = $project->getName() . ' - ' . $blocks[0]->getTitle();
     include dirname(__FILE__) . '/header.php';
 ?>
     <div id="index">

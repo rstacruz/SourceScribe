@@ -146,12 +146,12 @@ class ScBlock
      * 
      * Description:
      *   This also consults the virtual (overridable) functions
-     *   `getPreContent()` and `getPostContent()` before returning the final
-     *   output.
+     *   [[getPreContent()]] and [[getPostContent()]] before returning the
+     *   final output.
      * 
      * See also:
-     *  - getPreContent()
-     *  - getPostContent()
+     *  - [[getPreContent()]]
+     *  - [[getPostContent()]]
      */
      
     function getContent()
@@ -164,8 +164,8 @@ class ScBlock
      * Virtual function that lets subclasses make content before the content.
      * 
      * See also:
-     *  - getContent()
-     *  - getPostContent()
+     *  - [[getContent()]]
+     *  - [[getPostContent()]]
      */
      
     function getPreContent()
@@ -225,7 +225,8 @@ class ScBlock
     
     /*
      * Function: getTypeData()
-     * Returns the data for the type in the class, as defined in `$Sc->Options`.
+     *   Returns the data for the type in the class, as defined
+     *   in [[Scribe::$Options]].
      */
      
     function getTypeData($p = NULL)
@@ -284,14 +285,28 @@ class ScBlock
             "\n## \\1\n\n", $str);
             
         // Convert to dl/dt/dd
-        $str = preg_replace('~ *([a-zA-Z0-9_\$\.\*]+) +- (.*?)([\\r\\n$])~s',
+        $str = preg_replace('~ *([a-zA-Z0-9`_\$\.\*]+) +- (.*?)([\\r\\n$])~s',
             "\n\\1\n: \\2\\3", $str);
+        
+        // Convert [[]] links
+        $str = preg_replace_callback('~\[\[(.*?)\]\]~s',
+                 array($this, '_toHTMLLinkCallback'), $str);
         
         // return '<pre>' . htmlentities($str) . '</pre>';
         $str = markdown($str);
-        $str = preg_replace('~(<h[1-6]>)(.*?)(</h[1-6]>)~s', '\\1<span>\\2</span>\\3', $str);
+        
+        // Wrap heading texts inside span elements
+        $str = preg_replace('~(<h[1-6]>)(.*?)(</h[1-6]>)~s',
+               '\\1<span>\\2</span>\\3', $str);
         
         return $str;
+    }
+    
+    function _toHTMLLinkCallback($m)
+    {
+        // Parameter looks like:
+        // array("[[text]]", "text")
+        return "<a href='#'>$m[1]</a>";
     }
     
     /*
@@ -305,7 +320,7 @@ class ScBlock
      *   $child   - (ScBlock) The child.
      * 
      * Description:
-     *   This is called by `ScProject::register()`.
+     *   This is called by [[ScProject::register()]].
      *
      * Returns:
      *   Nothing.
@@ -328,10 +343,10 @@ class ScBlock
      * Returns the list of children.
      *
      * Usage:
-     * > $block->getChildren()
+     *     Array $block->getChildren()
      *
      * Returns:
-     *   An array of ScBlock instances.
+     *   An array of [[ScBlock]] instances.
      */
 
     function& getChildren()
@@ -344,10 +359,10 @@ class ScBlock
      * Returns the parent node.
      *
      * Usage:
-     * > $block->getParent()
+     *     ScBlock $block->getParent()
      *
      * Returns:
-     *   The parent (ScBlock instance).
+     *   The parent ([[ScBlock]] instance).
      */
 
     function& getParent()
@@ -446,5 +461,10 @@ class ScClassBlock extends ScBlock
     function getBrief()
     {
         return parent::getBrief();
+    }
+    
+    function getTitle()
+    {
+        return 'Class ' . $this->title;
     }
 }

@@ -7,7 +7,7 @@
         <?php if (!is_callable('show_content_index')) { function show_content_index($node) { ?>
             
             <?php if (is_callable(array($node, 'getTitle'))) { ?>
-                <a href="<?php echo 's/'.$node->getID().'.html'; ?>"><strong><?php echo $node->getTitle(); ?></strong></a>
+                <a href="<?php echo ''.$node->getID().'.html'; ?>"><strong><?php echo $node->getTitle(); ?></strong></a>
                 <span class="type"><?php echo strtolower($node->typename); ?></span>
             <?php } ?>
             <?php $children = ((is_callable(array($node, 'getChildren'))) ? ($node->getChildren()) : ((array) $node)); ?>

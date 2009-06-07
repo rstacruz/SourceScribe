@@ -19,6 +19,10 @@ class HtmlOutput extends ScOutput
         if (!is_dir($template_path))
             { $Sc->error("Can't find template " . $output_options['template']); }
         
+        // Clear the folder
+        foreach(glob("$path/*") as $file)
+            { @unlink($file); }
+                
         // Make the assets folder
         foreach (array('assets', 's') as $folder)
         {
@@ -91,12 +95,12 @@ class HtmlOutput extends ScOutput
         global $Sc;
         foreach ($project->data['blocks'] as $block)
         {
-            $index_file = $path . '/s/' . $block->getID() . '.html';
+            $index_file = $path . '/' . $block->getID() . '.html';
             ob_start();
         
             // Template
             $blocks = array($block);
-            $assets_path = '../assets/';
+            $assets_path = 'assets/';
             $id = $block->getID();
             if ($block->hasParent())
             {
