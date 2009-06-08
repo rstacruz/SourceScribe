@@ -34,47 +34,70 @@ class ScProject
     /*
      * Property: $name
      * The name of the project.
+     * 
+     * Description:
+     *   This is private property. To retrieve the name, use `getName()`.
+     *   The name of the block is gathered from the block
+     *   content and therefore should not be set by hand.
+     * 
+     * [Grouped under "Private properties"]
      */
      
     var $name;
     
     /*
-     * Group: Temporary properties
-     */
-     
-    /*
-     * Property: $_ancestry
+     * Property: $__ancestry
      * Temporary property.
      * 
-     * Used by [[register()]].
+     * Description:
+     *   This is a temporary property used by [[register()]].
+     * 
+     * [Grouped under "Private properties"]
      */
      
     var $__ancestry = array();
     
-    /*
-     * Property: $data
-     * Storage for all blocks associated with the project.
-     *
-     * Sample data:
-     *   
-     *     $data = array
-     *     (
-     *       'blocks' => array( ScBlock, ScBlock, ScBlock, ... ),
-     *       'tree'   => array( ScBlock, ScBlock, ScBlock, ... ),
-     *       'home'   => ScBlock
-     *     );
+    /* Property: $data['blocks']
+     * All the blocks.
      * 
      * Description:
-     *   This is an associative array with the following keys below.
-     *
-     *   blocks   - Array of [[ScBlock]]s. The list of blocks.
-     *   home     - [[ScBlock]] instance. the main root block (i.e., home page)
-     *   tree     - Array of [[ScBlock]]s. The list of "root" blocks
+     *   This is an array of [[ScBlock]]s. It lists all the blocks in
+     *   the project.
      * 
-     * Usage:
-     *   - To add blocks, use [[register()]].
+     *   This is a read-only property. To add blocks, use [[register()]].
+     * 
+     * Sample data:
+     *     array( ScBlock, ScBlock, ScBlock, ... )
+     * 
+     * [Read-only, grouped under "Data properties"]
+     */
+     
+    /* Property: $data['home']
+     * The home page.
+     * 
+     * Description:
+     *   This is an [[ScBlock]] instance reference to the main root node,
+     *   the home page.
+     * 
+     *   This is a read-only property. To add blocks, use [[register()]].
+     * 
+     * [Read-only, grouped under "Data properties"]
      */
     
+    /* Property: $data['tree']
+     * The list of second-level blocks.
+     * 
+     * Description:
+     *   This lists all blocks that are children of the home page. Synonymous
+     *   to `$data['home']->getChildren()`.
+     * 
+     *   This is a read-only property. To add blocks, use [[register()]].
+     * 
+     * Sample data:
+     *     array( ScBlock, ScBlock, ScBlock, ... )
+     * 
+     * [Read-only, grouped under "Data properties"]
+     */
     var $data = array
     (
         'blocks' => array(),
@@ -98,6 +121,8 @@ class ScProject
      * 
      * References:
      *   This is called on startup via [[Scribe::Scribe()]].
+     * 
+     * [Grouped under "Constructor"]
      */
      
     function ScProject(&$Sc)

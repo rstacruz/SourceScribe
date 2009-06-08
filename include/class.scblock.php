@@ -7,10 +7,9 @@
 
 class ScBlock
 {
-    // ========================================================================
-    // Private properties
-    // [All below are grouped under "Private properties"]
-    // ========================================================================
+    /* ======================================================================
+     * Private properties
+     * ====================================================================== */
      
     var $_data;
     var $valid = FALSE;
@@ -116,12 +115,13 @@ class ScBlock
      
     // ========================================================================
     // Constructor
-    // [All below are grouped under "Constructor"]
     // ========================================================================
     
     /*
      * Constructor: ScBlock()
      * Yes.
+     * 
+     * [In group "Constructor"]
      */
      
     function ScBlock($str)
@@ -226,7 +226,12 @@ class ScBlock
         $valid_tags = array_keys($Sc->Options['tags']);
         foreach ($tag_list as $tag)
         {
-            preg_match('~^(?:in )?group(?:ed(?: under)?)? (?:")?(.*?)(?:")?$~i',
+            // Match:
+            // - [In [the]] group X
+            // - [[filed] under [the]] group X
+            // - Group[ed [under]] X
+            // - Group X
+            preg_match('~^(?:in (?:the )?|(?:(?:filed )?under (?:the )?))?group(?:ed(?: under)?)? (?:")?(.*?)(?:")?$~i',
               $tag, $m);
             if (count($m) > 0)
             {

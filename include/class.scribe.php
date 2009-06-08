@@ -5,23 +5,57 @@
 class Scribe
 {
     var $Project;
+    /*
+     * Property: $Readers
+     * Key/value pairs of file reader drivers.
+     * 
+     * Description:
+     *   Uhm
+     * 
+     * [Read-only]
+     */
     var $Readers = array();
+    
+    /*
+     * Property: $Outputs
+     * Key/value pairs of output drivers.
+     * 
+     * Description:
+     *   - To register an output driver to use,
+     *     use [[loadOutputDriver()]].
+     * 
+     * [Read-only]
+     */
     var $Outputs = array();
     
     /* Property: $Options['type_keywords']
      * Yay
+     * 
+     * [Grouped under "Options"]
      */
+     
     /* Property: $Options['block_types']
      * Yay
+     * 
+     * [Grouped under "Options"]
      */
+     
     /* Property: $Options['file_specs']
      * Yay
+     * 
+     * [Grouped under "Options"]
      */
+     
     /* Property: $Options['valid_tags']
      * Yay
+     * 
+     * [Grouped under "Options"]
      */
+     
     /* Property: $Options['tags']
      * Auto-set
+     * 
+     * [Grouped under "Options"]
      */
     var $Options = array
     (
@@ -126,7 +160,7 @@ class Scribe
         
         $this->Project = new ScProject($this);
         $this->Readers['default'] = new DefaultReader($this);
-        $this->Outputs['html']    = new HtmlOutput($this);
+        $this->loadOutputDriver('html');
         
         // Initialize $Options['tags']
         $this->Options['tags'] = array();
@@ -134,6 +168,32 @@ class Scribe
             { $this->Options['tags'][strtolower($v)] = strtolower($v); }
         foreach ($this->Options['tag_thesaurus'] as $k => $v)
             { $this->Options['tags'][strtolower($k)] = strtolower($v); }
+    }
+    
+    /*
+     * Function: loadOutputDriver()
+     * Loads an output driver.
+     *
+     * Usage:
+     *     $this->loadOutput($driver[, $use])
+     *
+     * Returns:
+     *   TRUE on success, FALSE on failure.
+     */
+
+    function loadOutputDriver($driver, $use = TRUE)
+    {
+        // TODO: BP: This should make sure $driver is sanitized
+        require_once SCRIBE_PATH . DS . 'include' . DS . "output.$driver.php";
+        $classname = "{$driver}Output";
+
+        if (!class_exists($classname))
+            { return FALSE; }
+            
+        if ($use)
+            { $this->Outputs[$driver] = new $classname($this); }
+        
+        return TRUE;
     }
     
     /*
