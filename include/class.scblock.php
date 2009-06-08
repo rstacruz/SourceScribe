@@ -11,6 +11,8 @@ class ScBlock
      * Private properties
      * ====================================================================== */
      
+    var $Project;
+    
     var $_data;
     var $valid = FALSE;
     
@@ -124,7 +126,7 @@ class ScBlock
      * [In group "Constructor"]
      */
      
-    function ScBlock($str)
+    function ScBlock($str, &$Project)
     {
         if (is_callable(array($str, 'getID')))
         {
@@ -133,8 +135,8 @@ class ScBlock
             return;
         }
             
-        global $Sc;
-        
+        $this->Project =& $Project;
+
         // Get the lines
         $this->_data = $str;
         $lines = str_replace(array("\r\n","\r"), array("\n","\n"), $str);
@@ -154,10 +156,10 @@ class ScBlock
         $this->_lines = array_slice($this->_lines, 1);
         
         // Check: the first line has to have a *valid* type
-        if (!in_array($type_str, array_keys($Sc->Options['type_keywords'])))
+        if (!in_array($type_str, array_keys($Project->options['type_keywords'])))
             { return; }
         
-        $this->type = $Sc->Options['type_keywords'][$type_str];
+        $this->type = $Project->options['type_keywords'][$type_str];
         
         // Find the tag hash
         // TODO: 'All below'
@@ -221,9 +223,8 @@ class ScBlock
 
     function parseTag($tags)
     {
-        global $Sc;
         $tag_list = array_map('trim', explode(',', $tags));
-        $valid_tags = array_keys($Sc->Options['tags']);
+        $valid_tags = array_keys($this->Project->options['tags']);
         foreach ($tag_list as $tag)
         {
             // Match:
@@ -241,7 +242,7 @@ class ScBlock
              
             $tag = strtolower($tag);
             if (in_array($tag, $valid_tags))
-                { $this->_tags[] = $Sc->Options['tags'][$tag]; }
+                { $this->_tags[] = $this->Project->options['tags'][$tag]; }
         }
     }
     
@@ -306,12 +307,12 @@ class ScBlock
      * 
      */
 
-    function& factory($input)
+    function& factory($input, &$project)
     {
-        $return = new ScBlock($input);
+        $return = new ScBlock($input, $project);
         $classname = $return->getTypeData('block_class');
         if (!is_null($classname))
-            { $returnx = new $classname($return); return $returnx; }
+            { $returnx = new $classname($return, $project); return $returnx; }
         return $return;
     }
     
@@ -433,10 +434,10 @@ class ScBlock
     function getTypeData($p = NULL)
     {
         global $Sc;
-        if (!isset($Sc->Options['block_types'])) { return; }
-        if (!isset($Sc->Options['block_types'][(string) $this->type])) { return; }
+        if (!isset($this->Project->options['block_types'])) { return; }
+        if (!isset($this->Project->options['block_types'][(string) $this->type])) { return; }
         
-        $type = $Sc->Options['block_types'][(string) $this->type];
+        $type = $this->Project->options['block_types'][(string) $this->type];
         if (is_string($p)) {
             if (isset($type[$p])) { return $type[$p]; }
             else { return NULL; }

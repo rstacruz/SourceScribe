@@ -16,30 +16,7 @@ class Scribe
      */
     var $Readers = array();
     
-    /* Property: $Options['type_keywords']
-     * Yay
-     * 
-     * [Grouped under "Options"]
-     */
-     
-    /* Property: $Options['block_types']
-     * Yay
-     * 
-     * [Grouped under "Options"]
-     */
-     
-    /* Property: $Options['file_specs']
-     * Yay
-     * 
-     * [Grouped under "Options"]
-     */
-     
-    /* Property: $Options['tags']
-     * Auto-set
-     * 
-     * [Grouped under "Options"]
-     */
-    var $Options = array
+    var $defaults = array
     (
         'type_keywords' => array
         (
@@ -126,7 +103,7 @@ class Scribe
      * [In group "Constructor"]
      */
     function Scribe()
-    {
+    {   
         // Find config file
         $config_file = $this->findConfigFile();
         if ($config_file === FALSE)
@@ -237,7 +214,6 @@ class Scribe
     function do_version($args = array())
     {
         echo "SourceScribe\n";
-        print_r($args);
     }
     
     /*
@@ -275,22 +251,9 @@ class Scribe
      
     function loadState()
     {
-        foreach ($this->Project->output as $o)
-        {
-            if ((!isset($o['driver'])) ||
-                ($o['driver'] != 'serial')) { continue; }
-            
-            $path = $this->Project->cwd . ''
-                . DS . (((isset($o['path'])) && ($o['path'])) ?
-                         ($o['path']) : ('.'))
-                . DS . (((isset($o['filename'])) && ($o['filename'])) ?
-                         ($o['filename']) : ('.sourcescribe_index'));
-
-            global $ScX;
-            $ScX = unserialize(file_get_contents($path));
-            return $ScX;
-            break;
-        }
+        $path = $this->Project->cwd . DS . '.sourcescribe_index';
+        if (is_file($path)) { return unserialize(file_get_contents($path)); }
+        return;
     }
     
     /*
@@ -333,9 +296,9 @@ class Scribe
      
     function& _getDefaultOutput()
     {
-        $output_key = array_keys($this->Project->output);
+        $output_key = array_keys($this->Project->options['output']);
         $output_key = $output_key[0];
-        $output = $this->Project->output[$output_key];
+        $output = $this->Project->options['output'][$output_key];
         return $output;
     }
     

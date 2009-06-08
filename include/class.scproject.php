@@ -89,6 +89,59 @@ class ScProject
         'home'   => NULL
     );
     
+    /*
+     * Property: $options
+     * ...
+     */
+     
+    /* Property: $options['type_keywords']
+     * Yay
+     * 
+     * [Grouped under "Options"]
+     */
+     
+    /* Property: $options['block_types']
+     * Yay
+     * 
+     * [Grouped under "Options"]
+     */
+     
+    /* Property: $options['file_specs']
+     * Yay
+     * 
+     * [Grouped under "Options"]
+     */
+     
+    /* Property: $options['tags']
+     * Tags
+     * 
+     * [Grouped under "Options"]
+     */
+     
+     
+    /* Property: $Options['name']
+     * Yay
+     * 
+     * [Grouped under "Options"]
+     */
+     
+    /* Property: $Options['output']
+     * Yay
+     * 
+     * [Grouped under "Options"]
+     */
+     
+    /* Property: $Options['src_path']
+     * Yay
+     * 
+     * [Grouped under "Options"]
+     */
+     
+    /* Property: $Options['exclude']
+     * Exclusion list
+     * 
+     * [Grouped under "Options"]
+     */
     var $options = array();
     
     /*
@@ -128,6 +181,12 @@ class ScProject
             }
         }
         
+        // Migrate defaults
+        foreach (array('type_keywords', 'block_types', 'file_specs', 'tags') as $k)
+        {
+            $this->options[$k] = $Sc->defaults[$k];
+        }
+        
         // Load config
         foreach (array('name','output','src_path','exclude') as $k)
         {
@@ -139,6 +198,9 @@ class ScProject
         // Check source
         if (is_null($this->options['src_path']))
             { $this->options['src_path'] = $this->cwd; }
+            
+        // Snidely: Add the serial output to spit out the .sourcescribe_index file
+        $this->options['output']['serial'] = array('driver' => 'serial'); 
         
         // Check if all paths are valid
         $this->options['src_path'] = (array) $this->options['src_path'];
@@ -199,7 +261,7 @@ class ScProject
             foreach ($files as $file)
             {
                 // Find out which reader it's assigned to
-                foreach ($this->Sc->Options['file_specs']
+                foreach ($this->options['file_specs']
                          as $spec => $reader_name)
                 {
                     if (preg_match("~$spec~", $file) == 0) { continue; }
@@ -303,7 +365,7 @@ class ScProject
         global $Sc;
         
         if (is_string($block))
-            { $block = ScBlock::factory($block); }
+            { $block = ScBlock::factory($block, $this); }
         
         // Die if not valid
         if (!$block->valid) { return; }
