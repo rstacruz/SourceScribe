@@ -38,7 +38,7 @@ class HtmlOutput extends ScOutput
         }
         
         // Output
-        $this->out_full($path, $project, $template_path);
+        // $this->out_full($path, $project, $template_path);
         $this->out_content_index($path, $project, $template_path);
         $this->out_singles($path, $project, $template_path);
     }

@@ -38,6 +38,24 @@
                 <h2><span><?php echo $block->getTitle(); ?></span></h2>
                 <div class="brief"><?php echo $block->getBrief(); ?></div>
                 <div class="description"><?php echo str_replace(array('h2>'), array('h3>'), $block->getContent()); ?></div>
+                <?php if ($block->hasTags()) { ?>
+                <div class="description">
+                    <h3><span>Tags</span></h3>
+                    <ul>
+                        <?php foreach ($block->getTags() as $tag) { ?>
+                            <li><?php echo $tag; ?></li>
+                        <?php } ?>
+                    </ul>
+                </div>
+                <?php } ?>
+                <?php if (!is_null($block->getGroup())) { ?>
+                <div class="description">
+                    <h3><span>Group</span></h3>
+                    <ul>
+                        <li><?php echo $block->getGroup(); ?></li>
+                    </ul>
+                </div>
+                <?php } ?>
                 <div class="members">
                 <?php foreach ($block->getMemberLists() as $member_list) { ?>
                     <?php if (count($member_list['members']) == 0) { continue; } ?>

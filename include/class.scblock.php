@@ -32,6 +32,10 @@ class ScBlock
     // Read only
     var $_id = null;
     
+    // Property: $_group
+    // Read only
+    var $_group = NULL;
+    
     /*
      * Property: $_parent
      * Reference to the parent in the index tree.
@@ -69,6 +73,12 @@ class ScBlock
      */
     var $_children = array();
     
+    /*
+     * Property: $_tags
+     * Tags
+     */
+    var $_tags = array(); 
+     
     // ========================================================================
     // Constructor
     // [All below are grouped under "Constructor"]
@@ -114,6 +124,31 @@ class ScBlock
         
         $this->type = $Sc->Options['type_keywords'][$type_str];
         
+        // Find the tag hash
+        // TODO: 'All below'
+        foreach ($this->_lines as $i => $line)
+        {
+            preg_match('~^\[(.*?)\]$~', $line, $m);
+            if (count($m) > 0)
+            {
+                $match = $m[count($m)-1];
+                $this->parseTag($match);
+                array_splice($this->_lines, $i, 1, array());
+                break;
+            }
+        }
+        
+        // Trim trailing blank lines
+        foreach ($this->_lines as $i => $line)
+        {
+            // Remove empty lines
+            if (trim($_line) == '')
+                { array_splice($this->_lines, $i, 1, array()); }
+                
+            // Stop
+            else { break; }
+        }
+        
         // If it can have a brief
         if ((isset($this->type['has_brief'])) && ($this->type['has_brief']))
         {
@@ -137,6 +172,89 @@ class ScBlock
         
         unset($this->_lines);
         unset($this->_data);
+    }
+    
+    /*
+     * Function: parseTag()
+     * Parses a tag
+     *
+     * Usage:
+     *     $this->parseTag()
+     *
+     * Returns:
+     *   Unspecified.
+     * 
+     * References:
+     *   A delegate task of [[ScBlock()]].
+     */
+
+    function parseTag($tags)
+    {
+        global $Sc;
+        $tag_list = array_map('trim', explode(',', $tags));
+        $valid_tags = array_keys($Sc->Options['tags']);
+        foreach ($tag_list as $tag)
+        {
+            preg_match('~^(?:in )?group(?:ed(?: under)?)? (?:")?(.*?)(?:")?$~i',
+              $tag, $m);
+            if (count($m) > 0)
+            {
+                $this->_group = $m[count($m)-1];
+                continue;
+            }
+             
+            $tag = strtolower($tag);
+            if (in_array($tag, $valid_tags))
+                { echo "Good\n"; $this->_tags[] = $Sc->Options['tags'][$tag]; }
+        }
+    }
+    
+    /*
+     * Function: hasTags()
+     * Returns if it has tags
+     *
+     * Usage:
+     *     $this->hasTags()
+     *
+     * Returns:
+     *   Unspecified.
+     */
+
+    function hasTags($p = NULL)
+    {
+        return (count($this->_tags) > 0) ? TRUE : FALSE;
+    }
+    
+    /*
+     * Function: getTags()
+     * Returns the tags array
+     *
+     * Usage:
+     *     $this->getTags()
+     *
+     * Returns:
+     *   Unspecified.
+     */
+
+    function getTags()
+    {
+        return $this->_tags;
+    }
+    
+    /*
+     * Function: getGroup()
+     * Returns the group
+     *
+     * Usage:
+     *     $this->getGroup()
+     *
+     * Returns:
+     *   NULL of no group, otherwise a string of the group
+     */
+
+    function getGroup()
+    {
+        return $this->_group;
     }
     
     /*
@@ -401,7 +519,7 @@ class ScBlock
      * Checks if the current block has a parent.
      *
      * Usage:
-     * > $this->hasParent()
+     *     $this->hasParent()
      *
      * Returns:
      *   Unspecified.

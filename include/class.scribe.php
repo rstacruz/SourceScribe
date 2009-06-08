@@ -8,6 +8,21 @@ class Scribe
     var $Readers = array();
     var $Outputs = array();
     
+    /* Property: $Options['type_keywords']
+     * Yay
+     */
+    /* Property: $Options['block_types']
+     * Yay
+     */
+    /* Property: $Options['file_specs']
+     * Yay
+     */
+    /* Property: $Options['valid_tags']
+     * Yay
+     */
+    /* Property: $Options['tags']
+     * Auto-set
+     */
     var $Options = array
     (
         'type_keywords' => array
@@ -64,7 +79,13 @@ class Scribe
             '\.php$' => 'default',
             '\.inc$' => 'default',
             '\.doc.txt$' => 'default'
-        )
+        ),
+        
+        'valid_tags' => array(
+            'private', 'public', 'static', 'read-only'),
+            
+        'tag_thesaurus' => array(
+            'readonly' => 'read-only'),
     );
     
     var $config_file;
@@ -101,6 +122,13 @@ class Scribe
         $this->Project = new ScProject($this);
         $this->Readers['default'] = new DefaultReader($this);
         $this->Outputs['html']    = new HtmlOutput($this);
+        
+        // Initialize $Options['tags']
+        $this->Options['tags'] = array();
+        foreach ($this->Options['valid_tags'] as $v)
+            { $this->Options['tags'][strtolower($v)] = strtolower($v); }
+        foreach ($this->Options['tag_thesaurus'] as $k => $v)
+            { $this->Options['tags'][strtolower($k)] = strtolower($v); }
     }
     
     /*
@@ -151,6 +179,13 @@ class Scribe
         $this->{'do_'.$args[0]}(array_slice($args, 1));
     }
     
+    /*
+     * Function: do_build()
+     * [Grouped under "Controller actions"]
+     * 
+     * Does a build.
+     */
+     
     function do_build($args = array())
     {
         $this->Project->build();
