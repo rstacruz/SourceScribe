@@ -19,21 +19,42 @@ class ScBlock
     // The name of the type as defined in the first line
     var $typename = '';
     
-    // Property: $type
-    // The proper name of the type.
-    // Description:
-    // Access this via getType() and getTypeData().
+    /* 
+     * Property: $type
+     * The proper name of the type.
+     *
+     * Description:
+     *   Access the type of the block through [[getType()]]
+     *   and [[getTypeData()]].
+     * 
+     * [Read-only, private]
+     */
+     
     var $type;
     var $title;
     var $content;
     var $brief;
     
-    // Property: $_id
-    // Read only
+    /*
+     * Property: $_id
+     * The ID.
+     * 
+     * Description:
+     *   Access the ID of the block through [[getID()]]. The ID is
+     *   automatically-determined; it can not be user-set.
+     * 
+     * [Read-only, private]
+     */
     var $_id = null;
     
-    // Property: $_group
-    // Read only
+    /* Property: $_group
+     * The group.
+     * 
+     * Description:
+     *   Access via [[getGroup()]], or the parent's [[getMemberLists()]].
+     * 
+     * [Read-only]
+     */
     var $_group = NULL;
     
     /*
@@ -44,6 +65,7 @@ class ScBlock
      *   This is a private variable only used by the `ScBlock` class.
      *
      *   - To get the parent of the block, use [[getParent()]].
+     *   - To get all it's parents, use [[getAncestry()]].
      *   - To register a block as a child of another block,
      *     use [[registerChild()]].
      * 
@@ -51,6 +73,8 @@ class ScBlock
      *  - [[getParent()]]
      *  - [[getChildren()]]
      *  - [[registerChild()]]
+     * 
+     * [Read-only, private]
      */
     var $_parent;
     
@@ -63,6 +87,7 @@ class ScBlock
      *   This is a private variable only used by the `ScBlock` class.
      *
      *   - To get the children of the block, use [[getChildren()]].
+     *   - To get the children in a grouped manner, use [[getMemberLists()]].
      *   - To register a block as a child of another block,
      *     use [[registerChild()]].
      * 
@@ -84,19 +109,7 @@ class ScBlock
      * Subgroups.
      * 
      * Example:
-     *     $_subgroups = array
-     *     (
-     *         'properties' => array
-     *         (
-     *             'title' => 'Member properties',
-     *             'members' => array( ScBlock, ScBlock, ScBlock, ... )
-     *         ),
-     *         'methods' => array
-     *         (
-     *             <same as above>
-     *         ),
-     *         ...and so on
-     *     )
+     *   See [[getMemberLists()]] for an example of the data.
      */
      
     var $_subgroups = array();
@@ -167,8 +180,6 @@ class ScBlock
             array_splice($this->_lines, 0, 1, array());
         }
         
-        print_r($this->_lines);
-        
         // If it can have a brief
         if ((isset($this->type['has_brief'])) && ($this->type['has_brief']))
         {
@@ -225,7 +236,7 @@ class ScBlock
              
             $tag = strtolower($tag);
             if (in_array($tag, $valid_tags))
-                { echo "Good\n"; $this->_tags[] = $Sc->Options['tags'][$tag]; }
+                { $this->_tags[] = $Sc->Options['tags'][$tag]; }
         }
     }
     
@@ -316,6 +327,8 @@ class ScBlock
      * See also:
      *  - [[getPreContent()]]
      *  - [[getPostContent()]]
+     * 
+     * [Grouped under "Data functions"]
      */
      
     function getContent()
@@ -354,6 +367,7 @@ class ScBlock
     /*
      * Function: getTitle()
      * TBD
+     * [Grouped under "Data functions"]
      */
      
     function getTitle()
@@ -364,6 +378,7 @@ class ScBlock
     /*
      * Function: getBrief()
      * TBD
+     * [Grouped under "Data functions"]
      */
      
     function getBrief()
@@ -408,15 +423,57 @@ class ScBlock
         return $type;
     }
     
+    /*
+     * Function: getID()
+     * Returns the unique ID string for this node.
+     *
+     * Usage:
+     * > $block->getID()
+     *
+     * Returns:
+     *   Unspecified.
+     * 
+     * [Grouped under "Data functions"]
+     */
+
+    function getID()
+    {
+        if (is_null($this->_id))
+        {
+            // Initialize
+            $id_tokens = array();
+            $parent =& $this->getParent();
+            $td = $this->getTypeData();
+            
+            // Add the parent as another suffix, if we want it there
+            if ((isset($td['parent_in_id'])) &&
+                (is_callable(array($parent, 'getTypeData'))) &&
+                (in_array(strtolower($parent->type), $td['parent_in_id'])))
+            {
+                $id_tokens[] = $this->_toID($parent->title);
+            }
+            
+            // Add a suffix of the abbreviation of the type
+            // (e.g., "function" => "fn")
+            if (isset($td['short']))
+                { $id_tokens[] = $this->_toID($td['short']); }
+            
+            // Add our own title, and finalize
+            $id_tokens[] = $this->_toID($this->title);
+            $this->_id = implode('.', $id_tokens);
+        }
+        return $this->_id;
+    }
     
-    // ========================================================================
-    // Group: Private methods
-    // [All below are grouped under "Private methods"]
-    // ========================================================================
+    /* ======================================================================
+     * Private methods
+     * ====================================================================== */
     
     /*
      * Function: _toID()
      * Uhm.
+     * 
+     * [Grouped under "Private methods"]
      */
      
     function _toID($p, $limit=128, $underscore = '', $lower = FALSE)
@@ -437,6 +494,8 @@ class ScBlock
      * 
      * Description:
      *   This relies on the Markdown library to parse out the content.
+     * 
+     * [Grouped under "Private methods"]
      */
      
     function toHTML($lines)
@@ -489,6 +548,8 @@ class ScBlock
      *
      * Returns:
      *   Nothing.
+     * 
+     * [Grouped under "Private methods"]
      */
 
     function registerChild(&$child_block)
@@ -514,10 +575,9 @@ class ScBlock
         return;
     }
     
-    // ========================================================================
-    // Traversion methods
-    // [All below are grouped under "Traversion methods"]
-    // ========================================================================
+    /* ======================================================================
+     * Traversion functions
+     * ====================================================================== */
     
     /*
      * Function: getChildren()
@@ -528,6 +588,8 @@ class ScBlock
      *
      * Returns:
      *   An array of [[ScBlock]] instances.
+     * 
+     * [Grouped under "Traversion functions"]
      */
 
     function& getChildren()
@@ -544,6 +606,8 @@ class ScBlock
      *
      * Returns:
      *   The parent ([[ScBlock]] instance).
+     * 
+     * [Grouped under "Traversion functions"]
      */
 
     function& getParent()
@@ -560,51 +624,13 @@ class ScBlock
      *
      * Returns:
      *   Unspecified.
+     * 
+     * [Grouped under "Traversion functions"]
      */
 
     function hasParent()
     {
         return (is_null($this->_parent)) ? FALSE : TRUE;
-    }
-    
-    /*
-     * Function: getID()
-     * Returns the unique ID string for this node.
-     *
-     * Usage:
-     * > $block->getID()
-     *
-     * Returns:
-     *   Unspecified.
-     */
-
-    function getID()
-    {
-        if (is_null($this->_id))
-        {
-            // Initialize
-            $id_tokens = array();
-            $parent =& $this->getParent();
-            $td = $this->getTypeData();
-            
-            // Add the parent as another suffix, if we want it there
-            if ((isset($td['parent_in_id'])) &&
-                (is_callable(array($parent, 'getTypeData'))) &&
-                (in_array(strtolower($parent->type), $td['parent_in_id'])))
-            {
-                $id_tokens[] = $this->_toID($parent->title);
-            }
-            
-            // Add a suffix of the abbreviation of the type
-            // (e.g., "function" => "fn")
-            if (isset($td['short']))
-                { $id_tokens[] = $this->_toID($td['short']); }
-            
-            // Add our own title, and finalize
-            $id_tokens[] = $this->_toID($this->title);
-            $this->_id = implode('.', $id_tokens);
-        }
-        return $this->_id;
     }
     
     /*
@@ -617,8 +643,25 @@ class ScBlock
      * Description:
      *   Used by outputs (...)
      * 
+     * Example output:
+     *     array
+     *     (
+     *         'properties' => array
+     *         (
+     *             'title' => 'Member properties',
+     *             'members' => array( ScBlock, ScBlock, ScBlock, ... )
+     *         ),
+     *         'methods' => array
+     *         (
+     *             <same as above>
+     *         ),
+     *         ...and so on
+     *     )
+     * 
      * Returns:
      *   Unspecified.
+     * 
+     * [Grouped under "Traversion functions"]
      */
 
     function& getMemberLists()
