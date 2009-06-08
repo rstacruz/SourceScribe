@@ -42,21 +42,25 @@ class Scribe
             'file'        => 'module',
         ),
         
+        // TODO: Proofing: Must ensure this is valid
         'block_types' => array
         (
             'function' => array(
+                'title_plural' => 'Functions',
                 'page' => TRUE,
                 'has_brief' => TRUE,
                 'parent_in_id' => array('class'),
                 'short' => 'fn',
             ),
             'var' => array(
+                'title_plural' => 'Properties',
                 'page' => FALSE,
                 'has_brief' => TRUE,
                 'parent_in_id' => array('class'),
                 'short' => 'v',
             ),
             'class' => array(
+                'title_plural' => 'Classes',
                 'page' => TRUE,
                 'has_brief' => TRUE,
                 'starts_group_for' => array('var', 'function'),
@@ -64,6 +68,7 @@ class Scribe
                 'short' => 'cl',
             ),
             'module' => array(
+                'title_plural' => 'Modules',
                 'page' => TRUE,
                 'has_brief' => TRUE,
                 'starts_group_for' => array('page', 'class', 'function', 'var'),

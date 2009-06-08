@@ -78,6 +78,28 @@ class ScBlock
      * Tags
      */
     var $_tags = array(); 
+    
+    /*
+     * Property: $_subgroups
+     * Subgroups.
+     * 
+     * Example:
+     *     $_subgroups = array
+     *     (
+     *         'properties' => array
+     *         (
+     *             'title' => 'Member properties',
+     *             'members' => array( ScBlock, ScBlock, ScBlock, ... )
+     *         ),
+     *         'methods' => array
+     *         (
+     *             <same as above>
+     *         ),
+     *         ...and so on
+     *     )
+     */
+     
+    var $_subgroups = array();
      
     // ========================================================================
     // Constructor
@@ -464,7 +486,8 @@ class ScBlock
      *   $child   - (ScBlock) The child.
      * 
      * Description:
-     *   This is called by [[ScProject::register()]].
+     *   This is called by [[ScProject::register()]]. The block passed onto
+     *   this function should be already fully initialized.
      *
      * Returns:
      *   Nothing.
@@ -472,8 +495,24 @@ class ScBlock
 
     function registerChild(&$child_block)
     {
+        // Register to children and parent
         $this->_children[] =& $child_block;
         $child_block->_parent =& $this;
+        
+        // Register to subgroups
+        $group = $child_block->getGroup();
+        if (is_null($group)) { $group = $child_block->getTypeData('title_plural'); }
+        
+        // Initialize the group if it hasn't been yet
+        if (!isset($this->_subgroups[$group]))
+        {
+            $this->_subgroups[$group] = array(
+                'title'  => $group,
+                'members' => array()
+            );
+        }
+        
+        $this->_subgroups[$group]['members'][] = $child_block;
         return;
     }
     
@@ -586,6 +625,8 @@ class ScBlock
 
     function& getMemberLists()
     {
+        return $this->_subgroups;
+        
         $f = array();
         foreach ($this->getChildren() as $node)
         {
