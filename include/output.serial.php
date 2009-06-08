@@ -2,16 +2,16 @@
 
 class SerialOutput extends ScOutput
 {
-    function run($project, $path, $output_options)
+    function run($path)
     {
-        $path = (isset($output_options['path'])) ?
-                  trim((string) $output_options['path']) :
+        $path = (isset($this->options['path'])) ?
+                  trim((string) $this->options['path']) :
                   '.';
                   
-        $fname = (isset($output_options['filename'])) ?
-                  trim((string) $output_options['filename']) :
+        $fname = (isset($this->options['filename'])) ?
+                  trim((string) $this->options['filename']) :
                   '.sourcescribe_index';
             
-        file_put_contents($project->cwd.DS.$path.DS.$fname, serialize($project->Sc));
+        file_put_contents($this->Project->cwd.DS.$path.DS.$fname, serialize($this->Project->Sc));
     }
 }

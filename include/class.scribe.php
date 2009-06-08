@@ -16,18 +16,6 @@ class Scribe
      */
     var $Readers = array();
     
-    /*
-     * Property: $Outputs
-     * Key/value pairs of output drivers.
-     * 
-     * Description:
-     *   - To register an output driver to use,
-     *     use [[loadOutputDriver()]].
-     * 
-     * [Read-only]
-     */
-    var $Outputs = array();
-    
     /* Property: $Options['type_keywords']
      * Yay
      * 
@@ -126,46 +114,33 @@ class Scribe
         ),
     );
     
-    var $config_file;
-    
     // Property: $_config
     // Raw data from the scribe.conf file (after being YAML-parsed).
+    // [Read-only]
     var $_config;
     
     /*
      * Function: Scribe()
      * Constructor.
+     * 
+     * [In group "Constructor"]
      */
     function Scribe()
     {
-        $this->cwd = getcwd();
-        $this->config_file = $this->findConfigFile();
+        // Find config file
+        $config_file = $this->findConfigFile();
+        if ($config_file === FALSE)
+            { return $this->error('No config file found.'); }
         
-        // Die if no config
-        if (!is_file($this->config_file)) {
-            $this->error('No config file found');
-            return;
-        }
+        // Load config file and validate
+        $this->_config = yaml($config_file);
+        if (!is_array($this->_config))
+            { return $this->error('Configuration file is invalid.'); }
         
-        $this->cwd = dirname($this->config_file);
-        $this->_config = yaml($this->config_file);
-        
-        if ( (!is_array($this->_config)) ||
-             (!isset($this->_config['name']))
-           ) {
-            $this->error('Configuration file is invalid.');
-        }
-        
+        // Finally, initialize
+        $this->cwd     = dirname($config_file);
         $this->Project = new ScProject($this);
         $this->Readers['default'] = new DefaultReader($this);
-        $this->loadOutputDriver('html');
-        
-        // Initialize $Options['tags']
-        /* $this->Options['tags'] = array();
-        foreach ($this->Options['valid_tags'] as $v)
-            { $this->Options['tags'][strtolower($v)] = strtolower($v); }
-        foreach ($this->Options['tag_thesaurus'] as $k => $v)
-            { $this->Options['tags'][strtolower($k)] = strtolower($v); } */
     }
     
     /*
@@ -173,13 +148,13 @@ class Scribe
      * Loads an output driver.
      *
      * Usage:
-     *     $this->loadOutputDriver($driver[, $use])
+     *     $this->loadOutputDriver($driver[, $options[, $use]])
      *
      * Returns:
-     *   TRUE on success, FALSE on failure.
+     *   Driver on success, FALSE on failure.
      */
 
-    function loadOutputDriver($driver, $use = TRUE)
+    function& loadOutputDriver($driver, &$project, $options = array(), $use = TRUE)
     {
         // TODO: Proofing: This should make sure $driver is sanitized
         require_once SCRIBE_PATH . DS . 'include' . DS . "output.$driver.php";
@@ -188,10 +163,8 @@ class Scribe
         if (!class_exists($classname))
             { return FALSE; }
             
-        if ($use)
-            { $this->Outputs[$driver] = new $classname($this); }
-        
-        return TRUE;
+        $output = new $classname($project, $options);
+        return $output;
     }
     
     /*
@@ -202,7 +175,7 @@ class Scribe
      *     $this->findConfigFile()
      *
      * Returns:
-     *   The configuration file as a string if found, otherwise an empty string.
+     *   The configuration file as a string if found, otherwise FALSE on failure.
      * 
      * References:
      *   Used by [[Scribe::Scribe()]].
@@ -211,7 +184,7 @@ class Scribe
     function findConfigFile()
     {
         $names = array('sourcescribe.conf', 'scribe.conf', 'ss.conf');
-        $path = explode(DS, realpath($this->cwd));
+        $path = explode(DS, realpath(getcwd()));
         for ($i = count($path); $i >= 1; --$i)
         {
             $current_path = implode(DS, array_slice($path, 0, $i));
@@ -222,7 +195,7 @@ class Scribe
             }
         }
         
-        return '';
+        return FALSE;
     }
     /*
      * Function: go()
@@ -412,14 +385,4 @@ class Scribe
     {
         echo $msg . "\n";
     }
-}
-
-class ScOutput
-{
-    var $Sc;
-    
-    function HtmlOutput(&$Sc)
-    {
-        $this->Sc = &$Sc;
-    }   
 }

@@ -21,29 +21,13 @@ class ScProject
     var $Sc;
     
     var $cwd;
-    var $config_file;
     
     /*
      * Group: Configurable properties
      */
      
     var $src_path = NULL;
-    var $src_path_options = array();
     var $output;
-    
-    /*
-     * Property: $name
-     * The name of the project.
-     * 
-     * Description:
-     *   This is private property. To retrieve the name, use `getName()`.
-     *   The name of the block is gathered from the block
-     *   content and therefore should not be set by hand.
-     * 
-     * [Grouped under "Private properties"]
-     */
-     
-    var $name;
     
     /*
      * Property: $__ancestry
@@ -105,6 +89,8 @@ class ScProject
         'home'   => NULL
     );
     
+    var $options = array();
+    
     /*
      * Function: ScProject()
      * The constructor.
@@ -131,24 +117,39 @@ class ScProject
         // Get the CWD.
         $this->cwd = $Sc->cwd;
 
-        // Load config
-        foreach ($Sc->_config as $k => $v)
-            { $this->{$k} = $v; }
+        // Verify each required field
+        foreach (array('name') as $required_field) {
+            if (!isset($Sc->_config[$required_field]))
+            {
+                $Sc->error(
+                    'Configuration is missing the ' .
+                    'required field "' . $required_field . '".');
+                return;
+            }
+        }
         
+        // Load config
+        foreach (array('name','output','src_path','exclude') as $k)
+        {
+            if (!isset($Sc->_config[$k])) { continue; }
+            $this->options[$k] = $Sc->_config[$k];
+        }
+        
+        // Validate options
         // Check source
-        if (is_null($this->src_path))
-            { $this->src_path = $this->cwd; }
+        if (is_null($this->options['src_path']))
+            { $this->options['src_path'] = $this->cwd; }
         
         // Check if all paths are valid
-        $this->src_path = (array) $this->src_path;
-        foreach ($this->src_path as $k => $path)
+        $this->options['src_path'] = (array) $this->options['src_path'];
+        foreach ($this->options['src_path'] as $k => $path)
         {
             // Try as a relative path
-            if (!is_dir($this->src_path[$k]))
-                { $this->src_path[$k] = ($this->cwd . DS . $path); } 
+            if (!is_dir($this->options['src_path'][$k]))
+                { $this->options['src_path'][$k] = ($this->cwd . DS . $path); } 
             
             // If invalid, die
-            if (!is_dir($this->src_path[$k]))
+            if (!is_dir($this->options['src_path'][$k]))
                 { return $Sc->error('src_path is invalid: "' . $path . '"'); }
         }
     }
@@ -185,10 +186,13 @@ class ScProject
         // Scan the files
         $this->Sc->status('Scanning files...');
         $options = array('recursive' => 1, 'mask' => '/./', 'fullpath' => 1);
-        $options = array_merge($this->src_path_options, $options);
+
+        // Take the exclusions list into consideration
+        if (isset($this->options['exclude']))
+            { $options['exclude'] = (array) $this->options['exclude']; }
         
         // For each source path...
-        foreach ((array) $this->src_path as $path)
+        foreach ((array) $this->options['src_path'] as $path)
         {
             // Parse each of the files
             $files = aeScandir($path, $options);
@@ -200,12 +204,12 @@ class ScProject
                 {
                     if (preg_match("~$spec~", $file) == 0) { continue; }
                 
-                    // Show status that we're reading
+                    // Show status of what file we're reading
                     $file_min = substr(realpath($file),
                         1 + strlen(realpath($this->cwd)));
                     $this->Sc->status("* [$reader_name] $file_min");
                 
-                    // And read
+                    // And read it I
                     $this->registerStart();
                     $reader = $this->Sc->Readers[$reader_name];
                     $blocks = $reader->parse($file, $this);
@@ -216,26 +220,26 @@ class ScProject
         
         // Spit out the outputs.
         // Do this for every output defined...
-        foreach ($this->output as $id => $output_options)
+        foreach ($this->options['output'] as $id => $output_options)
         {
-            $this->Sc->loadOutputDriver($output_options['driver']);
             
             // Make sure we have an output driver
             if (!isset($output_options['driver']))
                 { return $this->Sc->error("No driver defined for output $id"); }
                 
-            // Make sure the driver exists
-            $driver = $output_options['driver'];
-            if (!isset($this->Sc->Outputs[$driver])) {
+            // Load it and make sure it exists
+            $driver = $this->Sc->loadOutputDriver($output_options['driver'], $this,
+                      $options);
+            if (!$driver)
+            {
                 $this->Sc->notice('No output driver for ' . $driver . '.');
                 continue;
             }
             
             // Initialize
-            $this->Sc->status('Writing ' . $driver . ' output...');
+            $this->Sc->status('Writing ' . $output_options['driver'] . ' output...');
             $path   = $output_options['path'];
-            $output = $this->Sc->Outputs[$driver];
-
+            
             // Mkdir the path
             $path = ($this->cwd . DS . $path);
             $result = @mkdir($path, 0744, true);
@@ -243,7 +247,7 @@ class ScProject
                 { return $this->Sc->error("Can't create folder for $driver output."); }
             
             // Run
-            $output->run($this, $path, $output_options);
+            $driver->run($path);
         }
         
         $this->Sc->status('Build complete.');
@@ -353,6 +357,7 @@ class ScProject
 
     function getName()
     {
-        return $this->name;
+        // This should never have to be done; 'name' is a required field
+        return isset($this->options['name']) ? $this->options['name'] : 'Manual';
     }
 }

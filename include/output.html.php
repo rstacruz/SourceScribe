@@ -2,22 +2,24 @@
 
 class HtmlOutput extends ScOutput
 {
-    function run($project, $path, $output_options)
+    function run($path)
     {
+        $project =& $this->Project;
+        
         global $Sc;
         
         // Default template
-        if ((!isset($output_options['template'])) ||
-            (is_string($output_options['template'])))
-            { $output_options['template'] = 'default'; }
+        if ((!isset($this->options['template'])) ||
+            (is_string($this->options['template'])))
+            { $this->options['template'] = 'default'; }
             
         // Get template
         $template_path = SCRIBE_PATH .
-            'templates/html.' . $output_options['template'];
+            'templates/html.' . $this->options['template'];
         
         // Does it exist?
         if (!is_dir($template_path))
-            { $Sc->error("Can't find template " . $output_options['template']); }
+            { $Sc->error("Can't find template " . $this->options['template']); }
         
         // Clear the folder
         foreach(glob("$path/*") as $file)
@@ -54,8 +56,8 @@ class HtmlOutput extends ScOutput
         ob_start();
         
         // Template
-        $blocks = $project->data['blocks'];
-        $tree   = $project->data['tree'];
+        $blocks = $this->Project->data['blocks'];
+        $tree   = $this->Project->data['tree'];
         $assets_path = 'assets/';
         include($template_path. '/full.php');
         
@@ -75,8 +77,8 @@ class HtmlOutput extends ScOutput
         ob_start();
         
         // Template
-        $blocks = $project->data['blocks'];
-        $tree   = $project->data['tree'];
+        $blocks = $this->Project->data['blocks'];
+        $tree   = $this->Project->data['tree'];
         $assets_path = 'assets/';
         include($template_path. '/content_index.php');
         
@@ -93,7 +95,7 @@ class HtmlOutput extends ScOutput
     function out_singles($path, $project, $template_path)
     {
         global $Sc;
-        foreach ($project->data['blocks'] as $block)
+        foreach ($this->Project->data['blocks'] as $block)
         {
             $index_file = $path . '/' . $block->getID() . '.html';
             ob_start();
@@ -108,7 +110,7 @@ class HtmlOutput extends ScOutput
                 $tree = $parent; //->getChildren();
             }
             else
-                { $tree = $project->data['tree']; }
+                { $tree = $this->Project->data['tree']; }
             include($template_path. '/single.php');
         
             // Out
