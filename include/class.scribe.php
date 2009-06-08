@@ -46,12 +46,6 @@ class Scribe
      * [Grouped under "Options"]
      */
      
-    /* Property: $Options['valid_tags']
-     * Yay
-     * 
-     * [Grouped under "Options"]
-     */
-     
     /* Property: $Options['tags']
      * Auto-set
      * 
@@ -76,7 +70,8 @@ class Scribe
             'file'        => 'module',
         ),
         
-        // TODO: Proofing: Must ensure this is valid
+        // TODO: Proofing: Must ensure configuration is valid
+        
         'block_types' => array
         (
             'function' => array(
@@ -120,11 +115,15 @@ class Scribe
             '\.doc.txt$' => 'default'
         ),
         
-        'valid_tags' => array(
-            'private', 'public', 'static', 'read-only'),
-            
-        'tag_thesaurus' => array(
-            'readonly' => 'read-only'),
+        'tags' => array(
+            'private'    => 'private',
+            'public'     => 'public',
+            'static'     => 'static',
+            'read-only'  => 'read-only',
+            'readonly'   => 'read-only',
+            'deprecated' => 'deprecated',
+            'deprec'     => 'deprecated',
+        ),
     );
     
     var $config_file;
@@ -152,8 +151,7 @@ class Scribe
         $this->_config = yaml($this->config_file);
         
         if ( (!is_array($this->_config)) ||
-             (!isset($this->_config['project'])) ||
-             (!is_array($this->_config['project']))
+             (!isset($this->_config['name']))
            ) {
             $this->error('Configuration file is invalid.');
         }
@@ -163,11 +161,11 @@ class Scribe
         $this->loadOutputDriver('html');
         
         // Initialize $Options['tags']
-        $this->Options['tags'] = array();
+        /* $this->Options['tags'] = array();
         foreach ($this->Options['valid_tags'] as $v)
             { $this->Options['tags'][strtolower($v)] = strtolower($v); }
         foreach ($this->Options['tag_thesaurus'] as $k => $v)
-            { $this->Options['tags'][strtolower($k)] = strtolower($v); }
+            { $this->Options['tags'][strtolower($k)] = strtolower($v); } */
     }
     
     /*
@@ -183,7 +181,7 @@ class Scribe
 
     function loadOutputDriver($driver, $use = TRUE)
     {
-        // TODO: BP: This should make sure $driver is sanitized
+        // TODO: Proofing: This should make sure $driver is sanitized
         require_once SCRIBE_PATH . DS . 'include' . DS . "output.$driver.php";
         $classname = "{$driver}Output";
 

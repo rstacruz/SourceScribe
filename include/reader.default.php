@@ -4,6 +4,7 @@
  * Class: DefaultReader
  * The default reader.
  */
+
 class DefaultReader extends ScReader
 {
     /*
@@ -52,9 +53,3 @@ class DefaultReader extends ScReader
         return $string;
     }
 }
-
-/*
- * Class: TsClass
- * Test
- */
- 

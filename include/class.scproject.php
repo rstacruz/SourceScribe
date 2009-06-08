@@ -132,7 +132,7 @@ class ScProject
         $this->cwd = $Sc->cwd;
 
         // Load config
-        foreach ($Sc->_config['project'] as $k => $v)
+        foreach ($Sc->_config as $k => $v)
             { $this->{$k} = $v; }
         
         // Check source
@@ -232,8 +232,7 @@ class ScProject
             }
             
             // Initialize
-            $this->Sc->status('Writing ' . $driver . ' output' .
-                (($driver!=$id)?" ($id)":'') . '...');
+            $this->Sc->status('Writing ' . $driver . ' output...');
             $path   = $output_options['path'];
             $output = $this->Sc->Outputs[$driver];
 
