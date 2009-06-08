@@ -245,10 +245,10 @@ class Scribe
     }
     
     /*
-     * Function: do_build()
-     * [Grouped under "Controller actions"]
-     * 
+     * Function: do_build
      * Does a build.
+     * 
+     * [Grouped under "Command-line actions"]
      */
      
     function do_build($args = array())
@@ -256,28 +256,98 @@ class Scribe
         $this->Project->build();
     }
     
+    /*
+     * Function: version
+     * Shows the version.
+     * 
+     * [Grouped under "Command-line actions"]
+     */
+     
     function do_version($args = array())
     {
         echo "SourceScribe\n";
+        print_r($args);
     }
     
+    /*
+     * Function: url
+     * Shows the file location of the default documentation.
+     * 
+     * [Grouped under "Command-line actions"]
+     */
+
+    function do_url($args = array())
+    {
+        // TODO: Lookup for a keyword
+        $str = implode(' ', $args);
+        
+        $output = $this->_getDefaultOutput();
+        $path = $this->Project->cwd . DS .
+                $output['path'] . DS .
+                'index.html';
+        $path = realpath($path);
+        echo $path;
+    }
+    
+    /*
+     * Function: open
+     * Opens the default documentation in the browser.
+     * 
+     * [Grouped under "Command-line actions"]
+     */
+     
     function do_open($args = array())
+    {
+        ob_start();
+        $this->do_url($args);
+        $path = realpath(ob_get_clean());
+        
+        // For Mac OSX
+        system('open ' . escapeshellarg($path), $return);
+        if ($return == 0) { return; }
+        
+        // Retry for Linux
+        system('xdg-open ' . escapeshellarg($path), $return);
+        if ($return == 0) { return; }
+
+        // Retry for Windows
+        system('start ' . escapeshellarg($path), $return);
+        if ($return == 0) { return; }
+
+        // Give up
+    }
+    
+    
+    /*
+     * Function: _getDefaultOutput()
+     * Returns the default output driver.
+     * 
+     * [Private]
+     */
+     
+    function& _getDefaultOutput()
     {
         $output_key = array_keys($this->Project->output);
         $output_key = $output_key[0];
         $output = $this->Project->output[$output_key];
-        $path = $this->Project->cwd . DS .
-                $output['path'] . DS .
-                'index.html';
-        system("open $path");
+        return $output;
     }
     
+    /*
+     * Function: help
+     * Shows help.
+     * 
+     * [Grouped under "Command-line actions"]
+     */
+     
     function do_help($args = array())
     {
         echo "SourceScribe\n";
         echo "Usage: ss [command] [options]\n";
         echo "Commands:\n";
         echo "  build        Builds documentation\n";
+        echo "  open         Opens the documentation in the browser\n";
+        echo "  url          Shows the documentation's URL\n";
         echo "  help         Shows this help screen\n";
     }
     

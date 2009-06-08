@@ -11,7 +11,7 @@ class ScReader
     /*
      * Constructor: ScReader()
      * Constructor. Called by Scribe::Scribe()
-     */ 
+     */
     function ScReader(&$Sc)
     {
         $this->Sc =& $Sc;
