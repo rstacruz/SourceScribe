@@ -381,6 +381,23 @@ class ScBlock
     }
     
     /*
+     * Function: getKeyword()
+     * Returns the keyword for searching
+     * [Grouped under "Data functions"]
+     *
+     * Usage:
+     *     $this->getKeyword()
+     *
+     * Returns:
+     *   Unspecified.
+     */
+
+    function getKeyword()
+    {
+        return $this->title;
+    }
+    
+    /*
      * Function: getBrief()
      * TBD
      * [Grouped under "Data functions"]

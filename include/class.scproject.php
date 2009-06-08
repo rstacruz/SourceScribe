@@ -218,6 +218,8 @@ class ScProject
         // Do this for every output defined...
         foreach ($this->output as $id => $output_options)
         {
+            $this->Sc->loadOutputDriver($output_options['driver']);
+            
             // Make sure we have an output driver
             if (!isset($output_options['driver']))
                 { return $this->Sc->error("No driver defined for output $id"); }
@@ -246,7 +248,39 @@ class ScProject
         }
         
         $this->Sc->status('Build complete.');
+        $output = serialize($this->Sc);
+    }
+    
+    /*
+     * Function: lookup()
+     * Looks up a keyword and returns the matching blocks.
+     *
+     * Usage:
+     *     $this->lookup($keyword, $reference)
+     *
+     * Returns:
+     *   Unspecified.
+     */
 
+    function& lookup($keyword, $reference = NULL)
+    {
+        $keyword = $this->_distill($keyword);
+        $return = array();
+        
+        foreach ((array) $this->data['blocks'] as $block)
+        {
+            $title = $this->_distill($block->getKeyword());
+            if ($title == $keyword)
+                { $return[] = $block; }
+        }
+        
+        return $return;
+    }
+    
+    function _distill($str)
+    {
+        preg_match_all('~[a-zA-Z0-9]~', $str, $m);
+        return strtolower(implode('', (array) $m[0]));
     }
     
     /*

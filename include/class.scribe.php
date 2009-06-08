@@ -175,7 +175,7 @@ class Scribe
      * Loads an output driver.
      *
      * Usage:
-     *     $this->loadOutput($driver[, $use])
+     *     $this->loadOutputDriver($driver[, $use])
      *
      * Returns:
      *   TRUE on success, FALSE on failure.
@@ -278,15 +278,48 @@ class Scribe
 
     function do_url($args = array())
     {
-        // TODO: Lookup for a keyword
-        $str = implode(' ', $args);
+        $str = trim(implode(' ', $args));
         
         $output = $this->_getDefaultOutput();
-        $path = $this->Project->cwd . DS .
-                $output['path'] . DS .
-                'index.html';
-        $path = realpath($path);
-        echo $path;
+        $path = $this->Project->cwd . DS . $output['path']; // Output path
+        $return = realpath($path . DS . 'index.html');
+
+        // TODO: do_url() is very rudimentary
+        if ($str != '') 
+        {
+            $ScX = $this->loadState();
+            $results = $ScX->Project->lookup($str);
+            if (count($results) > 0)
+                { $return = realpath($path . DS . $results[0]->getID() . '.html'); }
+            else { $return = ''; }
+        }
+        
+        echo $return;
+    }
+    
+    /*
+     * Function: loadState()
+     * Stupid.
+     */
+     
+    function loadState()
+    {
+        foreach ($this->Project->output as $o)
+        {
+            if ((!isset($o['driver'])) ||
+                ($o['driver'] != 'serial')) { continue; }
+            
+            $path = $this->Project->cwd . ''
+                . DS . (((isset($o['path'])) && ($o['path'])) ?
+                         ($o['path']) : ('.'))
+                . DS . (((isset($o['filename'])) && ($o['filename'])) ?
+                         ($o['filename']) : ('.sourcescribe_index'));
+
+            global $ScX;
+            $ScX = unserialize(file_get_contents($path));
+            return $ScX;
+            break;
+        }
     }
     
     /*
@@ -300,7 +333,9 @@ class Scribe
     {
         ob_start();
         $this->do_url($args);
-        $path = realpath(ob_get_clean());
+        $output = ob_get_clean();
+        if (trim((string) $output) == '') return;
+        $path = realpath($output);
         
         // For Mac OSX
         system('open ' . escapeshellarg($path), $return);
