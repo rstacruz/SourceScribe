@@ -161,15 +161,13 @@ class ScBlock
         }
         
         // Trim trailing blank lines
-        foreach ($this->_lines as $i => $line)
+        while (count($this->_lines) > 0)
         {
-            // Remove empty lines
-            if (trim($_line) == '')
-                { array_splice($this->_lines, $i, 1, array()); }
-                
-            // Stop
-            else { break; }
+            if (trim($this->_lines[0]) != '') { break; }
+            array_splice($this->_lines, 0, 1, array());
         }
+        
+        print_r($this->_lines);
         
         // If it can have a brief
         if ((isset($this->type['has_brief'])) && ($this->type['has_brief']))
