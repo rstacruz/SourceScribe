@@ -1,5 +1,10 @@
 <?php
 
+/*
+ * Class: HtmlOutput
+ * The HTML output class
+ */
+ 
 class HtmlOutput extends ScOutput
 {
     function run($path)

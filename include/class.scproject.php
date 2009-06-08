@@ -14,32 +14,27 @@
 
 class ScProject
 {
+    /* ======================================================================
+     * Properties
+     * ====================================================================== */
+     
     /*
-     * Group: Properties
+     * Property: $Sc
+     * Reference to the [[Scribe]] singleton.
      */
      
     var $Sc;
     
+    /*
+     * Property: $cwd
+     * The current working directory of the project (i.e., where the config is).
+     */
+     
     var $cwd;
     
-    /*
-     * Group: Configurable properties
-     */
-     
-    var $src_path = NULL;
-    var $output;
-    
-    /*
-     * Property: $__ancestry
-     * Temporary property.
-     * 
-     * Description:
-     *   This is a temporary property used by [[register()]].
-     * 
-     * [Grouped under "Private properties"]
-     */
-     
-    var $__ancestry = array();
+    /* ======================================================================
+     * Data properties
+     * ====================================================================== */
     
     /* Property: $data['blocks']
      * All the blocks.
@@ -82,17 +77,17 @@ class ScProject
      * 
      * [Read-only, grouped under "Data properties"]
      */
+     
     var $data = array
     (
         'blocks' => array(),
         'tree'   => array(),
         'home'   => NULL
     );
-    
-    /*
-     * Property: $options
-     * ...
-     */
+     
+    /* ======================================================================
+     * Options properties
+     * ====================================================================== */
      
     /* Property: $options['type_keywords']
      * Yay
@@ -119,31 +114,51 @@ class ScProject
      */
      
      
-    /* Property: $Options['name']
+    /* Property: $options['name']
      * Yay
      * 
      * [Grouped under "Options"]
      */
      
-    /* Property: $Options['output']
+    /* Property: $options['output']
      * Yay
      * 
      * [Grouped under "Options"]
      */
      
-    /* Property: $Options['src_path']
+    /* Property: $options['src_path']
      * Yay
      * 
      * [Grouped under "Options"]
      */
      
-    /* Property: $Options['exclude']
+    /* Property: $options['exclude']
      * Exclusion list
      * 
      * [Grouped under "Options"]
      */
     var $options = array();
     
+    /* ======================================================================
+     * Misc properties
+     * ====================================================================== */
+     
+    /*
+     * Property: $__ancestry
+     * Temporary property.
+     * 
+     * Description:
+     *   This is a temporary property used by [[register()]].
+     * 
+     * [Grouped under "Private properties"]
+     */
+     
+    var $__ancestry = array();
+    
+    /* ======================================================================
+     * Constructor
+     * ====================================================================== */
+
     /*
      * Function: ScProject()
      * The constructor.
@@ -167,11 +182,17 @@ class ScProject
     function ScProject(&$Sc)
     {
         $this->Sc =& $Sc;
-        // Get the CWD.
         $this->cwd = $Sc->cwd;
 
+        $this->_loadConfig($Sc);
+        $this->_verifyConfig($Sc);
+        $this->_fillOptionalConfig($Sc);
+    }
+    
+    function _loadConfig(&$Sc)
+    {
         // Verify each required field
-        foreach (array('name') as $required_field) {
+        foreach (array('name', 'output') as $required_field) {
             if (!isset($Sc->_config[$required_field]))
             {
                 $Sc->error(
@@ -187,20 +208,31 @@ class ScProject
             $this->options[$k] = $Sc->defaults[$k];
         }
         
-        // Load config
+        // Load configuration variables
         foreach (array('name','output','src_path','exclude') as $k)
         {
             if (!isset($Sc->_config[$k])) { continue; }
             $this->options[$k] = $Sc->_config[$k];
         }
+    }
+    
+    function _verifyConfig(&$Sc)
+    {
+        // Check output
+        if ((!is_array($this->options['output'])) ||
+            (count($this->options['output']) == 0))
+        {
+            return $Sc->error("You must define at least one output.");
+        }
         
-        // Validate options
-        // Check source
-        if (is_null($this->options['src_path']))
-            { $this->options['src_path'] = $this->cwd; }
-            
-        // Snidely: Add the serial output to spit out the .sourcescribe_index file
-        $this->options['output']['serial'] = array('driver' => 'serial'); 
+        // Check output
+        foreach ($this->options['output'] as $id => $output)
+        {
+            if (!is_array($output))
+                { return $Sc->error("Output #$id is invalid."); }
+            if (!isset($output['driver'])) { return $Sc->error("Output #$id is missing a driver."); }
+            if (!isset($output['path']))   { return $Sc->error("Output #$id ({$output['driver']}) is missing it's output path."); }
+        }
         
         // Check if all paths are valid
         $this->options['src_path'] = (array) $this->options['src_path'];
@@ -212,17 +244,27 @@ class ScProject
             
             // If invalid, die
             if (!is_dir($this->options['src_path'][$k]))
-                { return $Sc->error('src_path is invalid: "' . $path . '"'); }
+                { return $Sc->error('Source path is invalid: "' . $path . '"'); }
         }
     }
-    
+    function _fillOptionalConfig(&$Sc)
+    {
+        // Default search path
+        if ((!isset($this->options['src_path'])) ||
+           (is_null($this->options['src_path'])))
+            { $this->options['src_path'] = $this->cwd; }
+            
+        // Add Default output to spit out the .sourcescribe_index file
+        $this->options['output']['serial'] = array('driver' => 'serial'); 
+    }
     /*
      * Function: build()
      * Builds the project.
      * 
      * Description:
-     *   This is the main function that builds the documentation. It does
-     *   the following things below.
+     *   This is the main function that builds the documentation. This is
+     *   called when the user types `ss build` in the command line (or just
+     *   plain `ss` as it's the default action). It does the things below:
      * 
      *   1. The source path is scanned for files recursively, and it'll
      *      delegate each file to it's respective `reader` to be read.
@@ -234,8 +276,6 @@ class ScProject
      *      file) and delegates to each output driver the task of producing
      *      the documentation files.
      * 
-     *   This is called when the user types `ss build` in the command line
-     *   (or just plain `ss` as it's the default action).
      * 
      * References:
      *   This is called by the default action of [[class Scribe]],

@@ -4,7 +4,13 @@
 // Yeah.
 class Scribe
 {
+    /*
+     * Property: $Project
+     * The [[ScProject]] sub-singleton.
+     */
+     
     var $Project;
+    
     /*
      * Property: $Readers
      * Key/value pairs of file reader drivers.
@@ -16,6 +22,11 @@ class Scribe
      */
     var $Readers = array();
     
+    /*
+     * Property: $defaults
+     * An array containing defaults for [[ScProject::$options]].
+     */
+     
     var $defaults = array
     (
         'type_keywords' => array
@@ -34,8 +45,6 @@ class Scribe
             'module'      => 'module',
             'file'        => 'module',
         ),
-        
-        // TODO: Proofing: Must ensure configuration is valid
         
         'block_types' => array
         (
@@ -91,9 +100,11 @@ class Scribe
         ),
     );
     
-    // Property: $_config
-    // Raw data from the scribe.conf file (after being YAML-parsed).
-    // [Read-only]
+    /*
+     * Property: $_config
+     * Raw data from the scribe.conf file (after being YAML-parsed).
+     * [Read-only]
+     */
     var $_config;
     
     /*
