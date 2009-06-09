@@ -1,15 +1,34 @@
 <?php
 
-// Class: Scribe
-// Yeah.
+/*
+ * Class: Scribe
+ * The main singleton and front controller.
+ * 
+ * Description:
+ *   This is instanciated as the global variable `$Sc`. This class is
+ *   responsible for reading the configuration file. It also holds the 
+ *   [[ScProject]] sub-singleton.
+ */
+
 class Scribe
 {
+    /* ======================================================================
+     * Properties
+     * ====================================================================== */
+     
     /*
      * Property: $Project
      * The [[ScProject]] sub-singleton.
      */
      
     var $Project;
+    
+    /*
+     * Property: $Controller
+     * The [[ScController]] sub-singleton.
+     */
+     
+    var $Controller;
     
     /*
      * Property: $Readers
@@ -108,6 +127,19 @@ class Scribe
     var $_config;
     
     /*
+     * Property: $stderr
+     * Standard error.
+     * 
+     * Description:
+     *   Used by [[error()]], [[status()]] and [[notice()]].
+     */
+    var $stderr; 
+     
+    /* ======================================================================
+     * Constructor
+     * ====================================================================== */
+     
+    /*
      * Function: Scribe()
      * Constructor.
      * 
@@ -126,23 +158,30 @@ class Scribe
             { return $this->error('Configuration file is invalid.'); }
         
         // Finally, initialize
-        $this->cwd     = dirname($config_file);
-        $this->Project = new ScProject($this);
+        $this->cwd        = dirname($config_file);
+        $this->Project    = new ScProject($this);
+        $this->Controller = new ScController($this);
         $this->Readers['default'] = new DefaultReader($this);
+        
+        $this->stderr = fopen('php://stderr', 'w');
     }
     
+    /* ======================================================================
+     * Methods
+     * ====================================================================== */
+     
     /*
      * Function: loadOutputDriver()
      * Loads an output driver.
      *
      * Usage:
-     *     $this->loadOutputDriver($driver[, $options[, $use]])
+     *     $this->loadOutputDriver($driver[, $options])
      *
      * Returns:
      *   Driver on success, FALSE on failure.
      */
 
-    function& loadOutputDriver($driver, &$project, $options = array(), $use = TRUE)
+    function& loadOutputDriver($driver, &$project, $options = array())
     {
         // TODO: Proofing: This should make sure $driver is sanitized
         require_once SCRIBE_PATH . DS . 'include' . DS . "output.$driver.php";
@@ -186,76 +225,6 @@ class Scribe
         return FALSE;
     }
     /*
-     * Function: go()
-     * Starts the build process.
-     * 
-     * ## Description
-     *    This function is called by the bootstrapper.
-     */
-    function go()
-    {
-        $args = array_slice($_SERVER['argv'], 1);
-        if (count($args) == 0) { $args = array('build'); }
-        
-        if (!is_callable(array($this, 'do_'.$args[0])))
-            { $this->error("Unknown command: " . $args[0]); return; }
-            
-        $this->{'do_'.$args[0]}(array_slice($args, 1));
-    }
-    
-    /*
-     * Function: do_build
-     * Does a build.
-     * 
-     * [Grouped under "Command-line actions"]
-     */
-     
-    function do_build($args = array())
-    {
-        $this->Project->build();
-    }
-    
-    /*
-     * Function: version
-     * Shows the version.
-     * 
-     * [Grouped under "Command-line actions"]
-     */
-     
-    function do_version($args = array())
-    {
-        echo "SourceScribe\n";
-    }
-    
-    /*
-     * Function: url
-     * Shows the file location of the default documentation.
-     * 
-     * [Grouped under "Command-line actions"]
-     */
-
-    function do_url($args = array())
-    {
-        $str = trim(implode(' ', $args));
-        
-        $output = $this->_getDefaultOutput();
-        $path = $this->Project->cwd . DS . $output['path']; // Output path
-        $return = realpath($path . DS . 'index.html');
-
-        // TODO: do_url() is very rudimentary
-        if ($str != '') 
-        {
-            $ScX = $this->loadState();
-            $results = $ScX->Project->lookup($str);
-            if (count($results) > 0)
-                { $return = realpath($path . DS . $results[0]->getID() . '.html'); }
-            else { $return = ''; }
-        }
-        
-        echo $return;
-    }
-    
-    /*
      * Function: loadState()
      * Stupid.
      */
@@ -266,37 +235,6 @@ class Scribe
         if (is_file($path)) { return unserialize(file_get_contents($path)); }
         return;
     }
-    
-    /*
-     * Function: open
-     * Opens the default documentation in the browser.
-     * 
-     * [Grouped under "Command-line actions"]
-     */
-     
-    function do_open($args = array())
-    {
-        ob_start();
-        $this->do_url($args);
-        $output = ob_get_clean();
-        if (trim((string) $output) == '') return;
-        $path = realpath($output);
-        
-        // For Mac OSX
-        system('open ' . escapeshellarg($path), $return);
-        if ($return == 0) { return; }
-        
-        // Retry for Linux
-        system('xdg-open ' . escapeshellarg($path), $return);
-        if ($return == 0) { return; }
-
-        // Retry for Windows
-        system('start ' . escapeshellarg($path), $return);
-        if ($return == 0) { return; }
-
-        // Give up
-    }
-    
     
     /*
      * Function: _getDefaultOutput()
@@ -314,24 +252,6 @@ class Scribe
     }
     
     /*
-     * Function: help
-     * Shows help.
-     * 
-     * [Grouped under "Command-line actions"]
-     */
-     
-    function do_help($args = array())
-    {
-        echo "SourceScribe\n";
-        echo "Usage: ss [command] [options]\n";
-        echo "Commands:\n";
-        echo "  build        Builds documentation\n";
-        echo "  open         Opens the documentation in the browser\n";
-        echo "  url          Shows the documentation's URL\n";
-        echo "  help         Shows this help screen\n";
-    }
-    
-    /*
      * Function: error()
      * Spits out an error and dies.
      * 
@@ -345,18 +265,23 @@ class Scribe
      */
     function error($error)
     {
-        echo "Scribe error: " . $error. "\n";
+        fwrite($this->stderr, "Scribe error: " . $error. "\n");
         exit();
     }
+    
     // Function: notice()
     // Test
     function notice($message)
     {
-        echo "* " . $message. "\n";
+        fwrite($this->stderr, "* " . $message. "\n");
     }
     
     function status($msg)
     {
-        echo $msg . "\n";
+        fwrite($this->stderr, $msg . "\n");
     }
+    
+    /* ======================================================================
+     * End class
+     * ====================================================================== */
 }

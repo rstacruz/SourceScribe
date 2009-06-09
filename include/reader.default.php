@@ -3,17 +3,12 @@
 /*
  * Class: DefaultReader
  * The default reader.
+ * 
+ * [Inherits ScReader]
  */
 
 class DefaultReader extends ScReader
 {
-    /*
-     * Function: parse()
-     * Parses a file.
-     * 
-     * References:
-     *   Called by [[ScProject::build()]] on every file in the project.
-     */
     function parse($path, $project)
     {
         $blocks = array();

@@ -7,11 +7,11 @@
  
 class HtmlOutput extends ScOutput
 {
+    var $folders = array('assets');
+
     function run($path)
     {
-        $project =& $this->Project;
-        
-        global $Sc;
+        $Sc =& $this->Project->Sc;
         
         // Default template
         if ((!isset($this->options['template'])) ||
@@ -31,7 +31,7 @@ class HtmlOutput extends ScOutput
             { @unlink($file); }
                 
         // Make the assets folder
-        foreach (array('assets', 's') as $folder)
+        foreach ($this->folders as $folder)
         {
             @mkdir("$path/$folder", 0744, TRUE);
             foreach(glob("$path/$folder/*") as $file)
@@ -45,9 +45,8 @@ class HtmlOutput extends ScOutput
         }
         
         // Output
-        // $this->out_full($path, $project, $template_path);
-        $this->out_content_index($path, $project, $template_path);
-        $this->out_singles($path, $project, $template_path);
+        // $this->out_content_index($path, $template_path);
+        $this->out_singles($path, $template_path);
     }
     
     /*
@@ -55,7 +54,7 @@ class HtmlOutput extends ScOutput
      * Outputs the single-file megaindex.
      */
      
-    function out_full($path, $project, $template_path)
+    function out_full($path, $template_path)
     {
         $index_file = $path . '/index.html';
         ob_start();
@@ -63,6 +62,7 @@ class HtmlOutput extends ScOutput
         // Template
         $blocks = $this->Project->data['blocks'];
         $tree   = $this->Project->data['tree'];
+        $project =& $this->Project;
         $assets_path = 'assets/';
         include($template_path. '/full.php');
         
@@ -76,7 +76,7 @@ class HtmlOutput extends ScOutput
      * Outputs the single-file megaindex.
      */
      
-    function out_content_index($path, $project, $template_path)
+    function out_content_index($path, $template_path)
     {
         $index_file = $path . '/index.html';
         ob_start();
@@ -84,6 +84,7 @@ class HtmlOutput extends ScOutput
         // Template
         $blocks = $this->Project->data['blocks'];
         $tree   = $this->Project->data['tree'];
+        $project =& $this->Project;
         $assets_path = 'assets/';
         include($template_path. '/content_index.php');
         
@@ -97,25 +98,27 @@ class HtmlOutput extends ScOutput
      * Outputs single files
      */
      
-    function out_singles($path, $project, $template_path)
+    function out_singles($path, $template_path)
     {
         global $Sc;
         foreach ($this->Project->data['blocks'] as $block)
         {
+            // $Sc->status("* " . $block->getID() . ".html");
             $index_file = $path . '/' . $block->getID() . '.html';
             ob_start();
-        
+            
             // Template
             $blocks = array($block);
             $assets_path = 'assets/';
             $id = $block->getID();
+            $project =& $this->Project;
             if ($block->hasParent())
             {
                 $parent = $block->getParent();
-                $tree = $parent; //->getChildren();
+                $tree =& $parent; //->getChildren();
             }
             else
-                { $tree = $this->Project->data['tree']; }
+                { $tree = $block; } //$this->Project->data['tree']; }
             include($template_path. '/single.php');
         
             // Out

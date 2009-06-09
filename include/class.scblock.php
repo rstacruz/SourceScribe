@@ -316,6 +316,23 @@ class ScBlock
         return $return;
     }
     
+    /*
+     * Function: isHomePage()
+     * Checks if the current block is the home page.
+     *
+     * Usage:
+     *     $this->isHomePage()
+     *
+     * Returns:
+     *   Unspecified.
+     */
+
+    function isHomePage()
+    {
+        if ($this->title == $this->Project->getName()) { return TRUE; }
+        return FALSE;
+    }
+    
     // ========================================================================
     // Group: Content methods
     // [All below are grouped under "Content methods"]
@@ -461,7 +478,10 @@ class ScBlock
 
     function getID()
     {
-        if (is_null($this->_id))
+        if ((is_null($this->_id)) && ($this->isHomePage()))
+            { $this->_id = 'index'; }
+            
+        elseif (is_null($this->_id))
         {
             // Initialize
             $id_tokens = array();

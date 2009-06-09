@@ -137,7 +137,11 @@ class ScProject
      * 
      * [Grouped under "Options"]
      */
-    var $options = array();
+    var $options = array
+    (
+        'name' => 'My manual',
+        'src_path' => '.',
+    );
     
     /* ======================================================================
      * Misc properties
@@ -249,11 +253,6 @@ class ScProject
     }
     function _fillOptionalConfig(&$Sc)
     {
-        // Default search path
-        if ((!isset($this->options['src_path'])) ||
-           (is_null($this->options['src_path'])))
-            { $this->options['src_path'] = $this->cwd; }
-            
         // Add Default output to spit out the .sourcescribe_index file
         $this->options['output']['serial'] = array('driver' => 'serial'); 
     }
@@ -320,6 +319,8 @@ class ScProject
             }
         }
         
+        $this->_doPostBuild();
+        
         // Spit out the outputs.
         // Do this for every output defined...
         foreach ($this->options['output'] as $id => $output_options)
@@ -354,6 +355,27 @@ class ScProject
         
         $this->Sc->status('Build complete.');
         $output = serialize($this->Sc);
+    }
+    
+    /*
+     * Function: _doPostBuild()
+     * Does post-build actions like modifying the homepage.
+     *
+     * Usage:
+     *     $this->_doPostBuild
+     *
+     * Returns:
+     *   Unspecified.
+     */
+
+    function _doPostBuild()
+    {
+        // [1] If there's a home, [2] each of the tree firstlevels
+        // [3] that isn't the homepage [4] will be the child of the homepage.
+        if (!is_null($this->data['home']))
+            foreach ($this->data['tree'] as $i => $block)
+                if ($block->getID() != 'index')
+                    { $this->data['home']->registerChild($this->data['tree'][$i]); }
     }
     
     /*
@@ -413,6 +435,15 @@ class ScProject
         // Register to where?
         $parent = NULL;
         
+        // Register to all blocks
+        $this->data['blocks'][$block->getID()] = &$block;
+        
+        // Register as home page if needed
+        if ($block->isHomePage())
+        {
+            $this->data['home'] =& $block;
+        }
+        
         // Find the ancestor.
         for ($i=0; $i < count($this->__ancestry); ++$i)
         {
@@ -436,9 +467,6 @@ class ScProject
         // Is it alone?
         if (count($this->__ancestry) <= 1)
             { $this->data['tree'][] =& $block; }
-            
-        // Register to all blocks
-        $this->data['blocks'][$block->getID()] = &$block;
     }
     
     function registerStart()
