@@ -3,7 +3,7 @@
     include dirname(__FILE__) . '/header.php';
 ?>
     <?php if ($home) { ?>
-        <h1><a href="<?php echo $home->getID() . '.html'; ?>"><span><?php echo $home->getTitle(); ?></span></a></h1>
+        <h1><a class="<?php echo $this->linkClass($home); ?>" href="<?php echo $this->link($home); ?>"><span><?php echo $home->getTitle(); ?></span></a></h1>
     <?php } ?>
     
     <div id="all">
@@ -11,7 +11,7 @@
         <div class="breadcrumbs"><div class="breadcrumbs-c">
             <ul>
                 <?php foreach ($breadcrumbs as $i => $node) { ?>
-                    <li class="item-<?php echo count($breadcrumbs) - (int)$i - 1; ?>"><a href="<?php echo $node->getID().'.html'; ?>"><?php echo $node->getTitle() ?></a></li>
+                    <li class="item-<?php echo count($breadcrumbs) - (int)$i - 1; ?>"><a class="<?php echo $this->linkClass($node); ?>" href="<?php echo $this->link($node); ?>"><?php echo $node->getTitle() ?></a></li>
                 <?php } ?>
             </ul>
         </div></div>
@@ -25,7 +25,7 @@
                     <ul>
                     <?php foreach ($tree_parents as $i => $node) {  ?>
                         <li <?php if ($block->getID() == $node->getID()) { ?>class="active"<?php } ?>>
-                            <a href="<?php echo $node->getID().'.html';  ?>"><span class="arrow">&uarr;</span><strong><?php echo $node->getTitle(); ?></strong></a>
+                            <a class="<?php echo $this->linkClass($node); ?>" href="<?php echo $this->link($node); ?>"><span class="arrow">&uarr;</span><strong><?php echo $node->getTitle(); ?></strong></a>
                         </li>
                     <?php }  ?>
                     </ul>
@@ -37,7 +37,7 @@
                     <ul>
                         <?php foreach ($tree as $i => $node) { ?>
                             <li <?php if ($block->getID() == $node->getID()) { ?>class="active"<?php } ?>>
-                                <a href="<?php echo $node->getID().'.html'; ?>"><?php echo $node->getTitle(); ?></a>
+                                <a class="<?php echo $this->linkClass($node); ?>" href="<?php echo $this->link($node); ?>"><?php echo $node->getTitle(); ?></a>
                             </li>
                         <?php } ?>
                     </ul>
@@ -65,7 +65,7 @@
                     <h3><span><?php echo $member_list['title']; ?></span></h3>
                     <dl>
                         <?php foreach ($member_list['members'] as $node) { ?>
-                            <dt><a href="<?php echo $node->getID().'.html'; ?>"><?php echo $node->getTitle(); ?></a></dt>
+                            <dt id="<?php echo str_replace('.','-',$node->getID()); ?>"><span class="term"><a name="<?php echo $node->getID(); ?>" class="<?php echo $this->linkClass($node); ?>" href="<?php echo $this->link($node); ?>"><?php echo $node->getTitle(); ?></a></span></dt>
                             <dd><?php echo strip_tags($node->getBrief()); ?></dd>
                         <?php } ?>
                     </dl>

@@ -10,4 +10,14 @@ class ScOutput
         $this->Project = &$Project;
         $this->options = $options;
     }   
+    
+    /*
+     * Function: link()
+     * Returns the link to a certain block.
+     */
+     
+    function link(&$block)
+    {
+        return '';
+    }
 }

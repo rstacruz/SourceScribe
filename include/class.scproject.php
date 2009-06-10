@@ -90,19 +90,19 @@ class ScProject
      * ====================================================================== */
      
     /* Property: $options['type_keywords']
-     * Yay
+     * To be documented.
      * 
      * [Grouped under "Options"]
      */
      
     /* Property: $options['block_types']
-     * Yay
+     * To be documented.
      * 
      * [Grouped under "Options"]
      */
      
     /* Property: $options['file_specs']
-     * Yay
+     * To be documented.
      * 
      * [Grouped under "Options"]
      */
@@ -115,25 +115,32 @@ class ScProject
      
      
     /* Property: $options['name']
-     * Yay
+     * To be documented.
      * 
      * [Grouped under "Options"]
      */
      
     /* Property: $options['output']
-     * Yay
+     * To be documented.
      * 
      * [Grouped under "Options"]
      */
      
     /* Property: $options['src_path']
-     * Yay
+     * To be documented.
      * 
      * [Grouped under "Options"]
      */
      
     /* Property: $options['exclude']
-     * Exclusion list
+     * File exclusion list.
+     * 
+     * Description:
+     *   This is an array of regex strings that will be excluded from the
+     *   file search.
+     * 
+     * Example:
+     *     array('#\.php3$#', '#\.git/#')
      * 
      * [Grouped under "Options"]
      */
@@ -360,12 +367,6 @@ class ScProject
     /*
      * Function: _doPostBuild()
      * Does post-build actions like modifying the homepage.
-     *
-     * Usage:
-     *     $this->_doPostBuild
-     *
-     * Returns:
-     *   Unspecified.
      */
 
     function _doPostBuild()

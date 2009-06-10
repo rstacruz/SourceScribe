@@ -140,4 +140,35 @@ class HtmlOutput extends ScOutput
             file_put_contents($index_file, $output);
         }
     }
+     
+    function link(&$block)
+    {
+        // If the block has it's own page/content,
+        if ($block->isHomePage())
+            { return 'index.html'; }
+            
+        if (($block->hasContent()) || ($block->hasChildren()))
+            { return $block->getID() . '.html'; }
+    
+        else
+        {
+            if (!$block->hasParent())
+                { return ''; /* Should never happen */ }
+            else
+                { return $this->link($block->getParent()) . '#' . $block->getID(); }
+        }
+    }
+    
+    /*
+     * Function: linkClass()
+     * Returns the link class to a certain block.
+     */
+    
+    function linkClass(&$block)
+    {
+        if (strpos($this->link($block), '#') !== FALSE)
+            { return 'stub'; }
+        else
+            { return ''; }
+    }
 }

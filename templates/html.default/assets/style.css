@@ -50,12 +50,15 @@ a img     { border: 0; }
         { margin: 0; padding: 0; }
         
     body, td, input
-        { font-family: arial, helvetica, sans-serif; font-size: 1em; }
+        { font-family: 'lucida grande', arial, helvetica, sans-serif; font-size: 1em; }
         
     body
         { font-size: 0.9em; line-height: 1.6em;
         background: #dbe1e7; color: #333; }
 
+    body
+        { font-size: 0.85em; }
+          
     /* Side */
     h1
       { background: #bcc1c6; margin: 0; padding: 10px;
@@ -149,7 +152,9 @@ a img     { border: 0; }
       
     #all .heading h1,
     #all .heading h2
-      { font-size: 1.6em; line-height: 1.6em; }
+      { font-size: 2.4em; line-height: 1.5em; color: #234;
+        font-family: "HelveticaNeue-Light","Helvetica Neue Light",
+        "Helvetica Neue", sans-serif; font-weight: 100; }
       
     #all .heading h1,
     #all .heading h2,
@@ -174,27 +179,47 @@ a img     { border: 0; }
     .content ul,
     .content ol
       { margin-left: 25%; padding-right: 30px; }
-      
-    .content prex
-      { padding-right: 0; }
-        
+    
     .content ul,
     .content ol
       { margin-left: 27%; }
 
+    .content dl p,  .content li p,
+    .content ul ul, .content ul ol,
+    .content ol ul, .content ol ol,
+    .content blockquote ul, .block blockquote ol, .block blockquote p,
+    .content pre p
+        { margin-left: 0; }
+        
+    .block ul ul, .block ul ol,
+    .block ol ul, .block ol ol
+        { margin-left: 2em; }
+        
 /* Elements */  
     dl
       { overflow: hidden; }
+      
     dl dt
       { float: left; width: 30%; margin-right: 3%; clear: left;
-        overflow: hidden; font-weight: bold; font-size: 0.9em; color: #579;
-        text-align: right; }
+        font-weight: bold; font-size: 0.9em; color: #579;
+        text-align: left; }
+        
     dl dd
       { float: left; width: 67%; color: #777; }
+      
     dl dt,
     dl dd
       { margin-bottom: 5px; line-height: 1.4em; } 
       
+    
+    /* DT dashing */
+    dl dt
+      { border-bottom: dashed 1px #aaa; height: 1.3em; position: relative; } 
+    
+    dl dt span.term
+      { background: white; padding: 3px 5px 10px 5px; float: left; }
+    /* DT dashing end */
+    
     pre
       { background: #dfe8ec; padding: 10px; font-size: 0.9em;
         line-height: 1.6em; color: #506272; }
@@ -216,4 +241,12 @@ a img     { border: 0; }
     #all pre,
     #all code
       { font-family: monaco, 'lucida console', courier new, monospace; }
-      
+    
+    body #all a.stub,
+    body #all a.stub:hover
+      { color: #888; cursor: default; text-decoration: none; }
+        
+        
+    dl dt.jump-highlight,
+    dl dt.jump-highlight span.term
+      { background: #ffe; }

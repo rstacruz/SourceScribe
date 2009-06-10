@@ -32,8 +32,35 @@ class ScBlock
      */
      
     var $type;
+    
+    /*
+     * Property: $title
+     * The raw title of the block.
+     * 
+     * Description:
+     *   This is a read-only property. To get the title, use [[getTitle()]] as
+     *   it will provide additional stuff.
+     * 
+     * [Read-only, private]
+     */
     var $title;
+    
+    /*
+     * Property: $content
+     * The content in HTML format, as already parsed by [[toHTML()]].
+     * 
+     * [Read-only, private]
+     */
+     
     var $content;
+    
+    /*
+     * Property: $brief
+     * The brief description in HTML format.
+     * 
+     * [Read-only, private]
+     */
+     
     var $brief;
     
     /*
@@ -183,7 +210,8 @@ class ScBlock
         }
         
         // If it can have a brief
-        if ((isset($this->type['has_brief'])) && ($this->type['has_brief']))
+        if ((isset($this->type['has_brief'])) && ($this->type['has_brief']) &&
+            ((!isset($this->_skip_brief)) || (!$this->_skip_brief)))
         {
             // Look for a blank line
             $offset = array_search('', $this->_lines);
@@ -237,6 +265,15 @@ class ScBlock
             if (count($m) > 0)
             {
                 $this->_group = $m[count($m)-1];
+                continue;
+            }
+            
+            
+            preg_match('~^(?:no|skip) (?:intro|introduction|brief|introductory(?: (?:paragraph|(?:desc(?:ription)))?)?)?$~i',
+              $tag, $m);
+            if (count($m) > 0)
+            {
+                $this->_skip_brief = 1;
                 continue;
             }
              
@@ -560,19 +597,40 @@ class ScBlock
         
         // return '<pre>' . htmlentities($str) . '</pre>';
         $str = markdown($str);
-        
+
         // Wrap heading texts inside span elements
         $str = preg_replace('~(<h[1-6]>)(.*?)(</h[1-6]>)~s',
                '\\1<span>\\2</span>\\3', $str);
+               
+        // Wrap DTs inside span elements
+        foreach (array('dt' => 'term',
+                       'dd' => 'definition')
+                 as $tag => $classname)
+        {
+            $str = preg_replace("~(<$tag>)(.*?)(</$tag>)~s",
+                   '\\1<span class="'.$classname.'">\\2</span>\\3', $str);
+        }
         
         return $str;
+    }
+    
+    /*
+     * Function: hasContent()
+     * Checks if the block has content.
+     */
+
+    function hasContent()
+    {
+        return (trim((string) $this->content) == '') ? FALSE : TRUE;
     }
     
     function _toHTMLLinkCallback($m)
     {
         // Parameter looks like:
-        // array("[[text]]", "text")
-        return "<a href='#'>$m[1]</a>";
+        // array("[[options()]]", "options()")
+        
+        $str = $m[1];
+        return "<a href='#" . $this->Project->lookup($str) . "'>$str</a>";
     }
     
     /*
@@ -638,6 +696,16 @@ class ScBlock
     function& getChildren()
     {
         return $this->_children;
+    }
+    
+    /*
+     * Function: hasChildren()
+     * Checks if the block has children.
+     */
+
+    function hasChildren()
+    {
+        return (count($this->_children) > 0) ? TRUE : FALSE;
     }
     
     /*
