@@ -21,11 +21,13 @@ class ScController
      */
     function go()
     {
+        $Sc =& $this->Sc;
+        
         $args = array_slice($_SERVER['argv'], 1);
         if (count($args) == 0) { $args = array('build'); }
         
         if (!is_callable(array($this, 'do_'.$args[0])))
-            { $this->error("Unknown command: " . $args[0]); return; }
+            { $Sc->error("Unknown command: " . $args[0]); return; }
             
         $this->{'do_'.$args[0]}(array_slice($args, 1));
     }
@@ -73,7 +75,7 @@ class ScController
         
         $output = $Sc->_getDefaultOutput();
         $path = $Sc->Project->cwd . DS . $output['path']; // Output path
-        $return = realpath($path . DS . 'index.html');
+        $return = '';
         
         // Check if documentation has already been written
         if (!is_dir($path)) {
@@ -85,7 +87,9 @@ class ScController
         if ($str != '') 
         {
             $ScX = $Sc->loadState();
+            echo '?';
             $results = $ScX->Project->lookup($str);
+            echo '!';
             if (count($results) > 0)
             {
                 $return = realpath($path . DS . $results[0]->getID() . '.html');
@@ -98,6 +102,12 @@ class ScController
                 return $Sc->error("Can't find your keyword.");
                 $return = '';
             }
+        }
+        else
+        {
+            $return = realpath($path . DS . 'index.html');
+            if (!is_file($return))
+                { return $Sc->error("Can't find the output documentation. Try building it first."); }
         }
         
         echo $return . "\n";

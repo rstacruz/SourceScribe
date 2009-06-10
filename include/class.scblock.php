@@ -655,7 +655,71 @@ class ScBlock
 
     function& getParent()
     {
-        return $this->_parent;
+        $return = NULL;
+        
+        # No parent for home mpage
+        if ($this->isHomePage())
+            { return $return; }
+        
+        if ((is_callable(array($this->_parent, 'getID'))) &&
+            ($this->_parent != $this))
+            { $return = $this->_parent; }
+        else
+            { $return = NULL; }
+        
+        return $return;
+    }
+    
+    /*
+     * Function: getAncestry()
+     * Returns all the parent nodes.
+     *
+     * Usage:
+     *     ScBlock $block->getAncestry([$options])
+     *
+     * Description:
+     *   Options can be defined as an associative array. All of these are
+     *   optional.
+     * 
+     *     exclude_home  - If the home page is to be excluded
+     *     include_this  - If this block is to be included
+     * 
+     * Returns:
+     *   An array of parent [[ScBlock]] instances. The last item will be
+     *   the immediate parent, and the first item will be the most senior
+     *   grandparent (i.e., home page).
+     * 
+     * [Grouped under "Traversion functions"]
+     */
+
+    function& getAncestry($options = array())
+    {
+        $options = (array) $options;
+        $block = $this;
+        $f = array();
+        $i = 0;
+        $blocks = array();
+        if ((isset($options['include_this'])) && ($options['include_this']))
+        {
+            if ((!$this->isHomePage()) || (!isset($options['exclude_home']))
+                || (!$options['exclude_home']))
+                    { $f[] =& $this; }
+        }
+            
+        while (TRUE) {
+            if (!$block->hasParent()) { break; }
+            $parent =& $block->getParent();
+            
+            // Exclude the home page if we're asked to
+            if ((!$parent->hasParent()) && (isset($options['exclude_home']))
+                && ($options['exclude_home']))
+                { break; }
+            
+            $blocks[$i] =& $block->getParent();
+            array_unshift($f, &$blocks[$i]);
+            $block =& $blocks[$i++];
+        }
+        return $f;
     }
     
     /*
@@ -673,7 +737,7 @@ class ScBlock
 
     function hasParent()
     {
-        return (is_null($this->_parent)) ? FALSE : TRUE;
+        return (is_null($this->getParent())) ? FALSE : TRUE;
     }
     
     /*

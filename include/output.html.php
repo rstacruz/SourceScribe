@@ -112,13 +112,24 @@ class HtmlOutput extends ScOutput
             $assets_path = 'assets/';
             $id = $block->getID();
             $project =& $this->Project;
-            if ($block->hasParent())
+            
+            // Variables:
+            // $block
+            $home    =& $this->Project->data['home'];
+            $tree_parents =& $block->getAncestry(array('exclude_home' => TRUE, 'include_this' => TRUE));
+            $tree    =& $block->getChildren();
+            
+            // If no children, use siblings instead
+            if ((count($tree) == 0) && ($block->hasParent()))
             {
-                $parent = $block->getParent();
-                $tree =& $parent; //->getChildren();
+                $parent =& $block->getParent();
+                $tree =& $parent->getChildren();
+                // Pop one out of crumbs
+                array_splice($tree_parents, count($tree_parents)-1, 1, array());
             }
-            else
-                { $tree = $block; } //$this->Project->data['tree']; }
+            else {
+                $tree =& $block->getChildren();
+            }
             include($template_path. '/single.php');
         
             // Out

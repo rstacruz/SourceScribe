@@ -422,12 +422,11 @@ class ScProject
      *     "Function: test()\nDescription.\n\nEtc etc"
      */
      
-    function register($block)
+    function register($blockData)
     {
         global $Sc;
         
-        if (is_string($block))
-            { $block = ScBlock::factory($block, $this); }
+        $block =& ScBlock::factory($blockData, $this);
         
         // Die if not valid
         if (!$block->valid) { return; }
@@ -435,13 +434,15 @@ class ScProject
         // Register to where?
         $parent = NULL;
         
+        $id = count($this->data['blocks']);
+        
         // Register to all blocks
-        $this->data['blocks'][$block->getID()] = &$block;
+        $this->data['blocks'][$id] = &$block;
         
         // Register as home page if needed
         if ($block->isHomePage())
         {
-            $this->data['home'] =& $block;
+            $this->data['home'] =& $this->data['blocks'][$id];
         }
         
         // Find the ancestor.
@@ -462,11 +463,11 @@ class ScProject
 
         // Add us
         // [b,c,d], a => [a,b,c,d]
-        array_unshift($this->__ancestry, &$block);
+        array_unshift($this->__ancestry, &$this->data['blocks'][$id]);
         
         // Is it alone?
         if (count($this->__ancestry) <= 1)
-            { $this->data['tree'][] =& $block; }
+            { $this->data['tree'][] =& $this->data['blocks'][$id]; }
     }
     
     function registerStart()

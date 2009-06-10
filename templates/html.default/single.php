@@ -2,28 +2,28 @@
     $title = $project->getName() . ' - ' . $blocks[0]->getTitle();
     include dirname(__FILE__) . '/header.php';
 ?>
+    <?php if ($home) { ?>
+        <h1><a href="<?php echo $home->getID() . '.html'; ?>"><?php echo $home->getTitle(); ?></a></h1>
+    <?php } ?>
+    
+    <?php if (count($tree_parents) > 0) { ?>
+        <ul>
+        <?php foreach ($tree_parents as $i => $node) {  ?>
+            <li><a href="<?php echo $node->getID().'.html';  ?>"><strong><?php echo $node->getTitle(); ?></strong></a></li>
+        <?php }  ?>
+        </ul>
+    <?php } ?>
     <div id="index">
-        <?php if (!is_array($tree)) { ?><ul><li><?php } ?>
-        <?php if (!is_callable('show_single_index')) { function show_single_index($node, $depth, $block) { ?>
-            
-            <?php if (is_callable(array($node, 'getTitle'))) { ?>
-                <a href="<?php echo $node->getID().'.html'; ?>"><strong><?php echo $node->getTitle(); ?></strong></a>
-                <span class="type"><?php echo strtolower($node->typename); ?></span>
-            <?php } ?>
-            <?php $children = ((is_callable(array($node, 'getChildren'))) ? ($node->getChildren()) : ((array) $node)); ?>
-            <?php if ((count($children) > 0) && (($depth < 1) || ($block->getID() == $node->getID()))) { ?>
-                <ul>    
-                    <?php foreach ($children as $id => $data) { ?>
-                        <li>
-                            <?php show_single_index($data, $depth+1, $block); ?>
-                        </li>
-                    <?php } ?>
-                </ul>
-            <?php } ?>
-        <?php } } ?>
-        <?php show_single_index($tree, 0, $blocks[0]); ?>
-        <?php if (!is_array($tree)) { ?></li></ul><?php } ?>
+        <?php if ((is_array($tree)) && (count($tree) > 0)) { ?>
+            <ul>
+                <?php foreach ($tree as $i => $node) { ?>
+                    <li><a href="<?php echo $node->getID().'.html'; ?>"><?php echo $node->getTitle(); ?></a></li>
+                <?php } ?>
+            </ul>
+        <?php } ?>
+                
     </div>
+
 
     <div id="all">
         <?php foreach ($blocks as $bid => $block) { ?>
