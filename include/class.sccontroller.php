@@ -186,7 +186,8 @@ class ScController
     
     /*
      * Function: do_html()
-     * To be documented.
+     * Shows an HTML snippet of a specific keyword.
+     * [Grouped under "Command-line actions"]
      */
 
     function do_html($args = array())

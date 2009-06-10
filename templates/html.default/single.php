@@ -35,10 +35,14 @@
             <div id="index"><div id="index-c">
                 <?php if ((is_array($tree)) && (count($tree) > 0)) { ?>
                     <ul>
-                        <?php foreach ($tree as $i => $node) { ?>
-                            <li <?php if ($block->getID() == $node->getID()) { ?>class="active"<?php } ?>>
-                                <a class="<?php echo $this->linkClass($node); ?>" href="<?php echo $this->link($node); ?>"><?php echo $node->getTitle(); ?></a>
-                            </li>
+                        <?php foreach ($tree as $subtree) { ?>
+                            <li><h4><?php echo $subtree['title']; ?></h4><ul>
+                            <?php foreach ($subtree['members'] as $i => $node) { ?>
+                                <li <?php if ($block->getID() == $node->getID()) { ?>class="active"<?php } ?>>
+                                    <a class="<?php echo $this->linkClass($node); ?>" href="<?php echo $this->link($node); ?>"><?php echo $node->getTitle(); ?></a>
+                                </li>
+                            <?php } ?>
+                            </ul></li>
                         <?php } ?>
                     </ul>
                 <?php } ?>

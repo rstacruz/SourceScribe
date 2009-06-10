@@ -117,21 +117,20 @@ class HtmlOutput extends ScOutput
             // $block
             $home    =& $this->Project->data['home'];
             $tree_parents =& $block->getAncestry(array('exclude_home' => TRUE, 'include_this' => TRUE));
-            $tree    =& $block->getChildren();
             $breadcrumbs =& $block->getAncestry(array('include_this' => TRUE));
             
             // If this node has no children...
-            if ((count($tree) == 0) && ($block->hasParent()))
+            if ((!$block->hasChildren()) && ($block->hasParent()))
             {
                 // Use it's siblings instead.
                 $parent =& $block->getParent();
-                $tree =& $parent->getChildren();
+                $tree =& $parent->getMemberLists();
                 
                 // Pop one out of the tree parents
                 array_splice($tree_parents, count($tree_parents)-1, 1, array());
             }
             else {
-                $tree =& $block->getChildren();
+                $tree =& $block->getMemberLists();
             }
             include($template_path. '/single.php');
         

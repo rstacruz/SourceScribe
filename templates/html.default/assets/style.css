@@ -95,6 +95,10 @@ a img     { border: 0; }
     #index a
       { font-weight: normal; } 
     
+    #index h4
+      { margin: 0; padding: 0; font-weight: bold; font-size: 1em;
+        padding: 4px 10px 4px 20px; background: #ccd1d6; color: #777; }
+        
     #side a:hover,
     #side .active a
       { background: #bbcee2; }
