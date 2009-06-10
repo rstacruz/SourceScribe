@@ -1,5 +1,10 @@
 <?php
 
+/*
+ * Class: ScOutput
+ * The output base class.
+ */
+ 
 class ScOutput
 {
     var $Project;

@@ -178,7 +178,7 @@ a img     { border: 0; }
     .content blockquote,
     .content ul,
     .content ol
-      { margin-left: 25%; padding-right: 30px; }
+      { margin-left: 25%; padding-right: 30px; width: 75%; }
     
     .content ul,
     .content ol
@@ -189,7 +189,7 @@ a img     { border: 0; }
     .content ol ul, .content ol ol,
     .content blockquote ul, .block blockquote ol, .block blockquote p,
     .content pre p
-        { margin-left: 0; }
+        { margin-left: 0; width: auto; }
         
     .block ul ul, .block ul ol,
     .block ol ul, .block ol ol
@@ -242,11 +242,12 @@ a img     { border: 0; }
     #all code
       { font-family: monaco, 'lucida console', courier new, monospace; }
     
-    body #all a.stub,
-    body #all a.stub:hover
+    #all a.stub,
+    #all a.stub:hover
       { color: #888; cursor: default; text-decoration: none; }
-        
-        
-    dl dt.jump-highlight,
-    dl dt.jump-highlight span.term
-      { background: #ffe; }
+
+    /* Highlight for hashjump */
+    #all dl dd.jump-highlight,
+    #all dl dt.jump-highlight span.term,
+    #all dl dt.jump-highlight a
+      { color: #d7b; }

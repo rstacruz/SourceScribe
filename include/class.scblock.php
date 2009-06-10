@@ -465,13 +465,18 @@ class ScBlock
     
     /*
      * Function: getType()
-     * To be documented.
+     * Returns the typename.
      *
      * Usage:
-     * > $this->getType()
+     *     $this->getType()
      *
+     * Description:
+     *   This returns the actual type, not the alias used. For instance,
+     *   a "Constructor: myclass()" block may return a type of `function`
+     *   instead of 'constructor'.
+     * 
      * Returns:
-     *   Unspecified.
+     *   A string of the typename.
      */
 
     function getType()
@@ -756,6 +761,16 @@ class ScBlock
      *   An array of parent [[ScBlock]] instances. The last item will be
      *   the immediate parent, and the first item will be the most senior
      *   grandparent (i.e., home page).
+     * 
+     * Example:
+     * 
+     *   The output of this function would often look similar to this format.
+     * 
+     *     array(
+     *       ScBlock(..), // Home
+     *       ScBlock(..), // Class MyClass
+     *       ScBlock(..), // myFunction()
+     *     );
      * 
      * [Grouped under "Traversion functions"]
      */

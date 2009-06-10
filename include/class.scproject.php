@@ -32,6 +32,13 @@ class ScProject
      
     var $cwd;
     
+    /*
+     * Property: $outputs
+     * Array of output drivers ([[ScOutput]] instances).
+     */
+     
+    var $outputs = array();
+    
     /* ======================================================================
      * Data properties
      * ====================================================================== */
@@ -121,7 +128,12 @@ class ScProject
      */
      
     /* Property: $options['output']
-     * To be documented.
+     * The output drivers.
+     * 
+     * Description:
+     *   These are not the [[ScOutput]] instances, but rather this is the
+     *   information needed to load those. If you're looking for the actual
+     *   output drivers, see [[$outputs]].
      * 
      * [Grouped under "Options"]
      */
@@ -327,6 +339,7 @@ class ScProject
         }
         
         $this->_doPostBuild();
+        $this->_loadOutputDrivers();
         
         // Spit out the outputs.
         // Do this for every output defined...
@@ -338,13 +351,11 @@ class ScProject
                 { return $this->Sc->error("No driver defined for output $id"); }
                 
             // Load it and make sure it exists
-            $driver = $this->Sc->loadOutputDriver($output_options['driver'], $this,
-                      $options);
-            if (!$driver)
-            {
-                $this->Sc->notice('No output driver for ' . $driver . '.');
-                continue;
-            }
+            $driver =& $this->Sc->loadOutputDriver($output_options['driver'],
+                       $this, $options);
+                      
+            $driver =& $this->outputs[$id];
+            if (!$driver) { continue; }
             
             // Initialize
             $this->Sc->status('Writing ' . $output_options['driver'] . ' output...');
@@ -365,8 +376,32 @@ class ScProject
     }
     
     /*
+     * Function: _loadOutputDrivers()
+     * Loads the output drivers. Used in the build process.
+     * [Grouped under "Private methods"]
+     */
+
+    function _loadOutputDrivers()
+    {
+        if (count($this->outputs) > 0)
+            { return; }
+            
+        foreach ($this->options['output'] as $id => $output_options)
+        {
+            $this->outputs[$id] =&
+                $this->Sc->loadOutputDriver($output_options['driver'],
+                $this, $options);
+                       
+            if (!$this->outputs[$id]) {
+                $this->Sc->notice('No output driver for ' . $driver . '.');
+                continue;
+            }
+        }
+    }
+    /*
      * Function: _doPostBuild()
      * Does post-build actions like modifying the homepage.
+     * [Grouped under "Private methods"]
      */
 
     function _doPostBuild()

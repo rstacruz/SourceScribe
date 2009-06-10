@@ -65,8 +65,8 @@
                     <h3><span><?php echo $member_list['title']; ?></span></h3>
                     <dl>
                         <?php foreach ($member_list['members'] as $node) { ?>
-                            <dt id="<?php echo str_replace('.','-',$node->getID()); ?>"><span class="term"><a name="<?php echo $node->getID(); ?>" class="<?php echo $this->linkClass($node); ?>" href="<?php echo $this->link($node); ?>"><?php echo $node->getTitle(); ?></a></span></dt>
-                            <dd><?php echo strip_tags($node->getBrief()); ?></dd>
+                            <dt class="<?php echo str_replace('.','-',$node->getID()); ?>"><span class="term"><a name="<?php echo $node->getID(); ?>" class="<?php echo $this->linkClass($node); ?>" href="<?php echo $this->link($node); ?>"><?php echo $node->getTitle(); ?></a></span></dt>
+                            <dd class="<?php echo str_replace('.','-',$node->getID()); ?>"><?php echo strip_tags($node->getBrief()); ?></dd>
                         <?php } ?>
                     </dl>
                 <?php } ?>

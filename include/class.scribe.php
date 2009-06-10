@@ -67,6 +67,12 @@ class Scribe
         
         'block_types' => array
         (
+            'page' => array(
+                'title_plural' => 'Pages',
+                // 'page' => TRUE,
+                'short' => 'p',
+                'has_brief' => FALSE,
+            ),
             'function' => array(
                 'title_plural' => 'Functions',
                 // 'page' => TRUE,
@@ -95,12 +101,6 @@ class Scribe
                 'has_brief' => TRUE,
                 'starts_group_for' => array('page', 'class', 'function', 'var'),
                 'short' => 's',
-            ),
-            'page' => array(
-                'title_plural' => 'Pages',
-                // 'page' => TRUE,
-                'short' => 'p',
-                'has_brief' => FALSE,
             ),
         ),
         

@@ -83,29 +83,29 @@ class ScController
             return;
         }
 
-        // TODO: do_url() is very rudimentary
+        // Load output drivers, die if it fails    
+        $Sc->Project->_loadOutputDrivers();
+        if (!$Sc->Project->outputs[0])
+            { return $Sc->error("No default output. Boo"); }
+
+        // Do we need to do a lookup?
         if ($str != '') 
         {
+            // Load the statefile and look it up using it; die if it fails
             $ScX = $Sc->loadState();
-            $results = $ScX->Project->lookup($str);
-            if (count($results) > 0)
-            {
-                $return = realpath($path . DS . $results[0]->getID() . '.html');
-                if (!is_file($return)) {
-                    $Sc->error("Can't find the output documentation. Try building it first.");
-                    return;
-                }
-            }
-            else {
-                return $Sc->error("Can't find your keyword.");
-                $return = '';
-            }
+            $results = $ScX->Project->lookup($str); // returns an array of ScBlock
+            if (count($results) == 0)
+                { return $Sc->error("Can't find your keyword."); }
+            
+            $return = "file://" . realpath($path) . "/" . $Sc->Project->outputs[0]->link($results[0]);
         }
         else
         {
+            // Optimization: don't load statefile if HTML
             $return = realpath($path . DS . 'index.html');
             if (!is_file($return))
                 { return $Sc->error("Can't find the output documentation. Try building it first."); }
+            $return = "file://" . $return;
         }
         
         echo $return . "\n";
