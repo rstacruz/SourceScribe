@@ -47,49 +47,31 @@ class Scribe
      */
      
     var $defaults = array
-    (
-        'type_keywords' => array
-        (
-            'function'    => 'function',
-            'constructor' => 'function',
-            'ctor'        => 'function',
-            'destructor'  => 'function',
-            'dtor'        => 'function',
-            'method'      => 'function',
-            'property'    => 'var',
-            'var'         => 'var',
-            'class'       => 'class',
-            'page'        => 'page',
-            'section'     => 'page',
-            'module'      => 'module',
-            'file'        => 'module',
-        ),
-        
+    (   
         'block_types' => array
         (
             'page' => array(
                 'title_plural' => 'Pages',
-                // 'page' => TRUE,
                 'short' => 'p',
                 'has_brief' => FALSE,
+                'synonyms' => array('page', 'section')
             ),
             'function' => array(
                 'title_plural' => 'Functions',
-                // 'page' => TRUE,
                 'has_brief' => TRUE,
                 'parent_in_id' => array('class'),
                 'short' => 'fn',
+                'synonyms' => array('constructor', 'ctor', 'destructor', 'dtor', 'method')
             ),
             'var' => array(
                 'title_plural' => 'Properties',
-                // 'page' => FALSE,
                 'has_brief' => TRUE,
                 'parent_in_id' => array('class'),
                 'short' => 'v',
+                'synonyms' => array('property')
             ),
             'class' => array(
                 'title_plural' => 'Classes',
-                // 'page' => TRUE,
                 'has_brief' => TRUE,
                 'starts_group_for' => array('var', 'function'),
                 'block_class' => 'ScClassBlock',
@@ -97,10 +79,10 @@ class Scribe
             ),
             'module' => array(
                 'title_plural' => 'Sections',
-                // 'page' => TRUE,
                 'has_brief' => TRUE,
                 'starts_group_for' => array('page', 'class', 'function', 'var'),
                 'short' => 's',
+                'synonyms' => array('file')
             ),
         ),
         

@@ -215,8 +215,8 @@ class ScController
         
         echo "<html><head>\n";
         echo '<link rel="stylesheet" href="file://' . $path . '/assets/style.css" media="all" />' . "\n";
-        echo "</head><body id=\"disambiguation\">\n";
-        echo '<div>' . "\n";
+        echo "</head><body>\n";
+        echo "<div id=\"disambiguation\">\n";
         echo "<h1><code>$keyword</code> may refer to:</h1>\n";
         echo "<ul>\n";
         
@@ -228,9 +228,9 @@ class ScController
             $desc = "";
             if ($result->hasParent()) {
                 $parent =& $result->getParent();
-                $desc = ", a " . strtolower($result->getTypeName()) . " of " . $parent->getTitle();
+                $desc = " a " . strtolower($result->getTypeName()) . " of " . $parent->getTitle();
             }
-            echo "<li><a href=\"$url\">$title</a>$desc</li>\n";
+            echo "<li><a href=\"$url\"><strong>$title</strong>$desc</a></li>\n";
         }
         
         echo "</ul>\n";

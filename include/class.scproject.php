@@ -97,7 +97,7 @@ class ScProject
      * ====================================================================== */
      
     /* Property: $options['type_keywords']
-     * To be documented.
+     * To be documented. Auto-generated and not taken from config
      * 
      * [Grouped under "Options"]
      */
@@ -152,6 +152,9 @@ class ScProject
      *   file search.
      * 
      * Example:
+     *   This example will exclude all `.php3` files, and everything in the
+     *   `.git` folder.
+     * 
      *     array('#\.php3$#', '#\.git/#')
      * 
      * [Grouped under "Options"]
@@ -210,71 +213,9 @@ class ScProject
         $this->_loadConfig($Sc);
         $this->_verifyConfig($Sc);
         $this->_fillOptionalConfig($Sc);
+        $this->_verifyBlockTypes();
     }
     
-    function _loadConfig(&$Sc)
-    {
-        // Verify each required field
-        foreach (array('name', 'output') as $required_field) {
-            if (!isset($Sc->_config[$required_field]))
-            {
-                $Sc->error(
-                    'Configuration is missing the ' .
-                    'required field "' . $required_field . '".');
-                return;
-            }
-        }
-        
-        // Migrate defaults
-        foreach (array('type_keywords', 'block_types', 'file_specs', 'tags') as $k)
-        {
-            $this->options[$k] = $Sc->defaults[$k];
-        }
-        
-        // Load configuration variables
-        foreach (array('name','output','src_path','exclude') as $k)
-        {
-            if (!isset($Sc->_config[$k])) { continue; }
-            $this->options[$k] = $Sc->_config[$k];
-        }
-    }
-    
-    function _verifyConfig(&$Sc)
-    {
-        // Check output
-        if ((!is_array($this->options['output'])) ||
-            (count($this->options['output']) == 0))
-        {
-            return $Sc->error("You must define at least one output.");
-        }
-        
-        // Check output
-        foreach ($this->options['output'] as $id => $output)
-        {
-            if (!is_array($output))
-                { return $Sc->error("Output #$id is invalid."); }
-            if (!isset($output['driver'])) { return $Sc->error("Output #$id is missing a driver."); }
-            if (!isset($output['path']))   { return $Sc->error("Output #$id ({$output['driver']}) is missing it's output path."); }
-        }
-        
-        // Check if all paths are valid
-        $this->options['src_path'] = (array) $this->options['src_path'];
-        foreach ($this->options['src_path'] as $k => $path)
-        {
-            // Try as a relative path
-            if (!is_dir($this->options['src_path'][$k]))
-                { $this->options['src_path'][$k] = ($this->cwd . DS . $path); } 
-            
-            // If invalid, die
-            if (!is_dir($this->options['src_path'][$k]))
-                { return $Sc->error('Source path is invalid: "' . $path . '"'); }
-        }
-    }
-    function _fillOptionalConfig(&$Sc)
-    {
-        // Add Default output to spit out the .sourcescribe_index file
-        $this->options['output']['serial'] = array('driver' => 'serial'); 
-    }
     /*
      * Function: build()
      * Builds the project.
@@ -373,53 +314,6 @@ class ScProject
         
         $this->Sc->status('Build complete.');
         $output = serialize($this->Sc);
-    }
-    
-    /*
-     * Function: _loadOutputDrivers()
-     * Loads the output drivers. Used in the build process.
-     * [Grouped under "Private methods"]
-     */
-
-    function _loadOutputDrivers()
-    {
-        if (count($this->outputs) > 0)
-            { return; }
-            
-        foreach ($this->options['output'] as $id => $output_options)
-        {
-            $this->outputs[$id] =&
-                $this->Sc->loadOutputDriver($output_options['driver'],
-                $this, $options);
-                       
-            if (!$this->outputs[$id]) {
-                $this->Sc->notice('No output driver for ' . $driver . '.');
-                continue;
-            }
-        }
-    }
-    /*
-     * Function: _doPostBuild()
-     * Does post-build actions like modifying the homepage.
-     * [Grouped under "Private methods"]
-     */
-
-    function _doPostBuild()
-    {
-        
-        // If there's no homepage,
-        // Make one!
-        if (is_null($this->data['home']))
-        {
-            $this->register("Page: " . $this->getName());
-        }
-        
-        // [1] If there's a home, [2] each of the tree firstlevels
-        // [3] that isn't the homepage [4] will be the child of the homepage.
-        if (!is_null($this->data['home']))
-            foreach ($this->data['tree'] as $i => $block)
-                if ($block->getID() != 'index')
-                    { $this->data['home']->registerChild($this->data['tree'][$i]); }
     }
     
     /*
@@ -535,4 +429,188 @@ class ScProject
         // This should never have to be done; 'name' is a required field
         return isset($this->options['name']) ? $this->options['name'] : 'Manual';
     }
+    
+    /* ======================================================================
+     * Private functions
+     * ====================================================================== */
+    
+    /*
+     * Function: _verifyBlockTypes()
+     * Verifies the block types; called by the constructor.
+     * [Private, grouped under "Private functions"]
+     */
+
+    function _verifyBlockTypes()
+    {
+        if (!isset($this->options['block_types']))
+            { return $Sc->error("Block types is not valid!"); }
+            
+        if (!is_array($this->options['block_types']))
+            { return $Sc->error("Block types is not valid!"); }
+
+        $this->options['type_keywords'] = array();
+
+        foreach ($this->options['block_types'] as $id => &$block_type)
+        {
+            if (!isset($block_type['title_plural']))
+                { $block_type['title_plural'] = $id."s"; }
+                
+            if (!isset($block_type['has_brief']))
+                { $block_type['has_brief'] = FALSE; }
+                
+            if (!isset($block_type['parent_in_id']))
+                { $block_type['parent_in_id'] = array(); }
+                
+            if (!is_array($block_type['parent_in_id']))
+                { $block_type['parent_in_id'] = (array) $block_type['parent_in_id']; }
+                
+            if (!isset($block_type['short']))
+                { $block_type['short'] = $id; }
+                
+            if (!isset($block_type['starts_group_for']))
+                { $block_type['starts_group_for'] = array(); }
+                
+            if (!is_array($block_type['starts_group_for']))
+                { $block_type['starts_group_for'] = (array) $block_type['starts_group_for']; }
+                
+            if (!isset($block_type['synonyms']))
+                { $block_type['synonyms'] = array(); }
+                
+            if (!is_array($block_type['synonyms']))
+                { $block_type['synonyms'] = (array) $block_type['synonyms']; }
+
+            $this->options['type_keywords'][$id] = $id;
+            foreach ($block_type['synonyms'] as $alias)
+                { $this->options['type_keywords'][$alias] = $id; }
+        }
+    }
+    
+    /*
+     * Function: _loadConfig()
+     * Loads the configuration; called by the constructor.
+     * [Private, grouped under "Private functions"]
+     */
+
+    function _loadConfig(&$Sc)
+    {
+        // Verify each required field
+        foreach (array('name', 'output') as $required_field) {
+            if (!isset($Sc->_config[$required_field]))
+            {
+                $Sc->error(
+                    'Configuration is missing the ' .
+                    'required field "' . $required_field . '".');
+                return;
+            }
+        }
+        
+        // Migrate defaults
+        foreach (array('block_types', 'file_specs', 'tags') as $k)
+        {
+            $this->options[$k] = $Sc->defaults[$k];
+        }
+        
+        // Load configuration variables
+        foreach (array('name','output','src_path','exclude') as $k)
+        {
+            if (!isset($Sc->_config[$k])) { continue; }
+            $this->options[$k] = $Sc->_config[$k];
+        }
+    }
+    
+    
+    /*
+     * Function: _verifyConfig()
+     * Verifies the configuration; called by the constructor.
+     * [Private, grouped under "Private functions"]
+     */
+     
+    function _verifyConfig(&$Sc)
+    {
+        // Check output
+        if ((!is_array($this->options['output'])) ||
+            (count($this->options['output']) == 0))
+        {
+            return $Sc->error("You must define at least one output.");
+        }
+        
+        // Check output
+        foreach ($this->options['output'] as $id => $output)
+        {
+            if (!is_array($output))
+                { return $Sc->error("Output #$id is invalid."); }
+            if (!isset($output['driver'])) { return $Sc->error("Output #$id is missing a driver."); }
+            if (!isset($output['path']))   { return $Sc->error("Output #$id ({$output['driver']}) is missing it's output path."); }
+        }
+        
+        // Check if all paths are valid
+        $this->options['src_path'] = (array) $this->options['src_path'];
+        foreach ($this->options['src_path'] as $k => $path)
+        {
+            // Try as a relative path
+            if (!is_dir($this->options['src_path'][$k]))
+                { $this->options['src_path'][$k] = ($this->cwd . DS . $path); } 
+            
+            // If invalid, die
+            if (!is_dir($this->options['src_path'][$k]))
+                { return $Sc->error('Source path is invalid: "' . $path . '"'); }
+        }
+    }
+    
+    function _fillOptionalConfig(&$Sc)
+    {
+        // Add Default output to spit out the .sourcescribe_index file
+        $this->options['output']['serial'] = array('driver' => 'serial'); 
+    }
+    
+    
+    /*
+     * Function: _loadOutputDrivers()
+     * Loads the output drivers. Used in the build process.
+     * [Grouped under "Private functions"]
+     */
+
+    function _loadOutputDrivers()
+    {
+        if (count($this->outputs) > 0)
+            { return; }
+            
+        foreach ($this->options['output'] as $id => $output_options)
+        {
+            $this->outputs[$id] =&
+                $this->Sc->loadOutputDriver($output_options['driver'],
+                $this, $options);
+                       
+            if (!$this->outputs[$id]) {
+                $this->Sc->notice('No output driver for ' . $driver . '.');
+                continue;
+            }
+        }
+    }
+    /*
+     * Function: _doPostBuild()
+     * Does post-build actions like modifying the homepage.
+     * [Private, grouped under "Private functions"]
+     */
+
+    function _doPostBuild()
+    {
+        
+        // If there's no homepage,
+        // Make one!
+        if (is_null($this->data['home']))
+        {
+            $this->register("Page: " . $this->getName());
+        }
+        
+        // [1] If there's a home, [2] each of the tree firstlevels
+        // [3] that isn't the homepage [4] will be the child of the homepage.
+        if (!is_null($this->data['home']))
+            foreach ($this->data['tree'] as $i => $block)
+                if ($block->getID() != 'index')
+                    { $this->data['home']->registerChild($this->data['tree'][$i]); }
+    }
+    /* ======================================================================
+     * End
+     * ====================================================================== */
 }

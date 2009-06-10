@@ -69,7 +69,7 @@ a img     { border: 0; }
       { color: #333; display: block; width: 160px; }
         
     #side
-      { width: 170px; padding: 5px 0; float: left;
+      { width: 170px; padding: 0 0 5px 0; float: left;
         font-size: 0.8em; line-height: 1.4em; margin-left: -181px; }
       
     #side a
@@ -78,9 +78,16 @@ a img     { border: 0; }
     #side a:hover
       { text-decoration: none; } 
     
+    #side a:focus
+      { outline: 0; }
+      
     /* Parents */
+    #parents
+      { background: #cbd1d6; padding-top: 5px;
+        border-bottom: solid 1px #aaa; }
+      
     #parents li
-      { border-bottom: solid 1px #aaa; } 
+      { /* border-top: solid 1px #bbb; */ } 
       
     #parents a
       { padding-left: 10px; }
@@ -97,7 +104,8 @@ a img     { border: 0; }
     
     #index h4
       { margin: 0; padding: 0; font-weight: bold; font-size: 1em;
-        padding: 4px 10px 4px 20px; background: #ccd1d6; color: #777; }
+        padding: 12px 10px 4px 20px; background: transparent; color: #85AA72;
+        border-bottom: solid 1px #ccc; }
         
     #side a:hover,
     #side .active a
@@ -182,8 +190,8 @@ a img     { border: 0; }
     .content blockquote,
     .content ul,
     .content ol
-      { margin-left: 25%; padding-right: 30px; width: 75%; }
-    
+      { margin-left: 25%; padding-right: 30px; width: 70%; margin-top: 1em; margin-bottom: 1em; }
+
     .content ul,
     .content ol
       { margin-left: 27%; }
@@ -202,6 +210,7 @@ a img     { border: 0; }
 /* Elements */  
     dl
       { overflow: hidden; }
+      
       
     dl dt
       { float: left; width: 30%; margin-right: 3%; clear: left;
@@ -255,3 +264,20 @@ a img     { border: 0; }
     #all dl dt.jump-highlight span.term,
     #all dl dt.jump-highlight a
       { color: #d7b; }
+        
+    
+#disambiguation
+    { width: 600px; margin: 40px auto; border: solid 1px #ccc; background: white; }
+#disambiguation h1 
+    { font-size: 1.5em; line-height: 1.7em; background: #eee; }
+#disambiguation h1 code
+    { border: 0; background: 0; padding: 0; }
+#disambiguation ul,
+#disambiguation li
+    { margin: 0; padding: 0; list-style-type: none; }
+#disambiguation a
+    { border-bottom: solid 1px #ccc; padding: 10px; font-size: 0.8em; display: block; line-height: 1.6em; color: #888; }
+#disambiguation a:hover
+    { text-decoration: none; background: #fffbf8; }
+#disambiguation a strong
+    { display: block; font-size: 1.34em; color: #333; }

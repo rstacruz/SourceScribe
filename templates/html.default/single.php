@@ -70,7 +70,7 @@
                     <dl>
                         <?php foreach ($member_list['members'] as $node) { ?>
                             <dt class="<?php echo str_replace('.','-',$node->getID()); ?>"><span class="term"><a name="<?php echo $node->getID(); ?>" class="<?php echo $this->linkClass($node); ?>" href="<?php echo $this->link($node); ?>"><?php echo $node->getTitle(); ?></a></span></dt>
-                            <dd class="<?php echo str_replace('.','-',$node->getID()); ?>"><?php echo strip_tags($node->getBrief()); ?></dd>
+                            <dd class="<?php echo str_replace('.','-',$node->getID()); ?>"><?php echo strip_tags($node->getBrief(), '<a><code><strong><b><i><em>'); ?></dd>
                         <?php } ?>
                     </dl>
                 <?php } ?>
