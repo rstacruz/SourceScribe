@@ -742,13 +742,14 @@ class ScBlock
     
     /*
      * Function: getMemberLists()
-     * To be documented.
+     * Returns a grouped list of member items under the block.
      *
      * Usage:
      *     $this->getMemberLists()
      *
      * Description:
-     *   Used by outputs (...)
+     *   This is used by outputs to list down the members of a class
+     *   (or any other block with children).
      * 
      * Example:
      *     var_dump($block->getMemberLists());

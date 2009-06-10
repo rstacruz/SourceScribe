@@ -370,6 +370,14 @@ class ScProject
 
     function _doPostBuild()
     {
+        
+        // If there's no homepage,
+        // Make one!
+        if (is_null($this->data['home']))
+        {
+            $this->register("Page: " . $this->getName());
+        }
+        
         // [1] If there's a home, [2] each of the tree firstlevels
         // [3] that isn't the homepage [4] will be the child of the homepage.
         if (!is_null($this->data['home']))
