@@ -131,6 +131,8 @@ class Scribe
      */
     function Scribe()
     {   
+        $this->stderr = fopen('php://stderr', 'w');
+
         // Find config file
         $config_file = $this->findConfigFile();
         if ($config_file === FALSE)
@@ -146,8 +148,6 @@ class Scribe
         $this->Project    = new ScProject($this);
         $this->Controller = new ScController($this);
         $this->Readers['default'] = new DefaultReader($this);
-        
-        $this->stderr = fopen('php://stderr', 'w');
     }
     
     /* ======================================================================

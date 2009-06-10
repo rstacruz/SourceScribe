@@ -453,7 +453,7 @@ class ScProject
         foreach ($this->options['block_types'] as $id => &$block_type)
         {
             if (!isset($block_type['title_plural']))
-                { $block_type['title_plural'] = $id."s"; }
+                { $block_type['title_plural'] = strtoupper(substr($id,0,1)) . substr($id,1,999)."s"; }
                 
             if (!isset($block_type['has_brief']))
                 { $block_type['has_brief'] = FALSE; }
@@ -511,10 +511,36 @@ class ScProject
         }
         
         // Load configuration variables
-        foreach (array('name','output','src_path','exclude') as $k)
+        foreach (array('block_types', 'name','output','src_path','exclude') as $k)
         {
             if (!isset($Sc->_config[$k])) { continue; }
             $this->options[$k] = $Sc->_config[$k];
+        }
+        
+        if (isset($Sc->_config['extra_block_types']))
+        {
+            if (!is_array($Sc->_config['extra_block_types']))
+                { return $Sc->error('Extra_block_types defined is not an array'); }
+                
+            foreach ($Sc->_config['extra_block_types'] as $id => $data)
+            {
+                if (!isset($this->options['block_types'][$id]))
+                    { $this->options['block_types'][$id] = $data; continue; }
+                
+                if (!is_array($data))
+                    { return $Sc->error('Extra_block_types has an invalid definition for "' . $id . '"'); }
+                    
+                foreach ($data as $k => $v)
+                {
+                    if (in_array($k, array('synonyms','parent_in_id','starts_group_for')))
+                    {
+                        $this->options['block_types'][$id][$k] =
+                            array_merge((array) $this->options['block_types'][$id][$k], (array) $v);
+                    }
+                    else
+                        { $this->options['block_types'][$id][$k] = $v; }
+                }
+            }
         }
     }
     

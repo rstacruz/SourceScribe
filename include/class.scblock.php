@@ -187,6 +187,7 @@ class ScBlock
             { return; }
         
         $this->type = $Project->options['type_keywords'][$type_str];
+        $td = $this->getTypeData();
         
         // Find the tag hash
         // TODO: 'All below'
@@ -210,7 +211,7 @@ class ScBlock
         }
         
         // If it can have a brief
-        if ((isset($this->type['has_brief'])) && ($this->type['has_brief']) &&
+        if ((isset($td['has_brief'])) && ($td['has_brief'] == TRUE) &&
             ((!isset($this->_skip_brief)) || (!$this->_skip_brief)))
         {
             // Look for a blank line
@@ -489,7 +490,7 @@ class ScBlock
      *     $this->getType()
      *
      * Description:
-     *   This returns the actual type, not the alias used. For instance,
+     *   This returns the actual type, not the synonym used. For instance,
      *   a "Constructor: myclass()" block may return a type of `function`
      *   instead of 'constructor'. If you would like to see that instead
      *  (e.g., "constructor"), use [[getTypeName()]].
