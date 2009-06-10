@@ -750,7 +750,11 @@ class ScBlock
      * Description:
      *   Used by outputs (...)
      * 
-     * Example output:
+     * Example:
+     *     var_dump($block->getMemberLists());
+     * 
+     * Possible output: 
+     * 
      *     array
      *     (
      *         'properties' => array

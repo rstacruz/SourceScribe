@@ -67,7 +67,7 @@ a img     { border: 0; }
         
     #side
       { width: 170px; padding: 5px 0; float: left;
-        font-size: 0.8em; line-height: 1.4em; }
+        font-size: 0.8em; line-height: 1.4em; margin-left: -181px; }
       
     #side a
       { color: #333; display: block; padding: 4px 10px 4px 30px; }
@@ -104,11 +104,11 @@ a img     { border: 0; }
         
     #all-c
       { margin: 0 0 5px 5px; background: white; border: solid 5px #b6bbc0;
-        border-top: 0; position: relative; }
+        border-top: 0; border-right: 0; position: relative; }
       
     /* Crumbs */
     #all .breadcrumbs
-      { margin-top: -31px; background: transparent; padding: 0 5px 0 10px; }
+      { margin-top: -31px; background: transparent; padding: 0 0 0 10px; }
       
     #all .breadcrumbs-c
       { border-bottom: solid 5px #fff; height: 25px; overflow: hidden; }
@@ -146,6 +146,10 @@ a img     { border: 0; }
     #all .heading-c
       { background: #f5f5ee; padding: 10px 10px; margin-left: -10px;
         border-bottom: solid 1px #999da2; border-top: solid 1px #999da2; }
+      
+    #all .heading h1,
+    #all .heading h2
+      { font-size: 1.6em; line-height: 1.6em; }
       
     #all .heading h1,
     #all .heading h2,
@@ -194,11 +198,11 @@ a img     { border: 0; }
       { background: transparent; font-size: 1em; border: 0; padding: 0; }
       
     code
-      { background: #dfe8ec; color: #444; padding: 1px 6px;
+      { background: #dfe8ec; color: #444; padding: 1px 6px; font-size: 0.9em;
         border-bottom: solid 1px #ccc; }
         
     #all .content h3 + pre
-      { margin-top: 0; margin-bottom: 0; font-size: 1em;
+      { margin-top: 1px; margin-bottom: 1px; font-size: 1em;
         padding-top: 15px; padding-bottom: 15px; }
         
     #all .content pre + h3

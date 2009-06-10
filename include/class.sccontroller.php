@@ -87,9 +87,7 @@ class ScController
         if ($str != '') 
         {
             $ScX = $Sc->loadState();
-            echo '?';
             $results = $ScX->Project->lookup($str);
-            echo '!';
             if (count($results) > 0)
             {
                 $return = realpath($path . DS . $results[0]->getID() . '.html');

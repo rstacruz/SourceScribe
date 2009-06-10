@@ -6,35 +6,7 @@
         <h1><a href="<?php echo $home->getID() . '.html'; ?>"><span><?php echo $home->getTitle(); ?></span></a></h1>
     <?php } ?>
     
-    <div id="side">
-        <div id="parents"><div id="parents-c">
-            <?php if (count($tree_parents) > 0) { ?>
-                <ul>
-                <?php foreach ($tree_parents as $i => $node) {  ?>
-                    <li <?php if ($block->getID() == $node->getID()) { ?>class="active"<?php } ?>>
-                        <a href="<?php echo $node->getID().'.html';  ?>"><span class="arrow">&uarr;</span><strong><?php echo $node->getTitle(); ?></strong></a>
-                    </li>
-                <?php }  ?>
-                </ul>
-            <?php } ?>
-        </div></div><!-- #parents-c and #parents -->
-    
-        <div id="index"><div id="index-c">
-            <?php if ((is_array($tree)) && (count($tree) > 0)) { ?>
-                <ul>
-                    <?php foreach ($tree as $i => $node) { ?>
-                        <li <?php if ($block->getID() == $node->getID()) { ?>class="active"<?php } ?>>
-                            <a href="<?php echo $node->getID().'.html'; ?>"><?php echo $node->getTitle(); ?></a>
-                        </li>
-                    <?php } ?>
-                </ul>
-            <?php } ?>
-        </div></div><!-- #index-c and #index -->
-    </div><!-- #side -->
-
-
     <div id="all">
-        
         <!-- Breadcrumbs -->
         <div class="breadcrumbs"><div class="breadcrumbs-c">
             <ul>
@@ -45,6 +17,35 @@
         </div></div>
         
     <div id="all-c">
+
+        <!-- Sidebar -->
+        <div id="side">
+            <div id="parents"><div id="parents-c">
+                <?php if (count($tree_parents) > 0) { ?>
+                    <ul>
+                    <?php foreach ($tree_parents as $i => $node) {  ?>
+                        <li <?php if ($block->getID() == $node->getID()) { ?>class="active"<?php } ?>>
+                            <a href="<?php echo $node->getID().'.html';  ?>"><span class="arrow">&uarr;</span><strong><?php echo $node->getTitle(); ?></strong></a>
+                        </li>
+                    <?php }  ?>
+                    </ul>
+                <?php } ?>
+            </div></div><!-- #parents-c and #parents -->
+    
+            <div id="index"><div id="index-c">
+                <?php if ((is_array($tree)) && (count($tree) > 0)) { ?>
+                    <ul>
+                        <?php foreach ($tree as $i => $node) { ?>
+                            <li <?php if ($block->getID() == $node->getID()) { ?>class="active"<?php } ?>>
+                                <a href="<?php echo $node->getID().'.html'; ?>"><?php echo $node->getTitle(); ?></a>
+                            </li>
+                        <?php } ?>
+                    </ul>
+                <?php } ?>
+            </div></div><!-- #index-c and #index -->
+        </div><!-- #side -->
+
+
         <div class="block block-<?php echo strtolower($block->typename) ?> blocktype-<?php echo strtolower($block->type) ?>"><div class="block-c">
             
             <!-- Heading -->
@@ -71,6 +72,8 @@
                 <?php } ?>
                 </div><!-- .members -->
             </div><!-- .content -->
+            
+            <div class="clear"></div>
         </div>
     </div></div><!-- #all-c and #all -->
 
