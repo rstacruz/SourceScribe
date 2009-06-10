@@ -38,7 +38,7 @@ class ScController
     
     
     /*
-     * Function: do_build
+     * Function: do_build()
      * Does a build.
      * 
      * [Grouped under "Command-line actions"]
@@ -50,7 +50,7 @@ class ScController
     }
     
     /*
-     * Function: version
+     * Function: do_version()
      * Shows the version.
      * 
      * [Grouped under "Command-line actions"]
@@ -62,7 +62,7 @@ class ScController
     }
     
     /*
-     * Function: url
+     * Function: do_url()
      * Shows the file location of the default documentation.
      * 
      * [Grouped under "Command-line actions"]
@@ -112,7 +112,7 @@ class ScController
     }
     
     /*
-     * Function: open
+     * Function: do_open()
      * Opens the default documentation in the browser.
      * 
      * [Grouped under "Command-line actions"]
@@ -142,7 +142,7 @@ class ScController
     }
     
     /*
-     * Function: help
+     * Function: do_help()
      * Shows help.
      * 
      * [Grouped under "Command-line actions"]
