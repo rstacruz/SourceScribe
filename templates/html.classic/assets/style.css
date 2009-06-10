@@ -142,3 +142,9 @@ a img     { border: 0; }
     #index ul li .type { float: right; } 
     
     a.anchor { display: block; height: 0.1px; width: 0.1px; }
+    
+/*
+ * Disambig
+ */
+    body#disambiguation
+        { width: 300px; margin: 40px auto; background: red; }

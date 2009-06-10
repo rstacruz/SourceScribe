@@ -436,6 +436,24 @@ class ScBlock
     }
     
     /*
+     * Function: getLongTitle()
+     * Returns a long title.
+     * [Grouped under "Data functions"]
+     */
+
+    function getLongTitle()
+    {
+        $f = array();
+        if ($this->hasParent())
+        {
+            $parent = $this->getParent();
+            $f[] = $parent->getTitle() . ' ->';
+        }
+        $f[] = $this->getTitle();
+        return implode(' ', $f);
+    }
+    
+    /*
      * Function: getKeyword()
      * Returns the keyword for searching
      * [Grouped under "Data functions"]
@@ -473,15 +491,29 @@ class ScBlock
      * Description:
      *   This returns the actual type, not the alias used. For instance,
      *   a "Constructor: myclass()" block may return a type of `function`
-     *   instead of 'constructor'.
+     *   instead of 'constructor'. If you would like to see that instead
+     *  (e.g., "constructor"), use [[getTypeName()]].
      * 
      * Returns:
      *   A string of the typename.
+     * 
+     * See also: 
+     * - [[getTypeName()]]
      */
 
     function getType()
     {
         return $this->type;
+    }
+    
+    /*
+     * Function: getTypeName()
+     * Returns the type name.
+     */
+
+    function getTypeName()
+    {
+        return $this->typename;
     }
     
     /*

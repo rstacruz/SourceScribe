@@ -71,6 +71,18 @@ class ScController
     function do_url($args = array())
     {
         $Sc =& $this->Sc;
+        
+        // Initialize options
+        $show_all = FALSE; $show_info = FALSE; $show_html = FALSE;
+        while (TRUE)
+        {
+            if     ($args[0] == '-all')   { $show_all = TRUE; }
+            elseif ($args[0] == '-info')  { $show_info = TRUE; }
+            elseif ($args[0] == '-html')  { $show_html = TRUE; }
+            else { break; }
+            array_shift($args); 
+        }
+        
         $str = trim(implode(' ', $args));
         
         $output = $Sc->_getDefaultOutput();
@@ -95,9 +107,22 @@ class ScController
             $ScX = $Sc->loadState();
             $results = $ScX->Project->lookup($str); // returns an array of ScBlock
             if (count($results) == 0)
-                { return $Sc->error("Can't find your keyword."); }
+                { return $Sc->error("Sorry, no matches for \"$str\"."); }
+
+            if ($show_html) { $this->_showHtmlResults($str, $path, $results); return; }
             
-            $return = "file://" . realpath($path) . "/" . $Sc->Project->outputs[0]->link($results[0]);
+            // If only one is requested, discard the other results
+            if (!$show_all) { $results = array($results[0]); }
+
+            foreach ($results as $result)
+            {
+                if ($show_info)
+                    { echo $result->getLongTitle() . "\n"; }
+                echo "file://" . realpath($path) . "/" .
+                     $Sc->Project->outputs[0]->link($result) . "\n";
+            }
+            
+            return;
         }
         else
         {
@@ -105,10 +130,9 @@ class ScController
             $return = realpath($path . DS . 'index.html');
             if (!is_file($return))
                 { return $Sc->error("Can't find the output documentation. Try building it first."); }
-            $return = "file://" . $return;
+            echo "file://" . $return . "\n";
+            return;
         }
-        
-        echo $return . "\n";
     }
     
     /*
@@ -140,7 +164,7 @@ class ScController
 
         // Give up
     }
-    
+
     /*
      * Function: do_help()
      * Shows help.
@@ -155,8 +179,61 @@ class ScController
         echo "Commands:\n";
         echo "  build        Builds documentation\n";
         echo "  open         Opens the documentation in the browser\n";
+        echo "  html         Shows an HTML snippet of a specific keyword\n";
         echo "  url          Shows the documentation's URL\n";
         echo "  help         Shows this help screen\n";
     }
     
+    /*
+     * Function: do_html()
+     * To be documented.
+     */
+
+    function do_html($args = array())
+    {
+        return $this->do_url(array_merge(array('-html'), $args));
+    }
+    
+    /*
+     * Function: _showHtmlResults()
+     * Shows results in HTML format. Delegate of [[do_url()]].
+     * [Grouped under "Private functions"]
+     */
+     
+    // Scribe
+    function _showHtmlResults($keyword, $path, $results)
+    {
+        if (count($results) == 0) { return; }
+        elseif (count($results) == 1)
+        {
+            $url = "file://" . realpath($path) . "/" .
+                 $this->Sc->Project->outputs[0]->link($results[0]);
+            echo "<meta http-equiv='Refresh' content='0;URL=$url'>";
+            return;
+        }
+        
+        echo "<html><head>\n";
+        echo '<link rel="stylesheet" href="file://' . $path . '/assets/style.css" media="all" />' . "\n";
+        echo "</head><body id=\"disambiguation\">\n";
+        echo '<div>' . "\n";
+        echo "<h1><code>$keyword</code> may refer to:</h1>\n";
+        echo "<ul>\n";
+        
+        foreach ($results as $result)
+        {
+            $url = "file://" . realpath($path) . "/" .
+                 $this->Sc->Project->outputs[0]->link($result);
+            $title = htmlentities($result->getTitle());
+            $desc = "";
+            if ($result->hasParent()) {
+                $parent =& $result->getParent();
+                $desc = ", a " . strtolower($result->getTypeName()) . " of " . $parent->getTitle();
+            }
+            echo "<li><a href=\"$url\">$title</a>$desc</li>\n";
+        }
+        
+        echo "</ul>\n";
+        echo "</div>\n";
+        echo "</body></html>\n";
+    }
 }
