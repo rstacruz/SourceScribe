@@ -1,61 +1,63 @@
 <?php
-    $title = $project->getName() . ' - ' . $blocks[0]->getTitle();
+    $title = $project->getName() . ' - ' . $block->getTitle();
     include dirname(__FILE__) . '/header.php';
 ?>
     <?php if ($home) { ?>
-        <h1><a href="<?php echo $home->getID() . '.html'; ?>"><?php echo $home->getTitle(); ?></a></h1>
+        <h1><a href="<?php echo $home->getID() . '.html'; ?>"><span><?php echo $home->getTitle(); ?></span></a></h1>
     <?php } ?>
     
-    <?php if (count($tree_parents) > 0) { ?>
-        <ul>
-        <?php foreach ($tree_parents as $i => $node) {  ?>
-            <li><a href="<?php echo $node->getID().'.html';  ?>"><strong><?php echo $node->getTitle(); ?></strong></a></li>
-        <?php }  ?>
-        </ul>
-    <?php } ?>
-    <div id="index">
-        <?php if ((is_array($tree)) && (count($tree) > 0)) { ?>
-            <ul>
-                <?php foreach ($tree as $i => $node) { ?>
-                    <li><a href="<?php echo $node->getID().'.html'; ?>"><?php echo $node->getTitle(); ?></a></li>
-                <?php } ?>
-            </ul>
-        <?php } ?>
-                
-    </div>
+    <div id="side">
+        <div id="parents"><div id="parents-c">
+            <?php if (count($tree_parents) > 0) { ?>
+                <ul>
+                <?php foreach ($tree_parents as $i => $node) {  ?>
+                    <li <?php if ($block->getID() == $node->getID()) { ?>class="active"<?php } ?>>
+                        <a href="<?php echo $node->getID().'.html';  ?>"><span class="arrow">&uarr;</span><strong><?php echo $node->getTitle(); ?></strong></a>
+                    </li>
+                <?php }  ?>
+                </ul>
+            <?php } ?>
+        </div></div><!-- #parents-c and #parents -->
+    
+        <div id="index"><div id="index-c">
+            <?php if ((is_array($tree)) && (count($tree) > 0)) { ?>
+                <ul>
+                    <?php foreach ($tree as $i => $node) { ?>
+                        <li <?php if ($block->getID() == $node->getID()) { ?>class="active"<?php } ?>>
+                            <a href="<?php echo $node->getID().'.html'; ?>"><?php echo $node->getTitle(); ?></a>
+                        </li>
+                    <?php } ?>
+                </ul>
+            <?php } ?>
+        </div></div><!-- #index-c and #index -->
+    </div><!-- #side -->
 
 
     <div id="all">
-        <?php foreach ($blocks as $bid => $block) { ?>
-            <div class="block-c"><div class="block block-<?php echo strtolower($block->typename) ?> blocktype-<?php echo strtolower($block->type) ?>">
-            <?php if ($block->hasParent()) { $parent =& $block->getParent(); ?>
-                <p class="parent">
-                    <a href="<?php echo $parent->getID().'.html'; ?>">&uarr; <?php echo $parent->getType() . ' ' . $parent->getTitle(); ?></a>
-                </p>
-            <?php } ?>
-            <a name="<?php echo $block->getID(); ?>" class="anchor"></a>
-                <!--<p class="type"><?php echo $block->typename ?></p>-->
+        
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs"><div class="breadcrumbs-c">
+            <ul>
+                <?php foreach ($breadcrumbs as $i => $node) { ?>
+                    <li class="item-<?php echo count($breadcrumbs) - (int)$i - 1; ?>"><a href="<?php echo $node->getID().'.html'; ?>"><?php echo $node->getTitle() ?></a></li>
+                <?php } ?>
+            </ul>
+        </div></div>
+        
+    <div id="all-c">
+        <div class="block block-<?php echo strtolower($block->typename) ?> blocktype-<?php echo strtolower($block->type) ?>"><div class="block-c">
+            
+            <!-- Heading -->
+            <div class="heading"><div class="heading-c">
                 <h2><span><?php echo $block->getTitle(); ?></span></h2>
                 <div class="brief"><?php echo $block->getBrief(); ?></div>
-                <div class="description"><?php echo str_replace(array('h2>'), array('h3>'), $block->getContent()); ?></div>
-                <?php if ($block->hasTags()) { ?>
+            </div></div><!-- .heading-c and .heading -->
+            
+            <div class="content">
                 <div class="description">
-                    <h3><span>Tags</span></h3>
-                    <ul>
-                        <?php foreach ($block->getTags() as $tag) { ?>
-                            <li><?php echo $tag; ?></li>
-                        <?php } ?>
-                    </ul>
+                    <?php echo str_replace(array('h2>'), array('h3>'), $block->getContent()); ?>
                 </div>
-                <?php } ?>
-                <?php if (!is_null($block->getGroup())) { ?>
-                <div class="description">
-                    <h3><span>Group</span></h3>
-                    <ul>
-                        <li><?php echo $block->getGroup(); ?></li>
-                    </ul>
-                </div>
-                <?php } ?>
+                
                 <div class="members">
                 <?php foreach ($block->getMemberLists() as $member_list) { ?>
                     <?php if (count($member_list['members']) == 0) { continue; } ?>
@@ -67,9 +69,9 @@
                         <?php } ?>
                     </dl>
                 <?php } ?>
-                </div>
-            </div></div>
-        <?php } ?>
-    </div>
+                </div><!-- .members -->
+            </div><!-- .content -->
+        </div>
+    </div></div><!-- #all-c and #all -->
 
 <?php include dirname(__FILE__) . '/footer.php'; ?>
