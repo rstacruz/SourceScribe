@@ -7,11 +7,18 @@
  
 class ScController
 {
-    var $Sc;
+    var $Sc = NULL;
     
     function ScController(&$Sc)
         { $this->Sc =& $Sc; }
         
+    function& getSc()
+    {
+        if (!is_null($this->Sc)) { return $this->Sc; }
+        $this->Sc = new Scribe();
+        return $this->Sc;
+    }
+    
     /*
      * Function: go()
      * Starts the controller.
@@ -181,8 +188,25 @@ class ScController
         echo "  open         Opens the documentation in the browser\n";
         echo "  html         Shows an HTML snippet of a specific keyword\n";
         echo "  url          Shows the documentation's URL\n";
+        echo "  makeconfig   Create default configuration\n";
         echo "  configinfo   Shows the options as loaded in the configuration\n";
         echo "  help         Shows this help screen\n";
+    }
+    
+    /*
+     * Function: do_makeconfig()
+     * Outputs a default configuration file.
+     */
+
+    function do_makeconfig()
+    {
+        ob_start(); @include SCRIBE_PATH . '/include/misc.defaultconfig.php';
+        $contents = ob_get_clean();
+        $output_fname = getcwd() . DS . 'sourcescribe.conf';
+        if (is_file($output_fname))
+            { return $this->Sc->error("A configuration file already exists!"); }
+            
+        file_put_contents($output_fname, $contents);
     }
     
     /*

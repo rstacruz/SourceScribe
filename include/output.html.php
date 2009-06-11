@@ -150,7 +150,7 @@ class HtmlOutput extends ScOutput
         $str = str_replace(array('h4>'), array('h5>'), $str);
         $str = str_replace(array('h3>'), array('h4>'), $str);
         $str = str_replace(array('h2>'), array('h3>'), $str);
-        $str = preg_replace_callback("~\"(LINK#(.*?))\"~", array(&$this, '_resolveLink'), $str);
+        $str = preg_replace_callback("~\"(##(.*?))\"~", array(&$this, '_resolveLink'), $str);
         return $str;
     }
     

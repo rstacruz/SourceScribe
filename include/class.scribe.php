@@ -139,7 +139,7 @@ class Scribe
         // Find config file
         $config_file = $this->findConfigFile();
         if ($config_file === FALSE)
-            { return $this->error('No config file found.'); }
+            { return $this->error('No config file found. You may generate one using `ss makeconfig`.'); }
         
         // Load config file and validate
         $this->_config = yaml($config_file);

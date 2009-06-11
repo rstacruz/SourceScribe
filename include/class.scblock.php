@@ -340,9 +340,9 @@ class ScBlock
      * [Grouped under "Constructor"]
      */
 
-    function& factory($input, &$project)
+    function& factory($input, &$project, $the_classname = 'ScBlock')
     {
-        $return = new ScBlock($input, $project);
+        $return = new $the_classname($input, $project);
         $classname = $return->getTypeData('block_class');
         if (!is_null($classname))
             { $returnx = new $classname($return, $project); return $returnx; }
@@ -685,7 +685,7 @@ class ScBlock
         $url = '#';
         $results = $this->Project->lookup($m[1]);
         if (count($results) > 0)
-            { $url = 'LINK#' . $results[0]->getID(); }
+            { $url = '##' . $results[0]->getID(); }
         return "<a href=\"$url\">$m[1]</a>";
     }
     

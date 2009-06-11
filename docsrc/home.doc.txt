@@ -30,6 +30,26 @@ File format:
       - array member 1
       - array member 2
 
+  For more information on this file format, see the [YAML in 5 minutes][l1]
+  tutorial, or the official [YAML site][l2]. Also, [test](##ScBlock).
+
+  [l1]: http://yaml.kwiki.org/?YamlInFiveMinutes
+  [l2]: http://www.yaml.org
+
+
+Creating your config file:
+
+  In the command line, change to the directory of your project and type
+  `ss makeconfig`. This will output a sample `sourcescribe.conf` for you
+  to edit to your needs.
+
+  Note that the only required options are `name` and `output`. Technically,
+  This is valid configuration file: 
+
+    # sourcescribe.conf
+    name: My project
+    output: [{ driver: "html", path: "doc/" }]
+
 Required options:
 
   name    - The project name
@@ -46,6 +66,9 @@ More options:
   file_specs               - (not implemented yet)
 
 For block types:
+  Every `block_types` entry can have any of these options.
+  Note that *all* of them are optional.
+
   has_brief        - .
   title_plural     - .
   parent_in_id     - .
@@ -56,5 +79,7 @@ For block types:
   tags             - .
   short            - .
   synonyms         - .
+
+:)
 
 *//////////////////////////////////////////////////////////////////////////////*
