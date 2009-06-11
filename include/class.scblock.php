@@ -709,7 +709,7 @@ class ScBlock
         $url = '#';
         $results = $this->Project->lookup($m[1]);
         if (count($results) > 0)
-            { $url = '#' . $results[0]->getID(); }
+            { $url = 'LINK#' . $results[0]->getID(); }
         return "<a href=\"$url\">$m[1]</a>";
     }
     

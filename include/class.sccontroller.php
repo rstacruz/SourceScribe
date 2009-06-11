@@ -181,6 +181,7 @@ class ScController
         echo "  open         Opens the documentation in the browser\n";
         echo "  html         Shows an HTML snippet of a specific keyword\n";
         echo "  url          Shows the documentation's URL\n";
+        echo "  configinfo   Shows the options as loaded in the configuration\n";
         echo "  help         Shows this help screen\n";
     }
     
@@ -193,6 +194,16 @@ class ScController
     function do_html($args = array())
     {
         return $this->do_url(array_merge(array('-html'), $args));
+    }
+    
+    /*
+     * Function: do_configinfo()
+     * Checks configuration info
+     */
+
+    function do_configinfo()
+    {
+        print_r(Spyc::YAMLDump($this->Sc->Project->options));
     }
     
     /*

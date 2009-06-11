@@ -12,22 +12,42 @@ Page: Configuration options
 
 File format:
 
-  SourceScribe will always look for a `sourcescribe.conf`. It is in YAML format.
+  SourceScribe will always look for a `sourcescribe.conf`. It is in YAML format,
+  which is a simple format for defining key/value pairs and arrays.
+  Here's an example: 
 
-Valid options:
+    # Comment
+    # Blank lines and comments are ignored
 
-  - name
-  - output
-  - src_path
-  - exclude
-  - additional_block_types
-  - additional_tags
-  - tag_synonyms
-  - file_specs (not implemented yet)
+    key_one:  value
+    key_two:  "value"
 
-Advanced...
+    key_three:
+      sub_key_one: value
+      sub_key_two: value
 
-  - tags
-  - block_types
+    key_four:
+      - array member 1
+      - array member 2
+
+Required options:
+
+  name    - The project name
+  output  - Output
+
+More options:
+  src_path                 - .
+  exclude                  - .
+  additional_block_types   - .
+  additional_tags          - .
+  tag_synonyms             - .
+  file_specs               - (not implemented yet)
+
+Advanced options:
+
+  tags                   - ..
+  block_types            - .
+
+.
 
 *//////////////////////////////////////////////////////////////////////////////*

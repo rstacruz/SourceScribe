@@ -139,6 +139,28 @@ class HtmlOutput extends ScOutput
             file_put_contents($index_file, $output);
         }
     }
+    
+    /*
+     * Function: _processContent()
+     * Resolves links
+     */
+
+    function _processContent($str)
+    {
+        $str = str_replace(array('h4>'), array('h5>'), $str);
+        $str = str_replace(array('h3>'), array('h4>'), $str);
+        $str = str_replace(array('h2>'), array('h3>'), $str);
+        $str = preg_replace_callback("~\"(LINK#(.*?))\"~", array(&$this, '_resolveLink'), $str);
+        return $str;
+    }
+    
+    function _resolveLink($m)
+    {
+        $id = $m[2];
+        $b = $this->Project->lookup($id);
+        if (count($b) == 0) { return '#'; }
+        return $this->link($b[0]);
+    }
      
     function link(&$block)
     {

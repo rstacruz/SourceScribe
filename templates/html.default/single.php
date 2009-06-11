@@ -67,7 +67,7 @@
             
             <div class="content">
                 <div class="description">
-                    <?php echo str_replace(array('h2>'), array('h3>'), $block->getContent()); ?>
+                    <?php echo $this->_processContent($block->getContent()); ?>
                 </div>
                 
                 <div class="members">

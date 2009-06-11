@@ -332,13 +332,15 @@ class ScProject
      *   Unspecified.
      */
 
-    function& lookup($keyword, $reference = NULL)
+    function& lookup($raw_keyword, $reference = NULL)
     {
-        $keyword = $this->_distill($keyword);
+        $keyword = $this->_distill($raw_keyword);
         $return = array();
         
         foreach ((array) $this->data['blocks'] as $block)
         {
+            if (strtolower($block->getID()) == strtolower($raw_keyword))
+                { $return[] = $block; continue; }
             $title = $this->_distill($block->getKeyword());
             if ($title == $keyword)
                 { $return[] = $block; }
