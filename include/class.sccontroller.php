@@ -9,8 +9,8 @@ class ScController
 {
     var $Sc = NULL;
     
-    function ScController(&$Sc)
-        { $this->Sc =& $Sc; }
+    function ScController() {} //&$Sc)
+        //{ $this->Sc =& $Sc; }
         
     function& getSc()
     {
@@ -28,13 +28,11 @@ class ScController
      */
     function go()
     {
-        $Sc =& $this->Sc;
-        
         $args = array_slice($_SERVER['argv'], 1);
         if (count($args) == 0) { $args = array('build'); }
         
         if (!is_callable(array($this, 'do_'.$args[0])))
-            { $Sc->error("Unknown command: " . $args[0]); return; }
+            { ScStatus::error("Unknown command: " . $args[0]); return; }
             
         $this->{'do_'.$args[0]}(array_slice($args, 1));
     }
@@ -53,7 +51,8 @@ class ScController
      
     function do_build($args = array())
     {
-        $this->Sc->Project->build();
+        $Sc =& $this->getSc();
+        $Sc->Project->build();
     }
     
     /*
@@ -77,7 +76,7 @@ class ScController
 
     function do_url($args = array())
     {
-        $Sc =& $this->Sc;
+        $Sc =& $this->getSc();
         
         // Initialize options
         $show_all = FALSE; $show_info = FALSE; $show_html = FALSE;
@@ -204,7 +203,7 @@ class ScController
         $contents = ob_get_clean();
         $output_fname = getcwd() . DS . 'sourcescribe.conf';
         if (is_file($output_fname))
-            { return $this->Sc->error("A configuration file already exists!"); }
+            { return ScStatus::error("A configuration file already exists!"); }
             
         file_put_contents($output_fname, $contents);
     }
@@ -227,7 +226,8 @@ class ScController
 
     function do_configinfo()
     {
-        print_r(Spyc::YAMLDump($this->Sc->Project->options));
+        $Sc =& $this->getSc();
+        print_r(Spyc::YAMLDump($Sc->Project->options));
     }
     
     /*

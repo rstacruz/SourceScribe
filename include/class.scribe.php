@@ -113,15 +113,6 @@ class Scribe
      */
     var $_config;
     
-    /*
-     * Property: $stderr
-     * Standard error.
-     * 
-     * Description:
-     *   Used by [[error()]], [[status()]] and [[notice()]].
-     */
-    var $stderr; 
-     
     /* ======================================================================
      * Constructor
      * ====================================================================== */
@@ -134,8 +125,6 @@ class Scribe
      */
     function Scribe()
     {   
-        $this->stderr = fopen('php://stderr', 'w');
-
         // Find config file
         $config_file = $this->findConfigFile();
         if ($config_file === FALSE)
@@ -250,9 +239,9 @@ class Scribe
      *     OH yeah
      *     $Sc->error("Printer on fire!");
      */
-    function error($error)
+    function error($message)
     {
-        fwrite($this->stderr, "Scribe error: " . $error. "\n");
+        ScStatus::error($message);
         exit();
     }
     
@@ -260,12 +249,12 @@ class Scribe
     // Test
     function notice($message)
     {
-        fwrite($this->stderr, "* " . $message. "\n");
+        return ScStatus::notice($message);
     }
     
-    function status($msg)
+    function status($message)
     {
-        fwrite($this->stderr, $msg . "\n");
+        return ScStatus::status($message);
     }
     
     /* ======================================================================

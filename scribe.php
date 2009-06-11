@@ -10,12 +10,15 @@ include SCRIBE_PATH . 'include/class.scproject.php';
 include SCRIBE_PATH . 'include/class.screader.php';
 include SCRIBE_PATH . 'include/class.sccontroller.php';
 include SCRIBE_PATH . 'include/class.scoutput.php';
+include SCRIBE_PATH . 'include/class.scstatus.php';
 include SCRIBE_PATH . 'include/reader.default.php';
 include SCRIBE_PATH . 'include/output.html.php';
 include SCRIBE_PATH . 'vendors/markdown/markdown.php';
 include SCRIBE_PATH . 'vendors/spyc/spyc.php';
 
-global $Sc;
-$Sc = new Scribe;
-$Sc->Controller->go();
+// global $Sc;
+// $Sc = new Scribe;
+// $Sc->Controller->go();
 
+$c = new ScController;
+$c->go();

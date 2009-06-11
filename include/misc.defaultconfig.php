@@ -1,5 +1,9 @@
+# -----------------------------------------------------------------------------
 # SourceScribe configuration
-# (This file is in YAML format. Mind your indentation!)
+# -----------------------------------------------------------------------------
+# This project is documented using SourceScribe. This file describes the
+# configuration for documentation generation.
+# -----------------------------------------------------------------------------
 
 # Document title
 #   Enter your main title here. You can define your own home page by making
