@@ -61,14 +61,16 @@ class Scribe
                 'has_brief' => TRUE,
                 'parent_in_id' => array('class'),
                 'short' => 'fn',
-                'synonyms' => array('constructor', 'ctor', 'destructor', 'dtor', 'method')
+                'synonyms' => array('constructor', 'ctor', 'destructor', 'dtor', 'method'),
+                'tags' => array('static', 'private', 'public', 'protected')
             ),
             'var' => array(
                 'title_plural' => 'Properties',
                 'has_brief' => TRUE,
                 'parent_in_id' => array('class'),
                 'short' => 'v',
-                'synonyms' => array('property')
+                'synonyms' => array('property'),
+                'tags' => array('read-only', 'private', 'public', 'protected')
             ),
             'class' => array(
                 'title_plural' => 'Classes',
@@ -92,14 +94,11 @@ class Scribe
             '\.doc.txt$' => 'default'
         ),
         
-        'tags' => array(
-            'private'    => 'private',
-            'public'     => 'public',
-            'static'     => 'static',
-            'read-only'  => 'read-only',
-            'readonly'   => 'read-only',
-            'deprecated' => 'deprecated',
-            'deprec'     => 'deprecated',
+        'tags' => array('deprecated', 'unimplemented'),
+        
+        'tag_synonyms' => array(
+            'read-only' => array('readonly'),
+            'deprecated' => array('deprec'),
         ),
     );
     

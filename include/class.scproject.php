@@ -115,11 +115,16 @@ class ScProject
      */
      
     /* Property: $options['tags']
-     * Tags
+     * Project-wide tags.
      * 
      * [Grouped under "Options"]
      */
      
+    /* Property: $options['tag_synonyms']
+     * Associative array tag thesaurus.
+     * 
+     * [Grouped under "Options"]
+     */
      
     /* Property: $options['name']
      * To be documented.
@@ -461,6 +466,12 @@ class ScProject
             if (!isset($block_type['parent_in_id']))
                 { $block_type['parent_in_id'] = array(); }
                 
+            if (!isset($block_type['tags']))
+                { $block_type['tags'] = array(); }
+                
+            if (!is_array($block_type['tags']))
+                { $block_type['tags'] = (array) $block_type['tags']; }
+                
             if (!is_array($block_type['parent_in_id']))
                 { $block_type['parent_in_id'] = (array) $block_type['parent_in_id']; }
                 
@@ -505,30 +516,44 @@ class ScProject
         }
         
         // Migrate defaults
-        foreach (array('block_types', 'file_specs', 'tags') as $k)
+        foreach (array('block_types', 'file_specs', 'tags', 'tag_synonyms') as $k)
         {
             $this->options[$k] = $Sc->defaults[$k];
         }
         
         // Load configuration variables
-        foreach (array('block_types', 'name','output','src_path','exclude') as $k)
+        foreach (array('block_types', 'name','output','src_path','exclude', 'tags') as $k)
         {
             if (!isset($Sc->_config[$k])) { continue; }
             $this->options[$k] = $Sc->_config[$k];
         }
         
-        if (isset($Sc->_config['extra_block_types']))
+        if (isset($Sc->_config['additional_tags']))
         {
-            if (!is_array($Sc->_config['extra_block_types']))
-                { return $Sc->error('Extra_block_types defined is not an array'); }
+            $this->options['tags'] = array_merge(
+                $this->options['tags'],
+                (array) $Sc->_config['additional_tags']);
+        }
+        
+        if (isset($Sc->_config['tag_synonyms']))
+        {
+            $this->options['tag_synonyms'] = array_merge_recursive(
+                $this->options['tag_synonyms'],
+                (array) $Sc->_config['tag_synonyms']);
+        }
+        
+        if (isset($Sc->_config['additional_block_types']))
+        {
+            if (!is_array($Sc->_config['additional_block_types']))
+                { return $Sc->error('additional_block_types defined is not an array'); }
                 
-            foreach ($Sc->_config['extra_block_types'] as $id => $data)
+            foreach ($Sc->_config['additional_block_types'] as $id => $data)
             {
                 if (!isset($this->options['block_types'][$id]))
                     { $this->options['block_types'][$id] = $data; continue; }
                 
                 if (!is_array($data))
-                    { return $Sc->error('Extra_block_types has an invalid definition for "' . $id . '"'); }
+                    { return $Sc->error('additional_block_types has an invalid definition for "' . $id . '"'); }
                     
                 foreach ($data as $k => $v)
                 {
@@ -635,6 +660,10 @@ class ScProject
             foreach ($this->data['tree'] as $i => $block)
                 if ($block->getID() != 'index')
                     { $this->data['home']->registerChild($this->data['tree'][$i]); }
+                    
+        // Finalize everything
+        foreach ($this->data['blocks'] as &$block)
+            { $block->finalize(); }
     }
     /* ======================================================================
      * End

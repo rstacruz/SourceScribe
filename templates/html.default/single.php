@@ -55,7 +55,14 @@
             <!-- Heading -->
             <div class="heading"><div class="heading-c">
                 <h2><span><?php echo $block->getTitle(); ?></span></h2>
-                <div class="brief"><?php echo $block->getBrief(); ?></div>
+                <div class="brief">
+                <?php echo strip_tags($block->getBrief(), "<a><code><b><strong><em><i>"); ?>
+                <?php if (count($block->getTags()) > 0) { ?>
+                    <?php foreach ($block->getTags() as $tag) { ?>
+                        <span class="tag"><?php echo $tag; ?></span>
+                    <?php } ?>
+                <?php } ?>
+                </div>
             </div></div><!-- .heading-c and .heading -->
             
             <div class="content">
@@ -70,7 +77,14 @@
                     <dl>
                         <?php foreach ($member_list['members'] as $node) { ?>
                             <dt class="<?php echo str_replace('.','-',$node->getID()); ?>"><span class="term"><a name="<?php echo $node->getID(); ?>" class="<?php echo $this->linkClass($node); ?>" href="<?php echo $this->link($node); ?>"><?php echo $node->getTitle(); ?></a></span></dt>
-                            <dd class="<?php echo str_replace('.','-',$node->getID()); ?>"><?php echo strip_tags($node->getBrief(), '<a><code><strong><b><i><em>'); ?></dd>
+                            <dd class="<?php echo str_replace('.','-',$node->getID()); ?>">
+                                <?php if (count($node->getTags()) > 0) { ?>
+                                    <?php foreach ($node->getTags() as $tag) { ?>
+                                        <span class="tag"><?php echo $tag; ?></span>
+                                    <?php } ?>
+                                <?php } ?>
+                                <?php echo strip_tags($node->getBrief(), '<a><code><strong><b><i><em>'); ?>
+                            </dd>
                         <?php } ?>
                     </dl>
                 <?php } ?>

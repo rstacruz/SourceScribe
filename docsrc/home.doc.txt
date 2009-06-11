@@ -5,3 +5,29 @@ Page: SourceScribe manual
 Hello! Welcome to the SourceScribe manual.
 
 *//////////////////////////////////////////////////////////////////////////////*
+
+Page: Configuration options
+
+  There are many configurations options available.
+
+File format:
+
+  SourceScribe will always look for a `sourcescribe.conf`. It is in YAML format.
+
+Valid options:
+
+  - name
+  - output
+  - src_path
+  - exclude
+  - additional_block_types
+  - additional_tags
+  - tag_synonyms
+  - file_specs (not implemented yet)
+
+Advanced...
+
+  - tags
+  - block_types
+
+*//////////////////////////////////////////////////////////////////////////////*

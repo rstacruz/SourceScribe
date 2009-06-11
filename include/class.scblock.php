@@ -254,6 +254,8 @@ class ScBlock
     {
         $tag_list = array_map('trim', explode(',', $tags));
         $valid_tags = array_keys($this->Project->options['tags']);
+        
+        $vtags = $this->getValidTags();
         foreach ($tag_list as $tag)
         {
             // Match:
@@ -279,9 +281,50 @@ class ScBlock
             }
              
             $tag = strtolower($tag);
-            if (in_array($tag, $valid_tags))
-                { $this->_tags[] = $this->Project->options['tags'][$tag]; }
+            if (in_array($tag, array_keys($vtags)))
+                { $this->_tags[] = $vtags[$tag]; }
         }
+    }
+    
+    /*
+     * Function: getValidTags()
+     * Returns a list of valid tags in associative array format.
+     * 
+     * Sample output:
+     *   It can output something like this.
+     * 
+     *     Array
+     *     (
+     *         "deprecated" => "deprecated",
+     *         "deprec"     => "deprecated",
+     *         "read-only"  => "read-only",
+     *         "readonly"   => "read-only",
+     *     )
+     */
+
+    function getValidTags()
+    {
+        
+        $vtags = array();
+        
+        // Combine the project-wide tags and blocktype-specific tags...
+        foreach (array_merge($this->Project->options['tags'], $this->getTypeData('tags')) as $tag)
+            { $vtags[$tag] = $tag; }
+            
+        // And it's synonyms...
+        $synonyms =& $this->Project->options['tag_synonyms'];
+        foreach ($vtags as $vtag)
+        {
+            if (isset($synonyms[$vtag]))
+            {
+                $aliases = (array) $synonyms[$vtag];
+                foreach ($aliases as $alias)
+                    { $vtags[$alias] = $vtag; }
+            }
+        }
+        
+        // Into the valid tags
+        return $vtags;
     }
     
     /*
@@ -630,8 +673,7 @@ class ScBlock
             "\n\\1\n: \\2\\3", $str);
         
         // Convert [[]] links
-        $str = preg_replace_callback('~\[\[(.*?)\]\]~s',
-                 array($this, '_toHTMLLinkCallback'), $str);
+        $str = preg_replace('~\[\[(.*?)\]\]~s', "<a href=#>\\1</a>", $str);
         
         // return '<pre>' . htmlentities($str) . '</pre>';
         $str = markdown($str);
@@ -662,13 +704,27 @@ class ScBlock
         return (trim((string) $this->content) == '') ? FALSE : TRUE;
     }
     
-    function _toHTMLLinkCallback($m)
+    function _toLinkCallback($m)
     {
-        // Parameter looks like:
-        // array("[[options()]]", "options()")
-        
-        $str = $m[1];
-        return "<a href='#" . $this->Project->lookup($str) . "'>$str</a>";
+        $url = '#';
+        $results = $this->Project->lookup($m[1]);
+        if (count($results) > 0)
+            { $url = '#' . $results[0]->getID(); }
+        return "<a href=\"$url\">$m[1]</a>";
+    }
+    
+    /*
+     * Function: finalize()
+     * Ran when building is done
+     */
+
+    function finalize()
+    {
+       // "Finalizing: " . $this->getID() . "\n";
+       $this->content = preg_replace_callback('~\<a href=#\>(.*?)\</a\>~s',
+                 array($this, '_toLinkCallback'), $this->content);
+       $this->brief = preg_replace_callback('~\<a href=#\>(.*?)\</a\>~s',
+                 array($this, '_toLinkCallback'), $this->brief);
     }
     
     /*

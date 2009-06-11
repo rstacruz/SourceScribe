@@ -141,8 +141,11 @@ a img     { border: 0; }
         border-right: solid 1px #ccc; border-bottom: solid 1px #bbb; 
         font-size: 0.8em; }
         
+    #all .breadcrumbs-c li.item-0
+      { border-right: solid 3px #aab3b6; }
+      
     #all .breadcrumbs-c li.item-0 a
-      { border-right: 0; border-bottom: solid 1px #fff; }
+      { border-right: solid 1px #999; border-bottom: solid 1px #fff; }
        
     #all .breadcrumbs li.item-1 a { background-color: #f1f1f1; }
     #all .breadcrumbs li.item-2 a { background-color: #e2e2e2; }
@@ -172,7 +175,12 @@ a img     { border: 0; }
     #all .heading h2,
     #all .heading p
       { margin: 0; padding: 0; }
-      
+     
+    span.tag
+      { background: #7bd; color: #fff; font-size: 0.8em;
+        padding: 1px 5px; margin: 0px 1px;
+        border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; }
+        
     #all .content
       { min-height: 400px; height: auto !important; height: 400px;
         overflow: hidden; padding-bottom: 10px; }
