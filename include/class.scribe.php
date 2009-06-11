@@ -62,7 +62,7 @@ class Scribe
                 'parent_in_id' => array('class'),
                 'short' => 'fn',
                 'synonyms' => array('constructor', 'ctor', 'destructor', 'dtor', 'method'),
-                'tags' => array('static', 'private', 'public', 'protected')
+                'tags' => array('static', 'private', 'public', 'protected', 'virtual')
             ),
             'var' => array(
                 'title_plural' => 'Properties',
@@ -70,7 +70,7 @@ class Scribe
                 'parent_in_id' => array('class'),
                 'short' => 'v',
                 'synonyms' => array('property'),
-                'tags' => array('read-only', 'private', 'public', 'protected')
+                'tags' => array('read-only', 'private', 'public', 'protected', 'constant')
             ),
             'class' => array(
                 'title_plural' => 'Classes',
@@ -99,6 +99,7 @@ class Scribe
         'tag_synonyms' => array(
             'read-only' => array('readonly'),
             'deprecated' => array('deprec'),
+            'constant' => array('const'),
         ),
     );
     

@@ -2,145 +2,28 @@
 
 /*
  * Class: ScBlock
- * A block
+ * A page of sorts.
+ * 
+ *   Every comment block is defined as an `ScBlock`. A reader ([[ScReader]])
+ *   will scan files, and for every comment block it encounters, it uses
+ *   [[ScProject::register()]] to register a block instance to the project,
+ *   which is created through [[factory()]].
+ * 
+ *   Each block has: 
+ * 
+ *    - A block type
+ *    - Title
+ *    - Brief description (optional)
+ *    - Content
+ *    - Members
+ * 
+ * Protected methods:
+ *   This class provides a few protected methods. These methods are provided
+ *   to be overridden for subclasses. 
  */
 
 class ScBlock
 {
-    /* ======================================================================
-     * Private properties
-     * ====================================================================== */
-     
-    var $Project;
-    
-    var $_data;
-    var $valid = FALSE;
-    
-    // Property: $typename
-    // The name of the type as defined in the first line
-    var $typename = '';
-    
-    /* 
-     * Property: $type
-     * The proper name of the type.
-     *
-     * Description:
-     *   Access the type of the block through [[getType()]]
-     *   and [[getTypeData()]].
-     * 
-     * [Read-only, private]
-     */
-     
-    var $type;
-    
-    /*
-     * Property: $title
-     * The raw title of the block.
-     * 
-     * Description:
-     *   This is a read-only property. To get the title, use [[getTitle()]] as
-     *   it will provide additional stuff.
-     * 
-     * [Read-only, private]
-     */
-    var $title;
-    
-    /*
-     * Property: $content
-     * The content in HTML format, as already parsed by [[toHTML()]].
-     * 
-     * [Read-only, private]
-     */
-     
-    var $content;
-    
-    /*
-     * Property: $brief
-     * The brief description in HTML format.
-     * 
-     * [Read-only, private]
-     */
-     
-    var $brief;
-    
-    /*
-     * Property: $_id
-     * The ID.
-     * 
-     * Description:
-     *   Access the ID of the block through [[getID()]]. The ID is
-     *   automatically-determined; it can not be user-set.
-     * 
-     * [Read-only, private]
-     */
-    var $_id = null;
-    
-    /* Property: $_group
-     * The group.
-     * 
-     * Description:
-     *   Access via [[getGroup()]], or the parent's [[getMemberLists()]].
-     * 
-     * [Read-only]
-     */
-    var $_group = NULL;
-    
-    /*
-     * Property: $_parent
-     * Reference to the parent in the index tree.
-     *
-     * Description:
-     *   This is a private variable only used by the `ScBlock` class.
-     *
-     *   - To get the parent of the block, use [[getParent()]].
-     *   - To get all it's parents, use [[getAncestry()]].
-     *   - To register a block as a child of another block,
-     *     use [[registerChild()]].
-     * 
-     * See also:
-     *  - [[getParent()]]
-     *  - [[getChildren()]]
-     *  - [[registerChild()]]
-     * 
-     * [Read-only, private]
-     */
-    var $_parent;
-    
-    /*
-     * Property: $_children
-     *   An array of references to `ScBlock` instances that are the children of
-     *   the current block.
-     *
-     * Description:
-     *   This is a private variable only used by the `ScBlock` class.
-     *
-     *   - To get the children of the block, use [[getChildren()]].
-     *   - To get the children in a grouped manner, use [[getMemberLists()]].
-     *   - To register a block as a child of another block,
-     *     use [[registerChild()]].
-     * 
-     * See also:
-     *  - [[getParent()]]
-     *  - [[getChildren()]]
-     *  - [[registerChild()]]
-     */
-    var $_children = array();
-    
-    /*
-     * Property: $_tags
-     * Tags
-     */
-    var $_tags = array(); 
-    
-    /*
-     * Property: $_subgroups
-     * Subgroups.
-     * 
-     * Example:
-     *   See [[getMemberLists()]] for an example of the data.
-     */
-     
-    var $_subgroups = array();
      
     // ========================================================================
     // Constructor
@@ -148,9 +31,9 @@ class ScBlock
     
     /*
      * Constructor: ScBlock()
-     * Yes.
+     * The constructor. (Don't call)
      * 
-     * [In group "Constructor"]
+     * [Protected, grouped under "Protected methods"]
      */
      
     function ScBlock($str, &$Project)
@@ -238,20 +121,32 @@ class ScBlock
     
     /*
      * Function: parseTag()
-     * Parses a tag
-     *
+     * Parses a tag (A delegate task of [[ScBlock()]]).
+     * 
      * Usage:
-     *     $this->parseTag()
+     *     $block->parseTag($tag_line)
+     *     (Don't call this function.)
+     * 
+     * Parameters:
+     *   $tag_line  - The line; the text inside the `[` and `]` brackets
+     * 
+     * Description:
+     *   This function parses out a tag line in the comment block
+     *   (e.g., `[read-only, private]`). It will then set [[$_tags]] and other
+     *   effects as needed. It is called by the [[ScBlock()]] constructor
+     *   during the process of parsing the comment block.
+     * 
+     *   You may override this function parse out special commands from the
+     *   tag line (`[...]`) blocks.
      *
      * Returns:
-     *   Unspecified.
-     * 
-     * References:
-     *   A delegate task of [[ScBlock()]].
+     *   Nothing; this function will do things (set groups, add tags, etc)
+     *   in place.
      */
 
     function parseTag($tags)
     {
+        // Input looks like: "read-only, grouped under mygroup, private"
         $tag_list = array_map('trim', explode(',', $tags));
         $valid_tags = array_keys($this->Project->options['tags']);
         
@@ -290,8 +185,10 @@ class ScBlock
      * Function: getValidTags()
      * Returns a list of valid tags in associative array format.
      * 
-     * Sample output:
-     *   It can output something like this.
+     * Description:
+     *   This function returns a thesaurus of sorts as key-value pairs. The
+     *   keys are the valid tag names (including synonyms), and the values
+     *   associated with them are what they are a synonym for.
      * 
      *     Array
      *     (
@@ -300,6 +197,15 @@ class ScBlock
      *         "read-only"  => "read-only",
      *         "readonly"   => "read-only",
      *     )
+     * 
+     * See also:
+     *   [[getTags()]]
+     *   : To retrieve the actual tags defined for the block
+     * 
+     *   [[hasTags()]]
+     *   : To check if the there are tags defined
+     * 
+     * [Grouped under "Tag functions"]
      */
 
     function getValidTags()
@@ -329,13 +235,22 @@ class ScBlock
     
     /*
      * Function: hasTags()
-     * Returns if it has tags
+     * Checks if the current block has tags defined.
      *
      * Usage:
      *     $this->hasTags()
      *
      * Returns:
-     *   Unspecified.
+     *   `TRUE` or `FALSE`.
+     * 
+     * See also:
+     *   [[getTags()]]
+     *   : To retrieve the actual tags
+     * 
+     *   [[getValidTags()]]
+     *   : To check what tags the block is allowed to have
+     * 
+     * [Grouped under "Tag functions"]
      */
 
     function hasTags($p = NULL)
@@ -345,13 +260,50 @@ class ScBlock
     
     /*
      * Function: getTags()
-     * Returns the tags array
+     * Returns the tags for the block.
      *
      * Usage:
-     *     $this->getTags()
+     *     $block->getTags()
+     *
+     * Description:
+     *   For the descriptions that containing tag lines (in the format
+     *   `[Private, read-only]`), this function will return those tags associated
+     *   with the blocks, which in the example is *private* and *read-only*.
+     * 
+     *   The tags allowed for any block is defined in it's `block_types`
+     *   definition in the configuration, and in the project's configuration
+     *   for `tags`.
+     * 
+     *   Tag synonyms defined in the configuration (`tag_synonyms`) are also
+     *   taken into account. For instance, if a description contains `[readonly]`
+     *   and *readonly* is considered as a synonym for *read-only*, the tag
+     *   that will be returned will be `read-only`.
      *
      * Returns:
-     *   Unspecified.
+     *   An array of tag strings.
+     * 
+     * Example:
+     *   This example will retrieve tags.
+     * 
+     *     echo "Tags for the home page:\n";
+     *     foreach ($Project->data['home']->getTags() as $tag)
+     *       { echo "- $tag\n"; }
+     *
+     *   Possible output: 
+     *   
+     *     Tags for the home page: 
+     *     - deprecated
+     *     - private
+     * 
+     * See also:
+     *   [[hasTags()]]
+     *   : To check if the there are tags defined for the block
+     *     (equivalent to `count(getTags()) > 0`)
+     * 
+     *   [[getValidTags()]]
+     *   : To check what tags the block is allowed to have
+     * 
+     * [Grouped under "Tag functions"]
      */
 
     function getTags()
@@ -361,11 +313,16 @@ class ScBlock
     
     /*
      * Function: getGroup()
-     * Returns the group
+     * Returns the group where the block belongs to.
      *
      * Usage:
      *     $this->getGroup()
      *
+     * Description:
+     *   For the descriptions that contain `[Grouped under "My group name"]`
+     *   lines, this will return the group for the current block (which in the
+     *   example is "My group name").
+     * 
      * Returns:
      *   NULL of no group, otherwise a string of the group
      */
@@ -379,13 +336,8 @@ class ScBlock
      * Function: factory()
      * Creates an ScBlock instance with the right class as needed.
      * [Static]
-     *
-     * Usage:
-     * > ScBlock::factory()
-     *
-     * Returns:
-     *   Unspecified.
      * 
+     * [Grouped under "Constructor"]
      */
 
     function& factory($input, &$project)
@@ -400,12 +352,23 @@ class ScBlock
     /*
      * Function: isHomePage()
      * Checks if the current block is the home page.
-     *
+     * 
      * Usage:
-     *     $this->isHomePage()
-     *
+     *     $block->isHomePage()
+     * 
+     * Description:
+     *   The home page block is defined as the one having the same title as
+     *   the `name` defined in the configuration. For instance, if `name` is
+     *   set to "SourceScribe manual", having a page with that name will
+     *   automatically assign that to be a homepage.
+     * 
+     *   An empty home page will be created if there is none defined.
+     * 
+     *   Home page blocks always have the ID of `index`, as you can find out
+     *   with [[getID()]].
+     * 
      * Returns:
-     *   Unspecified.
+     *   `TRUE` if the block is the homepage block, otherwise `FALSE`.
      */
 
     function isHomePage()
@@ -447,6 +410,8 @@ class ScBlock
      * See also:
      *  - [[getContent()]]
      *  - [[getPostContent()]]
+     * 
+     * [Protected, grouped under "Protected methods"]
      */
      
     function getPreContent()
@@ -456,11 +421,13 @@ class ScBlock
     
     /*
      * Function: getPostContent()
-     * Virtual function that lets subclasses make content before the content.
+     * Virtual function that lets subclasses make content after the content.
      * 
      * See also:
      *  - [[getContent()]]
      *  - [[getPreContent()]]
+     * 
+     * [Protected, grouped under "Protected methods"]
      */
      
     function getPostContent()
@@ -501,12 +468,6 @@ class ScBlock
      * Function: getKeyword()
      * Returns the keyword for searching
      * [Grouped under "Data functions"]
-     *
-     * Usage:
-     *     $this->getKeyword()
-     *
-     * Returns:
-     *   Unspecified.
      */
 
     function getKeyword()
@@ -543,6 +504,8 @@ class ScBlock
      * 
      * See also: 
      * - [[getTypeName()]]
+     * 
+     * [Grouped under "Block type functions"]
      */
 
     function getType()
@@ -552,7 +515,9 @@ class ScBlock
     
     /*
      * Function: getTypeName()
-     * Returns the type name.
+     * Returns the type name as shown in the first line.
+     * 
+     * [Grouped under "Block type functions"]
      */
 
     function getTypeName()
@@ -564,6 +529,8 @@ class ScBlock
      * Function: getTypeData()
      *   Returns the data for the type in the class, as defined
      *   in [[Scribe::$Options]].
+     * 
+     * [Grouped under "Block type functions"]
      */
      
     function getTypeData($p = NULL)
@@ -584,13 +551,6 @@ class ScBlock
     /*
      * Function: getID()
      * Returns the unique ID string for this node.
-     *
-     * Usage:
-     * > $block->getID()
-     *
-     * Returns:
-     *   Unspecified.
-     * 
      * [Grouped under "Data functions"]
      */
 
@@ -627,14 +587,14 @@ class ScBlock
     }
     
     /* ======================================================================
-     * Private methods
+     * Protected methods
      * ====================================================================== */
     
     /*
      * Function: _toID()
-     * Uhm.
+     * Converts a string input (usually the title) into an ID.
      * 
-     * [Grouped under "Private methods"]
+     * [Protected, Grouped under "Protected methods"]
      */
      
     function _toID($p, $limit=128, $underscore = '', $lower = FALSE)
@@ -656,7 +616,7 @@ class ScBlock
      * Description:
      *   This relies on the Markdown library to parse out the content.
      * 
-     * [Grouped under "Private methods"]
+     * [Protected, grouped under "Protected methods"]
      */
      
     function toHTML($lines)
@@ -669,7 +629,7 @@ class ScBlock
             "\n## \\1\n\n", $str);
             
         // Convert to dl/dt/dd
-        $str = preg_replace('~ *([a-zA-Z0-9`_\$\.\*]+) +- (.*?)([\\r\\n$])~s',
+        $str = preg_replace('~ *([\[\]\(\)a-zA-Z0-9`_\$\.\*]+) +- (.*?)([\\r\\n$])~s',
             "\n\\1\n: \\2\\3", $str);
         
         // Convert [[]] links
@@ -715,7 +675,17 @@ class ScBlock
     
     /*
      * Function: finalize()
-     * Ran when building is done
+     * Ran when building is done.
+     * 
+     * Usage:
+     *   $block->finalize()
+     *   (Don't call this function.)
+     * 
+     * Description:
+     *   This function takes care of resolving `[[..]]` links. You may
+     *   override this to do more post-build actions for the block.
+     * 
+     * [Protected, grouped under "Protected methods"]
      */
 
     function finalize()
@@ -743,8 +713,8 @@ class ScBlock
      *
      * Returns:
      *   Nothing.
-     * 
-     * [Grouped under "Private methods"]
+     *      
+     * [Protected, grouped under "Protected methods"]
      */
 
     function registerChild(&$child_block)
@@ -795,6 +765,8 @@ class ScBlock
     /*
      * Function: hasChildren()
      * Checks if the block has children.
+     * 
+     * [Grouped under "Traversion functions"]
      */
 
     function hasChildren()
@@ -804,14 +776,8 @@ class ScBlock
     
     /*
      * Function: getParent()
-     * Returns the parent node.
+     * Returns the parent block, or `NULL` if none.
      *
-     * Usage:
-     *     ScBlock $block->getParent()
-     *
-     * Returns:
-     *   The parent ([[ScBlock]] instance).
-     * 
      * [Grouped under "Traversion functions"]
      */
 
@@ -897,13 +863,6 @@ class ScBlock
     /*
      * Function: hasParent()
      * Checks if the current block has a parent.
-     *
-     * Usage:
-     *     $this->hasParent()
-     *
-     * Returns:
-     *   Unspecified.
-     * 
      * [Grouped under "Traversion functions"]
      */
 
@@ -967,6 +926,152 @@ class ScBlock
         }
         return $f;
     }
+
+    /* ======================================================================
+     * Private properties
+     * ====================================================================== */
+    
+    var $Project;
+    
+    var $_data;
+    var $valid = FALSE;
+    
+    /* Property: $typename
+     * The name of the type as defined in the first line.
+     * [Private]
+     */
+    var $typename = '';
+    
+    /* 
+     * Property: $type
+     * The proper name of the type.
+     *
+     * Description:
+     *   Access the type of the block through [[getType()]]
+     *   and [[getTypeData()]].
+     * 
+     * [Private]
+     */
+     
+    var $type;
+    
+    /*
+     * Property: $title
+     * The raw title of the block.
+     * 
+     * Description:
+     *   This is a read-only property. To get the title, use [[getTitle()]] as
+     *   it will provide additional stuff.
+     * 
+     * [Private]
+     */
+    var $title;
+    
+    /*
+     * Property: $content
+     * The content in HTML format, as already parsed by [[toHTML()]].
+     * 
+     * [Private]
+     */
+     
+    var $content;
+    
+    /*
+     * Property: $brief
+     * The brief description in HTML format.
+     * 
+     * [Private]
+     */
+     
+    var $brief;
+    
+    /*
+     * Property: $_id
+     * The ID.
+     * 
+     * Description:
+     *   Access the ID of the block through [[getID()]]. The ID is
+     *   automatically-determined; it can not be user-set.
+     * 
+     * [Private]
+     */
+    var $_id = null;
+    
+    /* Property: $_group
+     * The group.
+     * 
+     * Description:
+     *   Access via [[getGroup()]], or the parent's [[getMemberLists()]].
+     * 
+     * [Private]
+     */
+    var $_group = NULL;
+    
+    /*
+     * Property: $_parent
+     * Reference to the parent in the index tree.
+     *
+     * Description:
+     *   This is a private variable only used by the `ScBlock` class.
+     *
+     *   - To get the parent of the block, use [[getParent()]].
+     *   - To get all it's parents, use [[getAncestry()]].
+     *   - To register a block as a child of another block,
+     *     use [[registerChild()]].
+     * 
+     * See also:
+     *  - [[getParent()]]
+     *  - [[getChildren()]]
+     *  - [[registerChild()]]
+     * 
+     * [Private]
+     */
+    var $_parent;
+    
+    /*
+     * Property: $_children
+     *   An array of references to `ScBlock` instances that are the children of
+     *   the current block.
+     *
+     * Description:
+     *   This is a private variable only used by the `ScBlock` class.
+     *
+     *   - To get the children of the block, use [[getChildren()]].
+     *   - To get the children in a grouped manner, use [[getMemberLists()]].
+     *   - To register a block as a child of another block,
+     *     use [[registerChild()]].
+     * 
+     * See also:
+     *  - [[getParent()]]
+     *  - [[getChildren()]]
+     *  - [[registerChild()]]
+     * 
+     * [Private]
+     */
+    var $_children = array();
+    
+    /*
+     * Property: $_tags
+     * Tags. Please use [[getTags()]] instead
+     * [Private]
+     */
+    var $_tags = array(); 
+    
+    /*
+     * Property: $_subgroups
+     * Subgroups.
+     * 
+     * Example:
+     *   See [[getMemberLists()]] for an example of the data.
+     * 
+     * [Private]
+     */
+     
+    var $_subgroups = array();
+    
+    /* ======================================================================
+     * End
+     * ====================================================================== */
 }
 
 class ScClassBlock extends ScBlock
