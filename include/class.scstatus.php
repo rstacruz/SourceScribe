@@ -34,7 +34,7 @@ class ScStatus
      * 
      * ## Example
      * 
-     *     $Sc->error("Printer on fire!");
+     *     ScStatus::error("Printer on fire!");
      * 
      * [Static, grouped under "Status update functions"]
      */
@@ -66,9 +66,37 @@ class ScStatus
      * [Static, grouped under "Status update functions"]
      */
      
-    function status($msg)
+    function status($msg, $newline = TRUE)
     {
         $ScS =& ScStatus::getInstance();
+        fwrite($ScS->stderr, $msg . (($newline) ? "\n" : ""));
+    }
+    
+    function updateStart($msg1)
+    {
+        $ScS =& ScStatus::getInstance();
+        $ScS->msg1 = $msg1;
+        $msg = ' * ' . $msg1 . '...';
+        $msg .= str_repeat(' ',79-strlen($msg));
+        fwrite($ScS->stderr, $msg . "\r");
+    }
+    
+    function update($msg2)
+    {
+        $ScS =& ScStatus::getInstance();
+        if (!isset($ScS->msg1)) { return; }
+        $msg = ' * ' . $ScS->msg1 . '...' . str_repeat(' ',25-(strlen($ScS->msg1)+2)) . $msg2;
+        $msg .= str_repeat(' ',79-strlen($msg));
+        fwrite($ScS->stderr, $msg . "\r");
+    }
+    
+    function updateDone($msg2)
+    {
+        $ScS =& ScStatus::getInstance();
+        if (!isset($ScS->msg1)) { return; }
+        $msg = ' * ' . $ScS->msg1 . ':' . str_repeat(' ',25-strlen($ScS->msg1)) . $msg2;
+        $msg .= str_repeat(' ',79-strlen($msg));
         fwrite($ScS->stderr, $msg . "\n");
+        unset($ScS->msg1);
     }
 }

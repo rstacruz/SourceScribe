@@ -249,8 +249,10 @@ class ScProject
      
     function build()
     {
+        ScStatus::status('Starting build process:');
         // Scan the files
-        $this->Sc->status('Scanning files...');
+        ScStatus::updateStart("Scanning files");
+        $file_count = 0;
         $options = array('recursive' => 1, 'mask' => '/./', 'fullpath' => 1);
 
         // Take the exclusions list into consideration
@@ -273,7 +275,8 @@ class ScProject
                     // Show status of what file we're reading
                     $file_min = substr(realpath($file),
                         1 + strlen(realpath($this->cwd)));
-                    $this->Sc->status("* [$reader_name] $file_min");
+                    ScStatus::update("[$reader_name] $file_min");
+                    $file_count++;
                 
                     // And read it I
                     $this->registerStart();
@@ -283,6 +286,7 @@ class ScProject
                 }
             }
         }
+        ScStatus::updateDone("$file_count files scanned.");
         
         $this->_doPostBuild();
         $this->_loadOutputDrivers();
@@ -294,7 +298,7 @@ class ScProject
             
             // Make sure we have an output driver
             if (!isset($output_options['driver']))
-                { return $this->Sc->error("No driver defined for output $id"); }
+                { return ScStatus::error("No driver defined for output $id"); }
                 
             // Load it and make sure it exists
             $driver =& $this->Sc->loadOutputDriver($output_options['driver'],
@@ -304,7 +308,7 @@ class ScProject
             if (!$driver) { continue; }
             
             // Initialize
-            $this->Sc->status('Writing ' . $output_options['driver'] . ' output...');
+            ScStatus::updateStart('Writing ' . $output_options['driver'] . ' output');
             $path   = $output_options['path'];
             
             // Mkdir the path
@@ -315,9 +319,10 @@ class ScProject
             
             // Run
             $driver->run($path);
+            ScStatus::updateDone('Done.');
         }
         
-        $this->Sc->status('Build complete.');
+        ScStatus::status('Build complete.');
         $output = serialize($this->Sc);
     }
     
@@ -450,10 +455,10 @@ class ScProject
     function _verifyBlockTypes()
     {
         if (!isset($this->options['block_types']))
-            { return $Sc->error("Block types is not valid!"); }
+            { return ScStatus::error("Block types is not valid!"); }
             
         if (!is_array($this->options['block_types']))
-            { return $Sc->error("Block types is not valid!"); }
+            { return ScStatus::error("Block types is not valid!"); }
 
         $this->options['type_keywords'] = array();
 
@@ -510,7 +515,7 @@ class ScProject
         foreach (array('name', 'output') as $required_field) {
             if (!isset($Sc->_config[$required_field]))
             {
-                $Sc->error(
+                ScStatus::error(
                     'Configuration is missing the ' .
                     'required field "' . $required_field . '".');
                 return;
@@ -555,7 +560,7 @@ class ScProject
                 { $this->options['block_types'] = array(); }
                 
             if (!is_array($Sc->_config['block_types']))
-                { return $Sc->error('block_types defined is not an array'); }
+                { return ScStatus::error('block_types defined is not an array'); }
                 
             foreach ($Sc->_config['block_types'] as $id => $data)
             {
@@ -563,7 +568,7 @@ class ScProject
                     { $this->options['block_types'][$id] = $data; continue; }
                 
                 if (!is_array($data))
-                    { return $Sc->error('block_types has an invalid definition for "' . $id . '"'); }
+                    { return ScStatus::error('block_types has an invalid definition for "' . $id . '"'); }
                     
                 foreach ($data as $k => $v)
                 {
@@ -592,16 +597,16 @@ class ScProject
         if ((!is_array($this->options['output'])) ||
             (count($this->options['output']) == 0))
         {
-            return $Sc->error("You must define at least one output.");
+            return ScStatus::error("You must define at least one output.");
         }
         
         // Check output
         foreach ($this->options['output'] as $id => $output)
         {
             if (!is_array($output))
-                { return $Sc->error("Output #$id is invalid."); }
-            if (!isset($output['driver'])) { return $Sc->error("Output #$id is missing a driver."); }
-            if (!isset($output['path']))   { return $Sc->error("Output #$id ({$output['driver']}) is missing it's output path."); }
+                { return ScStatus::error("Output #$id is invalid."); }
+            if (!isset($output['driver'])) { return ScStatus::error("Output #$id is missing a driver."); }
+            if (!isset($output['path']))   { return ScStatus::error("Output #$id ({$output['driver']}) is missing it's output path."); }
         }
         
         // Check if all paths are valid
@@ -614,7 +619,7 @@ class ScProject
             
             // If invalid, die
             if (!is_dir($this->options['src_path'][$k]))
-                { return $Sc->error('Source path is invalid: "' . $path . '"'); }
+                { return ScStatus::error('Source path is invalid: "' . $path . '"'); }
         }
     }
     

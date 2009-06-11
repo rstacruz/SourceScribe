@@ -227,36 +227,6 @@ class Scribe
         return $output;
     }
     
-    /*
-     * Function: error()
-     * Spits out an error and dies.
-     * 
-     * ## Description
-     *    This is called by any function that needs to generate an error.
-     * 
-     * ## Example
-     * 
-     *     OH yeah
-     *     $Sc->error("Printer on fire!");
-     */
-    function error($message)
-    {
-        ScStatus::error($message);
-        exit();
-    }
-    
-    // Function: notice()
-    // Test
-    function notice($message)
-    {
-        return ScStatus::notice($message);
-    }
-    
-    function status($message)
-    {
-        return ScStatus::status($message);
-    }
-    
     /* ======================================================================
      * End class
      * ====================================================================== */

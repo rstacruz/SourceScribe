@@ -1,6 +1,6 @@
 <?php
 define('SCRIBE_PATH', dirname(__FILE__) . '/');
-define('SCRIBE_VERSION', '0.0.3');
+define('SCRIBE_VERSION', '0.0.3+');
 
 // Include all
 define('DS', DIRECTORY_SEPARATOR);

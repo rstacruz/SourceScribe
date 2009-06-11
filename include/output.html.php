@@ -24,7 +24,7 @@ class HtmlOutput extends ScOutput
         
         // Does it exist?
         if (!is_dir($template_path))
-            { $Sc->error("Can't find template " . $this->options['template']); }
+            { ScStatus::error("Can't find template " . $this->options['template']); }
         
         // Clear the folder
         foreach(glob("$path/*") as $file)
@@ -101,9 +101,11 @@ class HtmlOutput extends ScOutput
     function out_singles($path, $template_path)
     {
         global $Sc;
+        $file_count = 0;
         foreach ($this->Project->data['blocks'] as $block)
         {
-            // $Sc->status("* " . $block->getID() . ".html");
+            $file_count++;
+            ScStatus::update($block->getID());
             $index_file = $path . '/' . $block->getID() . '.html';
             ob_start();
             
@@ -138,6 +140,7 @@ class HtmlOutput extends ScOutput
             $output = ob_get_clean();
             file_put_contents($index_file, $output);
         }
+        ScStatus::updateDone("$file_count files written.");
     }
     
     /*
