@@ -529,12 +529,15 @@ class ScProject
             if (!isset($Sc->_config[$k])) { continue; }
             $this->options[$k] = $Sc->_config[$k];
         }
-        
-        if (isset($Sc->_config['additional_tags']))
+            
+        if (isset($Sc->_config['tags']))
         {
+            if (isset($Sc->_config['reset_tags']))
+                { $this->options['tags'] = array(); }
+                
             $this->options['tags'] = array_merge(
                 $this->options['tags'],
-                (array) $Sc->_config['additional_tags']);
+                (array) $Sc->_config['tags']);
         }
         
         if (isset($Sc->_config['tag_synonyms']))
@@ -544,18 +547,23 @@ class ScProject
                 (array) $Sc->_config['tag_synonyms']);
         }
         
-        if (isset($Sc->_config['additional_block_types']))
+        
+            
+        if (isset($Sc->_config['block_types']))
         {
-            if (!is_array($Sc->_config['additional_block_types']))
-                { return $Sc->error('additional_block_types defined is not an array'); }
+            if (isset($Sc->_config['reset_block_types']))
+                { $this->options['block_types'] = array(); }
                 
-            foreach ($Sc->_config['additional_block_types'] as $id => $data)
+            if (!is_array($Sc->_config['block_types']))
+                { return $Sc->error('block_types defined is not an array'); }
+                
+            foreach ($Sc->_config['block_types'] as $id => $data)
             {
                 if (!isset($this->options['block_types'][$id]))
                     { $this->options['block_types'][$id] = $data; continue; }
                 
                 if (!is_array($data))
-                    { return $Sc->error('additional_block_types has an invalid definition for "' . $id . '"'); }
+                    { return $Sc->error('block_types has an invalid definition for "' . $id . '"'); }
                     
                 foreach ($data as $k => $v)
                 {

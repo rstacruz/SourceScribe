@@ -38,16 +38,23 @@ Required options:
 More options:
   src_path                 - .
   exclude                  - .
-  additional_block_types   - .
-  additional_tags          - .
+  reset_block_types        - .
+  block_types              - .
+  reset_tags               - .
+  tags                     - .
   tag_synonyms             - .
   file_specs               - (not implemented yet)
 
-Advanced options:
-
-  tags                   - ..
-  block_types            - .
-
-.
+For block types:
+  has_brief        - .
+  title_plural     - .
+  parent_in_id     - .
+  starts_group_for - .
+  block_class      - .
+  title_prefix     - .
+  title_suffix     - .
+  tags             - .
+  short            - .
+  synonyms         - .
 
 *//////////////////////////////////////////////////////////////////////////////*

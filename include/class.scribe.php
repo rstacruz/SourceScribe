@@ -61,6 +61,7 @@ class Scribe
                 'has_brief' => TRUE,
                 'parent_in_id' => array('class'),
                 'short' => 'fn',
+                'title_suffix' => '()',
                 'synonyms' => array('constructor', 'ctor', 'destructor', 'dtor', 'method'),
                 'tags' => array('static', 'private', 'public', 'protected', 'virtual')
             ),
@@ -70,13 +71,15 @@ class Scribe
                 'parent_in_id' => array('class'),
                 'short' => 'v',
                 'synonyms' => array('property'),
+                'title_prefix' => '$',
                 'tags' => array('read-only', 'private', 'public', 'protected', 'constant')
             ),
             'class' => array(
                 'title_plural' => 'Classes',
                 'has_brief' => TRUE,
                 'starts_group_for' => array('var', 'function'),
-                'block_class' => 'ScClassBlock',
+                'title_prefix' => 'Class ',
+                // 'block_class' => 'ScClassBlock',
                 'short' => 'cl',
             ),
             'module' => array(

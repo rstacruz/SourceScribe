@@ -17,7 +17,7 @@
  *    - Content
  *    - Members
  * 
- * Protected methods:
+ * Subclassing:
  *   This class provides a few protected methods. These methods are provided
  *   to be overridden for subclasses. 
  */
@@ -404,6 +404,17 @@ class ScBlock
     }
     
     /*
+     * Function: hasContent()
+     * Checks if the block has content.
+     * [Grouped under "Data functions"]
+     */
+
+    function hasContent()
+    {
+        return (trim((string) $this->content) == '') ? FALSE : TRUE;
+    }
+    
+    /*
      * Function: getPreContent()
      * Virtual function that lets subclasses make content before the content.
      * 
@@ -443,7 +454,22 @@ class ScBlock
      
     function getTitle()
     {
-        return $this->title;
+        $title = $this->title;
+        
+        $pre = $this->getTypeData('title_prefix');
+        if ((is_string($pre)) &&
+            (strtolower(substr($title, 0, strlen($pre))) !=
+             strtolower($pre)))
+            { $title = $pre . $title; }
+
+        $suf = $this->getTypeData('title_suffix');
+        if ((is_string($suf)) &&
+            (strtolower(substr($title, strlen($title)-strlen($suf), strlen($suf))) !=
+             strtolower($suf)))
+            { $title = $title . $suf; }
+            
+        return
+            $title;
     }
     
     /*
@@ -652,16 +678,6 @@ class ScBlock
         }
         
         return $str;
-    }
-    
-    /*
-     * Function: hasContent()
-     * Checks if the block has content.
-     */
-
-    function hasContent()
-    {
-        return (trim((string) $this->content) == '') ? FALSE : TRUE;
     }
     
     function _toLinkCallback($m)
@@ -1075,12 +1091,7 @@ class ScBlock
 }
 
 class ScClassBlock extends ScBlock
-{
-    function getBrief()
-    {
-        return parent::getBrief();
-    }
-    
+{   
     function getTitle()
     {
         return 'Class ' . $this->title;
