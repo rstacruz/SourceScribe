@@ -12,6 +12,73 @@ Documentation reference:
 Page: Advanced configuration
 [Filed under "Documentation reference"]
 
+
+Required options:
+
+  name
+  : The project name. This will be the title of the entire documentation.
+
+    > <code>name: My API reference</code>
+   
+    A home page for your manual may be created by defining a page with the
+    same name listed here.
+
+  output
+  : The outputs to spit out. This is an array of key-value pairs, each pair
+    requiring a *driver*, and a *path* to define where the output will be
+    saved to.
+
+    > <code>output:  
+    > - driver: "html"  
+    > &nbsp; template: "default"  
+    > &nbsp; path: "doc/"</code>
+
+    Currently only the *html* driver is supported. Plugins may give more
+    driver types (e.g., *pdf*, *latex*, etc). Additional templates for
+    the *html* driver may be added: see *templates_path* (not yet implemented)
+
+
+More basic options:
+
+  src_path
+  : The path where the source files are. In this example, SourceScribe will scan
+    the *doc* folder (under where the configuration file resides): 
+
+    > <code>src_path: doc</code>
+
+   Multiple paths may also be defined using an array.
+
+    > <code>src_path:  
+    > &nbsp; - src  
+    > &nbsp; - include</code>
+
+  exclude
+  : An array of regex patterns to match filenames against.
+    Any file that matches will not be parsed. In this example below,
+    SourceScribe will skip files under the folders *.svn*, *.git*, and *cache*:  
+
+    > <code>exclude:  
+    > &nbsp; - \.svn/  
+    > &nbsp; - \.git/  
+    > &nbsp; - /cache/</code>
+  
+  include
+  : File types to include. This is an array of regex patterns. Defining this
+    option will override all defaults, so be sure to include here all filetypes
+    that your project uses. In the example below, this will make SourceScribe
+    scan *php3* and *php4* file types: 
+    
+    > <code>include:  
+    > &nbsp; - \\.php3$  
+    > &nbsp; - \\.php4$</code>
+    
+    If you have a plugin that provides an alternate reader, you can define which
+    reader to use for each file type.
+    
+    > <code>include:    
+    > &nbsp; \\.php3$: default  
+    > &nbsp; \\.php4$: default</code>
+
 Advanced options:
   
   block_types

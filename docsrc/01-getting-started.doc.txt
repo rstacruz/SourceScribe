@@ -32,7 +32,45 @@ See it in action:
 
 Start now:
 
-  Start using SourceScribe!  
+  <strong>Need amazing documentation for your project?
+  Start using SourceScribe!</strong>  
+  [Using SourceScribe &rarr;](##Using SourceScribe)
+
+*//////////////////////////////////////////////////////////////////////////////*
+
+Page: Using SourceScribe
+[Grouped under "Getting started"]
+
+
+<big>You can get started using SourceScribe in just 2 minutes!</big>
+
+Instructions:
+
+  1. Download the latest package of [SourceScribe](latest).
+
+  2. [Install it](install) by extracting the package somewhere, and making a
+     symlink to to the "ss" executable from somewhere in your path
+     like /usr/local/bin.
+
+  3. [Configure it](config) by going to your project's source directory and
+     typing `ss makeconfig` in the command line. This will generate
+     the *sourcescribe.conf* file that you can configure yourself.
+
+  4. [Document your code](doc) with some easy-to-use tags.
+
+  5. [Run it](run) by typing `ss`. This will generate the documentation for you!
+
+  That's all there is to it!
+
+  [latest]: http://github.com/rstacruz/SourceScribe/zipball/master
+  [install]: ##Getting started
+  [config]: ##Configuraiton
+  [doc]: ##Documenting your code
+  [run]: ##Generating documentation
+
+Continue:
+
+  <strong>Continue on:</strong>  
   [Downloading and installing SourceScribe &rarr;](##Installing SourceScribe)
 
 *//////////////////////////////////////////////////////////////////////////////*
@@ -40,16 +78,17 @@ Start now:
 Page: Installing SourceScribe
 [Grouped under "Getting started"]
 
-
 Downloading:
 
   You may download the latest version of SourceScribe from [SourceScribe's
-  github page][gh]. If you have **git** installed, you may also do a pull of the
+  github page][gh] ([direct link](latest)). If you have **git** installed,
+  you may also do a pull of the
   latest sources from the tree. Simply type:
 
     git pull git@github.com:rstacruz/SourceScribe.git
 
   [gh]: http://github.com/rstacruz/SourceScribe/
+  [latest]: http://github.com/rstacruz/SourceScribe/zipball/master
 
 Installation:
 
@@ -80,7 +119,8 @@ Installation:
   and generate your first documentation manual!
 
 Continue:
-  Next: [Configuring SourceScribe for your project &rarr;](##Configuration)
+  <strong>Got it installed? Let's start!</strong>  
+  [Configuring SourceScribe for your project &rarr;](##Configuration)
 
 *//////////////////////////////////////////////////////////////////////////////*
 
@@ -91,9 +131,9 @@ Starting up:
 
   For SourceScribe to work on your code, it must first have a configuration file.
 
-  To begin, type `ss makeconfig` in your project folder. This will create a bare
-  configuration file `sourcescribe.conf` with defaults that you can edit to
-  your needs. After you've done this (and documented your codebase of course),
+  Start by typing `ss makeconfig` in your project folder. This will create a bare
+  configuration file `sourcescribe.conf` that you can edit to your needs.
+  After you've done this (and documented your codebase of course),
   you can simply type `ss` to generate your documentation.
 
   When running `ss`, SourceScribe will look for this `sourcescribe.conf` file.
@@ -127,13 +167,13 @@ Sample file:
     # Lines starting with pound signs are ignored as comments.
     
     name: My Project
-    output:                   # Output is an array of key-value pairs
+    output:                   # "output" is an array of key-value pairs.
      - driver: "html"
        path: "doc/"
        template: "default"
      - driver: "pdf"
        path: "pdf/"
-    exclude:                  # Exclude is an array.
+    exclude:                  # "exclude" is an array.
      - \.svn$
      - \.git$
 
@@ -166,12 +206,7 @@ Required options:
     > &nbsp; template: "default"  
     > &nbsp; path: "doc/"</code>
 
-    Currently only the *html* driver is supported. Plugins may give more
-    driver types (e.g., *pdf*, *latex*, etc). Additional templates for
-    the *html* driver may be added: see *templates_path* (not yet implemented)
-
-
-More basic options:
+More options:
 
   src_path
   : The path where the source files are. In this example, SourceScribe will scan
@@ -194,30 +229,15 @@ More basic options:
     > &nbsp; - \.svn/  
     > &nbsp; - \.git/  
     > &nbsp; - /cache/</code>
-  
-  include
-  : File types to include. This is an array of regex patterns. Defining this
-    option will override all defaults, so be sure to include here all filetypes
-    that your project uses. In the example below, this will make SourceScribe
-    scan *php3* and *php4* file types: 
-    
-    > <code>include:  
-    > &nbsp; - \\.php3$  
-    > &nbsp; - \\.php4$</code>
-    
-    If you have a plugin that provides an alternate reader, you can define which
-    reader to use for each file type.
-    
-    > <code>include:    
-    > &nbsp; \\.php3$: default  
-    > &nbsp; \\.php4$: default</code>
 
 Advanced options:
 
    More advanced options are available. [[Advanced configuration]].
 
 Continue:
-  Next: [Documenting your code &rarr;](##Documenting your code)
+
+  <strong>Once your configuration is set up, it's time to document your code!</strong>  
+  [Documenting your code &rarr;](##Documenting your code)
 
 *//////////////////////////////////////////////////////////////////////////////*
 
@@ -237,5 +257,23 @@ Do something like
 *         ...
 
 And stuff!
+
+Continue:
+
+  <strong>Let's make documentation!</strong>  
+  [Generating documentation &rarr;](##Generating documentation)
+
+*//////////////////////////////////////////////////////////////////////////////*
+
+Page: Generating documentation
+[Grouped under "Getting started"]
+
+  Type `ss`. That's all there is to it! To open it in your browser,
+  type `ss open`.
+
+## You're done!
+
+  You have just finished configuring your project to use SourceScribe,
+  documenting it, and generating documentation for it.
 
 *//////////////////////////////////////////////////////////////////////////////*
