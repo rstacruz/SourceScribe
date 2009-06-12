@@ -141,16 +141,39 @@ More options:
     SourceScribe will not skip files under the folder `svn`, `git`, and `cache`: 
 
     > <code>exclude:  
-    > &nbsp; - !\.svn/!  
-    > &nbsp; - !\.git/!  
-    > &nbsp; - !/cache/!</code>
+    > &nbsp; - \.svn/  
+    > &nbsp; - \.git/  
+    > &nbsp; - /cache/</code>
 
-  reset_block_types        - .
-  block_types              - .
-  reset_tags               - .
-  tags                     - .
-  tag_synonyms             - .
-  file_specs               - (not implemented yet)
+  reset_block_types
+  : ...
+  
+  block_types
+  : ...
+  
+  reset_tags
+  : ...
+  
+  tags
+  : ...
+  
+  tag_synonyms
+  : ...
+  
+  include
+  : File types to include. This is an array of regex patterns. In the example
+    below, this will make SourceScribe scan php3 and php4 file types.
+    
+    > <code>include:  
+    > &nbsp; - \.php3$  
+    > &nbsp; - \.php4$</code>
+    
+    If you have a plugin that provides an alternate reader, you can define which
+    reader to use for each file type.
+    
+    > <code>include:    
+    > &nbsp; \.php3$: default  
+    > &nbsp; \.php4$: default</code>
 
 For block types:
   Every `block_types` entry can have any of these options.

@@ -110,7 +110,7 @@ class ScProject
      * [Grouped under "Options"]
      */
      
-    /* Property: $options['file_specs']
+    /* Property: $options['include']
      * To be documented.
      * 
      * [Grouped under "Options"]
@@ -162,7 +162,7 @@ class ScProject
      *   This example will exclude all `.php3` files, and everything in the
      *   `.git` folder.
      * 
-     *     array('#\.php3$#', '#\.git/#')
+     *     array('\.php3', '\.git/')
      * 
      * [Grouped under "Options"]
      */
@@ -259,7 +259,12 @@ class ScProject
 
         // Take the exclusions list into consideration
         if (isset($this->options['exclude']))
-            { $options['exclude'] = (array) $this->options['exclude']; }
+        {
+            $options['exclude'] = array();
+            foreach ($this->options['exclude'] as $ex) {
+            $options['exclude'][] = '!' . $ex . '!';
+            }
+        }
         
         // For each source path...
         foreach ((array) $this->options['src_path'] as $path)
@@ -269,7 +274,7 @@ class ScProject
             foreach ($files as $file)
             {
                 // Find out which reader it's assigned to
-                foreach ($this->options['file_specs']
+                foreach ($this->options['include']
                          as $spec => $reader_name)
                 {
                     if (preg_match("~$spec~", $file) == 0) { continue; }
@@ -383,6 +388,7 @@ class ScProject
             }
         }
         
+        // Sort by priorities
         usort($results, array(&$this, '_sortResults'));
         
         // Return just the blocks
@@ -396,7 +402,6 @@ class ScProject
     function _sortResults($a, $b)
     {
         // $a and $b are in the form: { priority: 512, block: ScBlock() }
-        
         if ($a == $b) { return 0; }
         $ap = (int) $a['priority'];
         $bp = (int) $b['priority'];
@@ -585,13 +590,13 @@ class ScProject
         }
         
         // Migrate defaults
-        foreach (array('block_types', 'file_specs', 'tags', 'tag_synonyms') as $k)
+        foreach (array('block_types', 'include', 'tags', 'tag_synonyms') as $k)
         {
             $this->options[$k] = $Sc->defaults[$k];
         }
         
         // Load configuration variables
-        foreach (array('block_types', 'name','output','src_path','exclude', 'tags') as $k)
+        foreach (array('block_types', 'name', 'output', 'src_path', 'exclude', 'tags') as $k)
         {
             if (!isset($Sc->_config[$k])) { continue; }
             $this->options[$k] = $Sc->_config[$k];
@@ -615,6 +620,21 @@ class ScProject
         }
         
         
+        if (isset($Sc->_config['include']))
+        {
+                
+            if (!is_array($Sc->_config['include']))
+                { return ScStatus::error('"include" defined is not an array'); }
+            
+            $this->options['include'] = array();
+            foreach ($Sc->_config['include'] as $k => $v)
+            {
+                if (is_numeric($k))
+                    { $this->options['include'][$v] = 'default'; }
+                else
+                    { $this->options['include'][$k] = $v; }
+            }
+        }    
             
         if (isset($Sc->_config['block_types']))
         {

@@ -88,7 +88,7 @@ class Scribe
             ),
         ),
         
-        'file_specs' => array(
+        'include' => array(
             '\.php$' => 'default',
             '\.inc$' => 'default',
             '\.doc.txt$' => 'default'
