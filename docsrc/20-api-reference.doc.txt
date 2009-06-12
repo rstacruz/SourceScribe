@@ -1,0 +1,13 @@
+*//////////////////////////////////////////////////////////////////////////////*
+
+Page: API reference
+[Grouped under "References"]
+
+API reference:
+
+  This reference is made available for those looking into writing plugins.
+
+  Plugins are not supported at the moment, but will be supported before the
+  0.2 release.
+
+*//////////////////////////////////////////////////////////////////////////////*

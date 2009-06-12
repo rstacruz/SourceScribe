@@ -30,6 +30,11 @@ See it in action:
   from the actual SourceScribe source tree! You're looking at the very output
   of SourceScribe.
 
+Start now:
+
+  Start using SourceScribe!  
+  [Downloading and installing SourceScribe &rarr;](##Installing SourceScribe)
+
 *//////////////////////////////////////////////////////////////////////////////*
 
 Page: Installing SourceScribe
@@ -51,11 +56,13 @@ Installation:
  - Unzip the entire package somewhere,
    maybe *c:\Program Files\SourceScribe* or *~/sourcescribe/*.
 
- - **For Mac and Linux:** you can make a symbolic link to the
-   file <code>ss</code> in a directory that's in your *PATH* environment variable.  
-   Example for Mac/Linux: <code>sudo ln -s \`pwd\`/ss /usr/local/bin/ss</code>
+ - **For Mac and Linux:**  
+   Make a symbolic link to the file *ss* in a directory that's in your *PATH*
+   environment variable. Example:  
+   <code>sudo ln -s \`pwd\`/ss /usr/local/bin/ss</code>
 
- - **For all:** Alternatively, you can add that path in the beginning of
+ - **For all:**  
+   Alternatively, you can add that installation path in the beginning of
    your *PATH* environment variable.
 
    - For Windows, this is under System Properties &rarr; Advanced Tab &rarr;
@@ -68,12 +75,12 @@ Installation:
 
 ## Rock on!
 
-  Once you've installed SourceScribe, you are now ready to generate your
-  configuration, document your code, and generate your first documentation
-  manual.
+  Once you've installed SourceScribe, you are now ready to configure
+  SourceScribe for project. After that, you can start documenting your code,
+  and generate your first documentation manual!
 
 Continue:
-  Next: [[Configuration]] &rarr;
+  Next: [Configuring SourceScribe for your project &rarr;](##Configuration)
 
 *//////////////////////////////////////////////////////////////////////////////*
 
@@ -164,7 +171,7 @@ Required options:
     the *html* driver may be added: see *templates_path* (not yet implemented)
 
 
-More options:
+More basic options:
 
   src_path
   : The path where the source files are. In this example, SourceScribe will scan
@@ -188,42 +195,6 @@ More options:
     > &nbsp; - \.git/  
     > &nbsp; - /cache/</code>
   
-  block_types
-  : Add your own block types, or modify built-in types (...)
-
-    > <code>block_types:  
-    > &nbsp; ... # it's complicated</code>
-
-  reset_block_types
-  : This will remove all the built-in block types defined so you may define
-    your own. Use this in conjunction with *block_types*. (...)
-
-    > <code>reset_block_types: true</code>
-  
-  tags
-  : Adds more project-wide tags. (...)
-
-    > <code>tags:  
-    > &nbsp; - write-only  
-    > &nbsp; - unimplemented  
-    > &nbsp; - in debate</code>
-  
-  reset_tags
-  : This will remove all the built-in tag types defined so you may define
-    your own. Use this in conjunction with *tags*.
-
-    > <code>reset_tags: true</code>
-
-    This option will clear only the project-wide tags. It will not clear the
-    tag types in each block type.
-  
-  tag_synonyms
-  : Sets up synonyms for tags. (...)
-
-    > <code>tag_synonyms:  
-    > &nbsp; write-only: [ writeonly, no-read, wo ]  
-    > &nbsp; unimplemented: [ not done ]</code>
-  
   include
   : File types to include. This is an array of regex patterns. Defining this
     option will override all defaults, so be sure to include here all filetypes
@@ -241,33 +212,12 @@ More options:
     > &nbsp; \\.php3$: default  
     > &nbsp; \\.php4$: default</code>
 
-  templates_path
-  : (To be implemented) additional path to look for templates in
+Advanced options:
 
-    > <code>templates_path: templates/     # not implemented!</code>
-
-  plugins_path
-  : (To be implemented) path to look for plugins in
-
-    > <code>plugins_path: ssplugins/     # not implemented!</code>
-
-For block types:
-  Every `block_types` entry can have any of these options.
-  Note that *all* of them are optional.
-
-  has_brief        - .
-  title_plural     - .
-  parent_in_id     - .
-  starts_group_for - .
-  block_class      - .
-  title_prefix     - .
-  title_suffix     - .
-  tags             - .
-  short            - .
-  synonyms         - .
+   More advanced options are available. [[Advanced configuration]].
 
 Continue:
-  Next: [[Documenting your code]] &rarr;
+  Next: [Documenting your code &rarr;](##Documenting your code)
 
 *//////////////////////////////////////////////////////////////////////////////*
 
@@ -287,26 +237,5 @@ Do something like
 *         ...
 
 And stuff!
-
-*//////////////////////////////////////////////////////////////////////////////*
-
-Page: Documentation reference
-[Grouped under "References"]
-
-Documentation reference:
-
-  To be written
-
-*//////////////////////////////////////////////////////////////////////////////*
-
-Page: API reference
-[Grouped under "References"]
-
-API reference:
-
-  This reference is made available for those looking into writing plugins.
-
-  Plugins are not supported at the moment, but will be supported before the
-  0.2 release.
 
 *//////////////////////////////////////////////////////////////////////////////*

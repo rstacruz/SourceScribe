@@ -1,0 +1,78 @@
+*//////////////////////////////////////////////////////////////////////////////*
+
+Page: Documentation reference
+[Grouped under "References"]
+
+Documentation reference:
+
+  To be written
+
+*//////////////////////////////////////////////////////////////////////////////*
+
+Page: Advanced configuration
+[Filed under "Documentation reference"]
+
+Advanced options:
+  
+  block_types
+  : Add your own block types, or modify built-in types (...)
+
+    > <code>block_types:  
+    > &nbsp; ... # it's complicated</code>
+
+  reset_block_types
+  : This will remove all the built-in block types defined so you may define
+    your own. Use this in conjunction with *block_types*. (...)
+
+    > <code>reset_block_types: true</code>
+  
+  tags
+  : Adds more project-wide tags. (...)
+
+    > <code>tags:  
+    > &nbsp; - write-only  
+    > &nbsp; - unimplemented  
+    > &nbsp; - in debate</code>
+  
+  reset_tags
+  : This will remove all the built-in tag types defined so you may define
+    your own. Use this in conjunction with *tags*.
+
+    > <code>reset_tags: true</code>
+
+    This option will clear only the project-wide tags. It will not clear the
+    tag types in each block type.
+  
+  tag_synonyms
+  : Sets up synonyms for tags. (...)
+
+    > <code>tag_synonyms:  
+    > &nbsp; write-only: [ writeonly, no-read, wo ]  
+    > &nbsp; unimplemented: [ not done ]</code>
+
+  templates_path
+  : (To be implemented) additional path to look for templates in
+
+    > <code>templates_path: templates/     # not implemented!</code>
+
+  plugins_path
+  : (To be implemented) path to look for plugins in
+
+    > <code>plugins_path: ssplugins/     # not implemented!</code>
+
+For block types:
+  Every `block_types` entry can have any of these options.
+  Note that *all* of them are optional.
+
+  has_brief        - .
+  title_plural     - .
+  parent_in_id     - .
+  starts_group_for - .
+  block_class      - .
+  title_prefix     - .
+  title_suffix     - .
+  tags             - .
+  short            - .
+  synonyms         - .
+
+*//////////////////////////////////////////////////////////////////////////////*
