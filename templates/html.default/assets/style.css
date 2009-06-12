@@ -208,9 +208,10 @@ a img     { border: 0; }
     .content ul ul, .content ul ol,
     .content ol ul, .content ol ol,
     .content blockquote ul, .block blockquote ol, .block blockquote p,
+    .content dl blockquote,
     .content pre p
-        { margin-left: 0; width: auto; }
-        
+        { margin-left: 0; width: auto; margin-top: 0; }
+    
     .block ul ul, .block ul ol,
     .block ol ul, .block ol ol
         { margin-left: 2em; }
@@ -289,3 +290,6 @@ a img     { border: 0; }
         { text-decoration: none; background: #fffbf8; }
     #disambiguation a strong
         { display: block; font-size: 1.34em; color: #333; }
+          
+          
+blockquote code { display: block; padding: 3px 8px; margin-left: -1em; }

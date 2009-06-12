@@ -32,7 +32,9 @@ See it in action:
 
 *//////////////////////////////////////////////////////////////////////////////*
 
-Page: Getting started
+Page: Installing SourceScribe
+[Grouped under "Getting started"]
+
 
 Downloading:
 
@@ -46,7 +48,8 @@ Downloading:
 
 Installation:
 
-  .. Read the `README` file.
+  Before you can use SourceScribe, you must first install the `ss` command.
+  Please read the `README` file.
 
   Once you've installed SourceScribe, you are now ready to generate your
   configuration, document your code, and generate your first documentation
@@ -58,22 +61,26 @@ Continue:
 *//////////////////////////////////////////////////////////////////////////////*
 
 Page: Configuration
-
-  For SourceScribe to work on your code, it must first have a configuration file.
-  There are many configurations options available.
+[Grouped under "Getting started"]
 
 Starting up:
+
+  For SourceScribe to work on your code, it must first have a configuration file.
 
   To begin, type `ss makeconfig` in your project folder. This will create a bare
   configuration file `sourcescribe.conf` with defaults that you can edit to
   your needs. After you've done this (and documented your codebase of course),
   you can simply type `ss` to generate your documentation.
 
+  When running `ss`, SourceScribe will look for this `sourcescribe.conf` file.
+  SourceScribe will check in the current folder and it's parent folders, so you
+  may call `ss` anywhere inside your source tree.
+
 File format:
 
-  SourceScribe will always look for a `sourcescribe.conf`. It is in YAML format,
-  which is a simple format for defining key/value pairs and arrays.
-  Here's an example: 
+  The configuration file is in YAML format, which is a simple format for
+  defining key/value pairs and arrays.
+  Here's an example:
 
     # Comment
     # Blank lines and comments are ignored
@@ -91,7 +98,6 @@ File format:
 
   For more information on this file format, see the [YAML in 5 minutes][l1]
   tutorial, the [YAML Wikipedia entry][l2], or the official [YAML site][l3].
-  Also, test: [[Scribe]].
 
   [l1]: http://yaml.kwiki.org/?YamlInFiveMinutes
   [l2]: http://en.wikipedia.org/wiki/YAML
@@ -113,12 +119,32 @@ Creating your config file:
 
 Required options:
 
-  name    - The project name
+  name
+  : The project name. This will be the title of the entire thing.
+
+    > <code>src_path:  
+    > &nbsp; [ src, include ]</code>
+
   output  - Output
 
 More options:
-  src_path                 - .
-  exclude                  - .
+
+  src_path
+  : Source path. Multiple paths may be defined in an array:
+
+    > <code>src_path:  
+    > &nbsp; [ src, include ]</code>
+
+  exclude
+  : An array of regex patterns to match filenames against.
+    Any file that matches will not be parsed. In this example below,
+    SourceScribe will not skip files under the folder `svn`, `git`, and `cache`: 
+
+    > <code>exclude:  
+    > &nbsp; - !\.svn/!  
+    > &nbsp; - !\.git/!  
+    > &nbsp; - !/cache/!</code>
+
   reset_block_types        - .
   block_types              - .
   reset_tags               - .
@@ -147,6 +173,7 @@ Continue:
 *//////////////////////////////////////////////////////////////////////////////*
 
 Page: Documenting your code
+[Grouped under "Getting started"]
 
 Do something like
 
@@ -164,11 +191,23 @@ And stuff!
 
 *//////////////////////////////////////////////////////////////////////////////*
 
+Page: Documentation reference
+[Grouped under "References"]
+
+Documentation reference:
+
+  To be written
+
+*//////////////////////////////////////////////////////////////////////////////*
+
 Page: API reference
+[Grouped under "References"]
 
-This reference is made available for those looking into writing plugins.
+API reference:
 
-Plugins are not supported at the moment, but will be supported before the
-0.2 release.
+  This reference is made available for those looking into writing plugins.
+
+  Plugins are not supported at the moment, but will be supported before the
+  0.2 release.
 
 *//////////////////////////////////////////////////////////////////////////////*

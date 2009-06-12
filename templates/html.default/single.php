@@ -1,5 +1,8 @@
 <?php
-    $title = $project->getName() . ' - ' . $block->getTitle();
+    if ($block->isHomePage())
+        { $title = $project->getName(); }
+    else
+        { $title = $block->getTitle() . ' &mdash; ' . $project->getName(); }
     include dirname(__FILE__) . '/header.php';
 ?>
     <?php if ($home) { ?>
