@@ -97,14 +97,14 @@ class ScController
         
         // Check if documentation has already been written
         if (!is_dir($path)) {
-            $Sc->error("Can't find the output documentation. Try building it first.");
+            ScStatus::error("Can't find the output documentation. Try building it first.");
             return;
         }
 
         // Load output drivers, die if it fails    
         $Sc->Project->_loadOutputDrivers();
         if (!$Sc->Project->outputs[0])
-            { return $Sc->error("No default output. Boo"); }
+            { return ScStatus::error("No default output. Boo"); }
 
         // Do we need to do a lookup?
         if ($str != '') 
@@ -113,7 +113,7 @@ class ScController
             $ScX = $Sc->loadState();
             $results = $ScX->Project->lookup($str); // returns an array of ScBlock
             if (count($results) == 0)
-                { return $Sc->error("Sorry, no matches for \"$str\"."); }
+                { return ScStatus::error("Sorry, no matches for \"$str\"."); }
 
             if ($show_html) { $this->_showHtmlResults($str, $path, $results); return; }
             
@@ -135,7 +135,7 @@ class ScController
             // Optimization: don't load statefile if HTML
             $return = realpath($path . DS . 'index.html');
             if (!is_file($return))
-                { return $Sc->error("Can't find the output documentation. Try building it first."); }
+                { return ScStatus::error("Can't find the output documentation. Try building it first."); }
             echo "file://" . $return . "\n";
             return;
         }

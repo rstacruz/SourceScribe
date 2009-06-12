@@ -102,8 +102,9 @@ class HtmlOutput extends ScOutput
     {
         global $Sc;
         $file_count = 0;
-        foreach ($this->Project->data['blocks'] as $block)
+        foreach ($this->Project->data['blocks'] as &$block)
         {
+            echo "Shoo:".$block->_SHOO;
             $file_count++;
             ScStatus::update($block->getID());
             $index_file = $path . '/' . $block->getID() . '.html';

@@ -393,28 +393,38 @@ class ScProject
         if ($block->isHomePage())
         {
             $this->data['home'] =& $this->data['blocks'][$id];
+            $this->__ancestry = array();
         }
-        
-        // Find the ancestor.
-        for ($i=0; $i < count($this->__ancestry); ++$i)
+        elseif (!is_null($block->_supposed_parent))
         {
-            $ancestor =& $this->__ancestry[$i];
-            $childtypes = $ancestor->getTypeData('starts_group_for');
-            if (in_array($block->type, (array) $childtypes))
+            // If there's a supposed parent, assume all previous ancestry
+            // is broken and we'll be the thing
+            $this->__ancestry = array();
+        }
+        else
+        {
+            // Find the ancestor.
+            for ($i=0; $i < count($this->__ancestry); ++$i)
             {
-                $ancestor->registerChild($block);
-                break;
+                $ancestor =& $this->__ancestry[$i];
+                $childtypes = $ancestor->getTypeData('starts_group_for');
+                if (in_array($block->type, (array) $childtypes))
+                {
+                    $ancestor->registerChild($block);
+                    break;
+                }
             }
+        
+            // Remove the vestegial ancestors
+            // [e,d,c,b,a], 0, 2 => [c,b,a]
+            array_splice($this->__ancestry, 0, $i);
+
         }
         
-        // Remove the vestegial ancestors
-        // [e,d,c,b,a], 0, 2 => [c,b,a]
-        array_splice($this->__ancestry, 0, $i);
-
         // Add us
         // [b,c,d], a => [a,b,c,d]
         array_unshift($this->__ancestry, &$this->data['blocks'][$id]);
-        
+
         // Is it alone?
         if (count($this->__ancestry) <= 1)
             { $this->data['tree'][] =& $this->data['blocks'][$id]; }
@@ -669,17 +679,25 @@ class ScProject
             $this->register("Page: " . $this->getName());
         }
         
+        // Finalize everything
+        foreach ($this->data['blocks'] as &$block)
+            { $block->preFinalize(); }
+                
         // [1] If there's a home, [2] each of the tree firstlevels
         // [3] that isn't the homepage [4] will be the child of the homepage.
         if (!is_null($this->data['home']))
-            foreach ($this->data['tree'] as $i => $block)
+            foreach ($this->data['tree'] as $i => &$block)
                 if ($block->getID() != 'index')
                     { $this->data['home']->registerChild($this->data['tree'][$i]); }
                     
         // Finalize everything
         foreach ($this->data['blocks'] as &$block)
             { $block->finalize(); }
+        
+        
+
     }
+    
     /* ======================================================================
      * End
      * ====================================================================== */

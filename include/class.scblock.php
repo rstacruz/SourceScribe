@@ -167,6 +167,16 @@ class ScBlock
             }
             
             
+            preg_match('~^(?:filed )?under(?: the (?:.*?))? (?:")?(.*?)(?:")?$~i',
+              $tag, $m);
+            if (count($m) > 0)
+            {
+                $parent_keyword = $m[count($m)-1];
+                $this->_supposed_parent = $parent_keyword;
+                continue;
+            }
+            
+            
             preg_match('~^(?:no|skip) (?:intro|introduction|brief|introductory(?: (?:paragraph|(?:desc(?:ription)))?)?)?$~i',
               $tag, $m);
             if (count($m) > 0)
@@ -582,10 +592,10 @@ class ScBlock
 
     function getID()
     {
-        if ((is_null($this->_id)) && ($this->isHomePage()))
-            { $this->_id = 'index'; }
+        if ($this->isHomePage())
+            { $this->_id = 'index'; return 'index'; }
             
-        elseif (is_null($this->_id))
+        elseif (1) // (is_null($this->_id))
         {
             // Initialize
             $id_tokens = array();
@@ -608,8 +618,11 @@ class ScBlock
             // Add our own title, and finalize
             $id_tokens[] = $this->_toID($this->title);
             $this->_id = implode('.', $id_tokens);
+            return $this->_id;
         }
-        return $this->_id;
+        
+        // Not reachable
+        return '';
     }
     
     /* ======================================================================
@@ -705,12 +718,39 @@ class ScBlock
      */
 
     function finalize()
-    {
-       // "Finalizing: " . $this->getID() . "\n";
+    {                                
+       // Links:
        $this->content = preg_replace_callback('~\<a href=#\>(.*?)\</a\>~s',
                  array($this, '_toLinkCallback'), $this->content);
        $this->brief = preg_replace_callback('~\<a href=#\>(.*?)\</a\>~s',
                  array($this, '_toLinkCallback'), $this->brief);
+    }
+    
+    function preFinalize()
+    {     
+        if ((!$this->hasParent()) && (!is_null($this->_supposed_parent)))
+        {
+            // remap
+            echo "\nremap for\n";
+            echo $this->getID() . "\n";
+            echo "\n";
+            $results =& $this->Project->lookup($this->_supposed_parent, $this);
+            if (count($results) > 0) {
+                $results[0]->registerChild($this);
+                // Remove from tree
+                foreach ($this->Project->data['tree'] as $id => &$item)
+                {
+                    if ($item == $this) {
+                            unset($this->Project->data['tree'][$id]);
+                        break;
+                    }
+                }
+                foreach ($this->Project->data['blocks'] as $id => &$item)
+                {
+                    $item->_SHOO = $item->getID().":)";
+                }
+            }
+        }
     }
     
     /*
@@ -1084,6 +1124,13 @@ class ScBlock
      */
      
     var $_subgroups = array();
+    
+    /*
+     * Property: $_supposed_parent
+     * Used by finalize
+     */
+    
+    var $_supposed_parent = NULL;
     
     /* ======================================================================
      * End
