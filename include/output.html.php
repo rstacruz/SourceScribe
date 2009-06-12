@@ -3,6 +3,8 @@
 /*
  * Class: HtmlOutput
  * The HTML output class
+ * 
+ * [Filed under "API reference"]
  */
  
 class HtmlOutput extends ScOutput
@@ -104,7 +106,6 @@ class HtmlOutput extends ScOutput
         $file_count = 0;
         foreach ($this->Project->data['blocks'] as &$block)
         {
-            echo "Shoo:".$block->_SHOO;
             $file_count++;
             ScStatus::update($block->getID());
             $index_file = $path . '/' . $block->getID() . '.html';

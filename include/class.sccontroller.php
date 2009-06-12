@@ -3,6 +3,8 @@
 /*
  * Class: ScController
  * The front controller.
+ * 
+ * [Filed under "API reference"]
  */
  
 class ScController

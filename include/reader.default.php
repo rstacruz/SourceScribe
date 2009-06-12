@@ -4,7 +4,7 @@
  * Class: DefaultReader
  * The default reader.
  * 
- * [Inherits ScReader]
+ * [Inherits ScReader, Filed under "API reference"]
  */
 
 class DefaultReader extends ScReader

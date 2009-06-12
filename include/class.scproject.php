@@ -10,6 +10,8 @@
  * 
  *      global $Sc;
  *      echo "The project's name is:" . $Sc->Project->getName();
+ * 
+ * [Filed under "API reference"]
  */
 
 class ScProject

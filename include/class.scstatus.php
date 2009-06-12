@@ -2,7 +2,9 @@
 
 /*
  * Class: ScStatus
- * Status.
+ * Stderr wrapper.
+ * 
+ * [Filed under "API reference"]
  */
  
 class ScStatus
@@ -77,7 +79,7 @@ class ScStatus
         $ScS =& ScStatus::getInstance();
         $ScS->msg1 = $msg1;
         $msg = ' * ' . $msg1 . '...';
-        $msg .= str_repeat(' ',79-strlen($msg));
+        $msg .= ScStatus::strrepeat(' ',79-strlen($msg));
         fwrite($ScS->stderr, $msg . "\r");
     }
     
@@ -85,17 +87,23 @@ class ScStatus
     {
         $ScS =& ScStatus::getInstance();
         if (!isset($ScS->msg1)) { return; }
-        $msg = ' * ' . $ScS->msg1 . '...' . str_repeat(' ',25-(strlen($ScS->msg1)+2)) . $msg2;
-        $msg .= str_repeat(' ',79-strlen($msg));
+        $msg = ' * ' . $ScS->msg1 . '...' . ScStatus::strrepeat(' ',25-(strlen($ScS->msg1)+2)) . $msg2;
+        $msg .= ScStatus::strrepeat(' ',79-strlen($msg));
         fwrite($ScS->stderr, $msg . "\r");
+    }
+    
+    function strrepeat($a, $b)
+    {
+        if ($b < 0) { $b = 0; }
+        return str_repeat($a, $b);
     }
     
     function updateDone($msg2)
     {
         $ScS =& ScStatus::getInstance();
         if (!isset($ScS->msg1)) { return; }
-        $msg = ' * ' . $ScS->msg1 . ':' . str_repeat(' ',25-strlen($ScS->msg1)) . $msg2;
-        $msg .= str_repeat(' ',79-strlen($msg));
+        $msg = ' * ' . $ScS->msg1 . ':' . ScStatus::strrepeat(' ',25-strlen($ScS->msg1)) . $msg2;
+        $msg .= ScStatus::strrepeat(' ',79-strlen($msg));
         fwrite($ScS->stderr, $msg . "\n");
         unset($ScS->msg1);
     }

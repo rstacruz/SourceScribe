@@ -3,6 +3,8 @@
 /*
  * Class: ScReader
  * Yeah!
+ * 
+ * [Filed under "API reference"]
  */
  
 class ScReader

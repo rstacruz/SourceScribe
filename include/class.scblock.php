@@ -20,6 +20,8 @@
  * Subclassing:
  *   This class provides a few protected methods. These methods are provided
  *   to be overridden for subclasses. 
+ * 
+ * [Filed under "API reference"]
  */
 
 class ScBlock
@@ -592,10 +594,10 @@ class ScBlock
 
     function getID()
     {
-        if ($this->isHomePage())
+        if (($this->isHomePage()) && (is_null($this->_id)))
             { $this->_id = 'index'; return 'index'; }
             
-        elseif (1) // (is_null($this->_id))
+        elseif (is_null($this->_id))
         {
             // Initialize
             $id_tokens = array();
@@ -612,7 +614,7 @@ class ScBlock
             
             // Add a suffix of the abbreviation of the type
             // (e.g., "function" => "fn")
-            if (isset($td['short']))
+            if ((isset($td['short'])) && ($td['short'] != ''))
                 { $id_tokens[] = $this->_toID($td['short']); }
             
             // Add our own title, and finalize
@@ -621,8 +623,7 @@ class ScBlock
             return $this->_id;
         }
         
-        // Not reachable
-        return '';
+        return $this->_id;
     }
     
     /* ======================================================================
@@ -735,20 +736,14 @@ class ScBlock
             echo $this->getID() . "\n";
             echo "\n";
             $results =& $this->Project->lookup($this->_supposed_parent, $this);
-            if (count($results) > 0) {
+            if (count($results) > 0)
+            {
                 $results[0]->registerChild($this);
+                
                 // Remove from tree
                 foreach ($this->Project->data['tree'] as $id => &$item)
-                {
-                    if ($item == $this) {
-                            unset($this->Project->data['tree'][$id]);
-                        break;
-                    }
-                }
-                foreach ($this->Project->data['blocks'] as $id => &$item)
-                {
-                    $item->_SHOO = $item->getID().":)";
-                }
+                    if ($item == $this)
+                        { unset($this->Project->data['tree'][$id]); break; }
             }
         }
     }
@@ -778,6 +773,9 @@ class ScBlock
         // Register to children and parent
         $this->_children[] =& $child_block;
         $child_block->_parent =& $this;
+        
+        // Reset the ID so it can be recomputed according to the new parent
+        $child_block->_id = NULL;
         
         // Register to subgroups
         $group = $child_block->getGroup();

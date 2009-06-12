@@ -8,6 +8,8 @@
  *   This is instanciated as the global variable `$Sc`. This class is
  *   responsible for reading the configuration file. It also holds the 
  *   [[ScProject]] sub-singleton.
+ * 
+ * [Filed under "API reference"]
  */
 
 class Scribe
@@ -52,7 +54,7 @@ class Scribe
         (
             'page' => array(
                 'title_plural' => 'Pages',
-                'short' => 'p',
+                'short' => '',
                 'has_brief' => FALSE,
                 'synonyms' => array('page', 'section')
             ),
@@ -69,7 +71,7 @@ class Scribe
                 'title_plural' => 'Properties',
                 'has_brief' => TRUE,
                 'parent_in_id' => array('class'),
-                'short' => 'v',
+                'short' => 'var',
                 'synonyms' => array('property'),
                 'title_prefix' => '$',
                 'tags' => array('read-only', 'private', 'public', 'protected', 'constant')
@@ -80,13 +82,13 @@ class Scribe
                 'starts_group_for' => array('var', 'function'),
                 'title_prefix' => 'Class ',
                 // 'block_class' => 'ScClassBlock',
-                'short' => 'cl',
+                'short' => 'class',
             ),
             'module' => array(
                 'title_plural' => 'Sections',
                 'has_brief' => TRUE,
                 'starts_group_for' => array('page', 'class', 'function', 'var'),
-                'short' => 's',
+                'short' => 'mod',
                 'synonyms' => array('file')
             ),
         ),

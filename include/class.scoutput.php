@@ -3,6 +3,8 @@
 /*
  * Class: ScOutput
  * The output base class.
+ * 
+ * [Filed under "API reference"]
  */
  
 class ScOutput
