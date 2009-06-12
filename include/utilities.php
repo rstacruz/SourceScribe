@@ -67,3 +67,14 @@ function yaml($file)
     $parser = new Spyc;
     return $parser->load($file);
 }
+
+if (!function_exists('file_put_contents')) {
+  function file_put_contents($file, $data)
+  {
+	$file = @fopen($fname, 'w');
+	if (!$file) { return FALSE; }
+	if (!fwrite($file, $contents)) { return FALSE; }
+	fclose ($file);
+	return TRUE;
+  }
+}

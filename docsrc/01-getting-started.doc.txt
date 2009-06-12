@@ -22,14 +22,11 @@ Start now:
   <strong>Need amazing documentation for your project?</strong>  
   [Start using SourceScribe! &rarr;](##Using SourceScribe)
 
-Download:
+Download and contribute:
 
-  <strong>Download it now</strong>  
-  [Latest version (from github) &rarr;](http://github.com/rstacruz/SourceScribe/zipball/master)
+  This project is hosted in GitHub. You may download [SourceScribe's latest version](http://github.com/rstacruz/SourceScribe/zipball/master)
+  there.
 
-Contribute:
-
-  This project is hosted in GitHub.  
   <http://github.com/rstacruz/SourceScribe>
 
 *//////////////////////////////////////////////////////////////////////////////*
@@ -40,10 +37,13 @@ Page: Using SourceScribe
 
 <big>You can get started using SourceScribe in just 2 minutes!</big>
 
+Get your project written in PHP, Ruby, C, Java, JS, or any other language
+documented with a nice manual with these 5 easy steps.
+
 ## Dig in right away!
 
   1. [Download it.](http://github.com/rstacruz/SourceScribe/zipball/master)  
-     Latest package is always available in the SourceScribe github page.
+     The latest version is always available in the SourceScribe github page.
 
   2. [Install it.](##Installing SourceScribe)  
      by extracting the package somewhere, and making a
