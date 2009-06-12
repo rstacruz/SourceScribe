@@ -73,6 +73,7 @@ class Scribe
                 'title_plural' => 'Classes',
                 'has_brief' => TRUE,
                 'starts_group_for' => array('var', 'function'),
+                'priority' => 8,
                 'title_prefix' => 'Class ',
                 // 'block_class' => 'ScClassBlock',
                 'short' => 'class',
@@ -80,6 +81,7 @@ class Scribe
             'module' => array(
                 'title_plural' => 'Sections',
                 'has_brief' => TRUE,
+                'priority' => 4,
                 'starts_group_for' => array('page', 'class', 'function', 'var'),
                 'short' => 'mod',
                 'synonyms' => array('file')

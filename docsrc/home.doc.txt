@@ -20,7 +20,7 @@ Downloading:
   github page][gh]. If you have **git** installed, you may also do a pull of the
   latest sources from the tree. Simply type:
 
-    git pull http://github.com/rstacruz/SourceScribe/tree
+    git pull git@github.com:rstacruz/SourceScribe.git
 
   [gh]: http://github.com/rstacruz/SourceScribe/
 
@@ -42,7 +42,7 @@ Downloading:
   github page][gh]. If you have **git** installed, you may also do a pull of the
   latest sources from the tree. Simply type:
 
-    git pull http://github.com/rstacruz/SourceScribe/tree
+    git pull git@github.com:rstacruz/SourceScribe.git
 
   [gh]: http://github.com/rstacruz/SourceScribe/
 

@@ -341,19 +341,66 @@ class ScProject
 
     function& lookup($raw_keyword, $reference = NULL)
     {
-        $keyword = $this->_distill($raw_keyword);
-        $return = array();
+        // Split keywords (e.g., Scribe::lookup() will be [scribe,lookup])
+        preg_match_all('~([A-Za-z0-9-_\. ]+)~s', $raw_keyword, $m);
+        $keyword_array = $m[1];
         
-        foreach ((array) $this->data['blocks'] as $block)
+        // No keywords? No result
+        if (count($keyword_array) == 0)
+            { return array(); }
+        
+        // Lookup the last keyword (e.g., 'lookup' in ['scribe','lookup'])
+        $keyword = $this->_distill($keyword_array[count($keyword_array)-1]);
+        $parent_keyword = (count($keyword_array) >= 2) ? ($keyword_array[count($keyword_array)-2]) : NULL;
+        $parents = $this->lookup($parent_keyword, $reference);
+        
+        // Construct a list of results with priorities.
+        // $results = [ {priority: 0, block: ScBlock()}, ... ]
+        $results = array();
+        foreach ($this->data['blocks'] as $id => &$block)
         {
+            $priority = $block->getTypeData('priority');
+
             if (strtolower($block->getID()) == strtolower($raw_keyword))
-                { $return[] = $block; continue; }
+            {
+                // ID Match! The game is over and we found our winner!
+                $results = array();
+                $results[] =& $this->data['blocks'][$id];
+                return $results;
+            }
+            
             $title = $this->_distill($block->getKeyword());
-            if ($title == $keyword)
-                { $return[] = $block; }
+            if (($title == $keyword) &&
+                (
+                  (is_null($parent_keyword)) ||
+                  (in_array($block->getParent(), $parents))
+                )
+               )
+            {
+                $results[] = array(
+                    'block' => &$this->data['blocks'][$id],
+                    'priority' => $priority);
+            }
         }
         
+        usort($results, array(&$this, '_sortResults'));
+        
+        // Return just the blocks
+        $return = array();
+        foreach ($results as &$result)
+            { $return[] =& $result['block']; }
+            
         return $return;
+    }
+    
+    function _sortResults($a, $b)
+    {
+        // $a and $b are in the form: { priority: 512, block: ScBlock() }
+        
+        if ($a == $b) { return 0; }
+        $ap = (int) $a['priority'];
+        $bp = (int) $b['priority'];
+        return ($ap > $bp) ? -1 : 1;
     }
     
     function _distill($str)
@@ -487,6 +534,9 @@ class ScProject
                 
             if (!isset($block_type['tags']))
                 { $block_type['tags'] = array(); }
+                
+            if (!isset($block_type['priority']))
+                { $block_type['priority'] = NULL; }
                 
             if (!is_array($block_type['tags']))
                 { $block_type['tags'] = (array) $block_type['tags']; }

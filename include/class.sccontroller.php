@@ -66,7 +66,7 @@ class ScController
      
     function do_version($args = array())
     {
-        echo "SourceScribe\n";
+        echo "SourceScribe " . SCRIBE_VERSION . "\n";
     }
     
     /*
