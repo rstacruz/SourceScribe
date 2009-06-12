@@ -25,10 +25,28 @@
  */
 
 class ScBlock
-{
-     
+{     
     // ========================================================================
-    // Constructor
+    // Factory
+    // ========================================================================
+    
+    /*
+     * Function: factory()
+     * Creates an ScBlock instance with the right class as needed.
+     * [Static, grouped under "Factory"]
+     */
+
+    function& factory($input, &$project, $the_classname = 'ScBlock')
+    {
+        $return = new $the_classname($input, $project);
+        $classname = $return->getTypeData('block_class');
+        if (!is_null($classname))
+            { $returnx = new $classname($return, $project); return $returnx; }
+        return $return;
+    }
+    
+    // ========================================================================
+    // ...
     // ========================================================================
     
     /*
@@ -342,23 +360,6 @@ class ScBlock
     function getGroup()
     {
         return $this->_group;
-    }
-    
-    /*
-     * Function: factory()
-     * Creates an ScBlock instance with the right class as needed.
-     * [Static]
-     * 
-     * [Grouped under "Constructor"]
-     */
-
-    function& factory($input, &$project, $the_classname = 'ScBlock')
-    {
-        $return = new $the_classname($input, $project);
-        $classname = $return->getTypeData('block_class');
-        if (!is_null($classname))
-            { $returnx = new $classname($return, $project); return $returnx; }
-        return $return;
     }
     
     /*

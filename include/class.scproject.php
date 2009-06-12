@@ -665,6 +665,7 @@ class ScProject
             }
         }
     }
+    
     /*
      * Function: _doPostBuild()
      * Does post-build actions like modifying the homepage.
