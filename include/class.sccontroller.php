@@ -11,8 +11,7 @@ class ScController
 {
     var $Sc = NULL;
     
-    function ScController() {} //&$Sc)
-        //{ $this->Sc =& $Sc; }
+    function ScController() {}
         
     function& getSc()
     {

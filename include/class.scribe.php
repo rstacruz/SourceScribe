@@ -88,9 +88,26 @@ class Scribe
             ),
         ),
         
-        'include' => array(
-            '\.php$' => 'default',
-            '\.inc$' => 'default',
+        'include' => array
+        (
+            '\.inc$'  => 'default',
+            '\.rb$'   => 'default',
+            '\.py$'   => 'default',
+            '\.js$'   => 'default',
+            '\.as$'   => 'default',
+            '\.c$'    => 'default',
+            '\.d$'    => 'default',
+            '\.sql$'  => 'default',
+            '\.nse$'  => 'default',
+            '\.cpp$'  => 'default',
+            '\.java$' => 'default',
+            '\.m$'    => 'default',
+            '\.sh$'   => 'default',
+            '\.cs$'   => 'default',
+            '\.h$'    => 'default',
+            '\.pl$'   => 'default',
+            '\.perl$' => 'default',
+            '\.php[3-5]?$' => 'default',
             '\.doc.txt$' => 'default'
         ),
         
@@ -125,12 +142,12 @@ class Scribe
         // Find config file
         $config_file = $this->findConfigFile();
         if ($config_file === FALSE)
-            { return $this->error('No config file found. You may generate one using `ss makeconfig`.'); }
+            { return ScStatus::error('No config file found. You may generate one using `ss makeconfig`.'); }
         
         // Load config file and validate
         $this->_config = yaml($config_file);
         if (!is_array($this->_config))
-            { return $this->error('Configuration file is invalid.'); }
+            { return ScStatus::error('Configuration file is invalid.'); }
         
         // Finally, initialize
         $this->cwd        = dirname($config_file);

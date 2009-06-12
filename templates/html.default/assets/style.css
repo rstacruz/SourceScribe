@@ -197,13 +197,23 @@ a img     { border: 0; }
     .content dl,
     .content blockquote,
     .content ul,
-    .content ol
+    .content ol,
+    .content table
       { margin-left: 25%; padding-right: 30px; width: 70%; margin-top: 1em; margin-bottom: 1em; }
 
+    .content table td
+      { vertical-align: top; width: 50%; }
+    .content table h4
+      { margin: 0; padding: 0; }
+    .content table,
+    .content table ol, .content table ul, .content table p, .content table blockquote
+      { margin-top: 0; }
+      
     .content ul,
     .content ol
       { margin-left: 27%; }
 
+    .content table table,
     .content dl p,  .content li p,
     .content ul ul, .content ul ol,
     .content ol ul, .content ol ol,
@@ -213,7 +223,9 @@ a img     { border: 0; }
         { margin-left: 0; width: auto; margin-top: 0; }
     
     .block ul ul, .block ul ol,
-    .block ol ul, .block ol ol
+    .block ol ul, .block ol ol,
+    .content table ol, .content table ul,
+    .content table p, .content table blockquote
         { margin-left: 2em; }
         
 /* Elements */  
@@ -292,4 +304,4 @@ a img     { border: 0; }
         { display: block; font-size: 1.34em; color: #333; }
           
           
-blockquote code { display: block; padding: 3px 8px; margin-left: -1em; }
+blockquote code { display: block; padding: 3px 8px; margin-left: -1em; background: #eaeae3; }

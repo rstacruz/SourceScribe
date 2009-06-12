@@ -49,7 +49,27 @@ Downloading:
 Installation:
 
   Before you can use SourceScribe, you must first install the `ss` command.
-  Please read the `README` file.
+  
+<table>
+<tr><td>
+<h4>Installation method (Win/Mac/Linux):</h4>
+<ol>
+<li>Unzip the entire package somewhere (maybe <code>c:\Program Files\SourceScribe</code>
+or <code>~/sourcescribe/</code>).</li>
+<li>Add that path in your PATH statement. </li>
+</ol>
+</td><td>
+<h4>Installation method (MacOS/Linux):</h4>
+<ol>
+<li>Unzip the entire package somewhere (maybe <code>c:\Program Files\SourceScribe</code>
+or <code>~/sourcescribe/</code>).</li>
+<li>Make a symbolic link to the file <code>ss</code> in a directory that's in your PATH statement.<br />
+     Example for Mac/Linux: <code>sudo ln -s `pwd`/ss /usr/local/bin/ss</code></li>
+</ol>
+</td></tr>
+</table>
+
+## Rock on!
 
   Once you've installed SourceScribe, you are now ready to generate your
   configuration, document your code, and generate your first documentation
@@ -80,22 +100,7 @@ File format:
 
   The configuration file is in YAML format, which is a simple format for
   defining key/value pairs and arrays.
-  Here's an example:
-
-    # Comment
-    # Blank lines and comments are ignored
-
-    key_one:  value
-    key_two:  "value"
-
-    key_three:
-      sub_key_one: value
-      sub_key_two: value
-
-    key_four:
-      - array member 1
-      - array member 2
-
+  
   For more information on this file format, see the [YAML in 5 minutes][l1]
   tutorial, the [YAML Wikipedia entry][l2], or the official [YAML site][l3].
 
@@ -110,8 +115,28 @@ Creating your config file:
   `ss makeconfig`. This will output a sample `sourcescribe.conf` for you
   to edit to your needs.
 
-  Note that the only required options are `name` and `output`. Technically,
-  This is valid configuration file: 
+Sample file:
+  
+  Here's a sample file with bare options:  
+
+    # My sourcescribe.conf file
+    # Lines starting with pound signs are ignored as comments.
+    
+    name: My Project
+    output:                   # Output is an array of key-value pairs
+     - driver: "html"
+       path: "doc/"
+       template: "default"
+     - driver: "pdf"
+       path: "pdf/"
+    exclude:                  # Exclude is an array.
+     - \.svn$
+     - \.git$
+
+Another sample:
+
+  The only required options are `name` and `output`. This is also
+  a valid configuration file: 
 
     # sourcescribe.conf
     name: My project
@@ -120,60 +145,114 @@ Creating your config file:
 Required options:
 
   name
-  : The project name. This will be the title of the entire thing.
+  : The project name. This will be the title of the entire documentation.
 
-    > <code>src_path:  
-    > &nbsp; [ src, include ]</code>
+    > <code>name: My API reference</code>
+   
+    A home page for your manual may be created by defining a page with the
+    same name listed here.
 
-  output  - Output
+  output
+  : The outputs to spit out. This is an array of key-value pairs, each pair
+    requiring a *driver*, and a *path* to define where the output will be
+    saved to.
+
+    > <code>output:  
+    > - driver: "html"  
+    > &nbsp; template: "default"  
+    > &nbsp; path: "doc/"</code>
+
+    Currently only the *html* driver is supported. Plugins may give more
+    driver types (e.g., *pdf*, *latex*, etc). Additional templates for
+    the *html* driver may be added: see *templates_path* (not yet implemented)
+
 
 More options:
 
   src_path
-  : Source path. Multiple paths may be defined in an array:
+  : The path where the source files are. In this example, SourceScribe will scan
+    the *doc* folder (under where the configuration file resides): 
+
+    > <code>src_path: doc</code>
+
+   Multiple paths may also be defined using an array.
 
     > <code>src_path:  
-    > &nbsp; [ src, include ]</code>
+    > &nbsp; - src  
+    > &nbsp; - include</code>
 
   exclude
   : An array of regex patterns to match filenames against.
     Any file that matches will not be parsed. In this example below,
-    SourceScribe will not skip files under the folder `svn`, `git`, and `cache`: 
+    SourceScribe will skip files under the folders *.svn*, *.git*, and *cache*:  
 
     > <code>exclude:  
     > &nbsp; - \.svn/  
     > &nbsp; - \.git/  
     > &nbsp; - /cache/</code>
-
-  reset_block_types
-  : ...
   
   block_types
-  : ...
-  
-  reset_tags
-  : ...
+  : Add your own block types, or modify built-in types (...)
+
+    > <code>block_types:  
+    > &nbsp; ... # it's complicated</code>
+
+  reset_block_types
+  : This will remove all the built-in block types defined so you may define
+    your own. Use this in conjunction with *block_types*. (...)
+
+    > <code>reset_block_types: true</code>
   
   tags
-  : ...
+  : Adds more project-wide tags. (...)
+
+    > <code>tags:  
+    > &nbsp; - write-only  
+    > &nbsp; - unimplemented  
+    > &nbsp; - in debate</code>
+  
+  reset_tags
+  : This will remove all the built-in tag types defined so you may define
+    your own. Use this in conjunction with *tags*.
+
+    > <code>reset_tags: true</code>
+
+    This option will clear only the project-wide tags. It will not clear the
+    tag types in each block type.
   
   tag_synonyms
-  : ...
+  : Sets up synonyms for tags. (...)
+
+    > <code>tag_synonyms:  
+    > &nbsp; write-only: [ writeonly, no-read, wo ]  
+    > &nbsp; unimplemented: [ not done ]</code>
   
   include
-  : File types to include. This is an array of regex patterns. In the example
-    below, this will make SourceScribe scan php3 and php4 file types.
+  : File types to include. This is an array of regex patterns. Defining this
+    option will override all defaults, so be sure to include here all filetypes
+    that your project uses. In the example below, this will make SourceScribe
+    scan *php3* and *php4* file types: 
     
     > <code>include:  
-    > &nbsp; - \.php3$  
-    > &nbsp; - \.php4$</code>
+    > &nbsp; - \\.php3$  
+    > &nbsp; - \\.php4$</code>
     
     If you have a plugin that provides an alternate reader, you can define which
     reader to use for each file type.
     
     > <code>include:    
-    > &nbsp; \.php3$: default  
-    > &nbsp; \.php4$: default</code>
+    > &nbsp; \\.php3$: default  
+    > &nbsp; \\.php4$: default</code>
+
+  templates_path
+  : (To be implemented) additional path to look for templates in
+
+    > <code>templates_path: templates/     # not implemented!</code>
+
+  plugins_path
+  : (To be implemented) path to look for plugins in
+
+    > <code>plugins_path: ssplugins/     # not implemented!</code>
 
 For block types:
   Every `block_types` entry can have any of these options.

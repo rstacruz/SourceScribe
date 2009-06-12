@@ -262,7 +262,7 @@ class ScProject
         {
             $options['exclude'] = array();
             foreach ($this->options['exclude'] as $ex) {
-            $options['exclude'][] = '!' . $ex . '!';
+            $options['exclude'][] = ':' . $ex . ':';
             }
         }
         
