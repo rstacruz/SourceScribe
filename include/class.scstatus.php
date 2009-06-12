@@ -9,6 +9,9 @@
  
 class ScStatus
 {
+    var $ticker = array('\\','|','/','-');
+    var $tickerIndex = 0;
+    
     function ScStatus()
     {
         $this->stderr = fopen('php://stderr', 'w');
@@ -83,11 +86,17 @@ class ScStatus
         fwrite($ScS->stderr, $msg . "\r");
     }
     
-    function update($msg2)
+    function update($msg2 = '')
     {
         $ScS =& ScStatus::getInstance();
+        if ($msg2 == '') {
+            $ScS->tickerIndex++;
+            if ($ScS->tickerIndex >= count($ScS->ticker))
+                { $ScS->tickerIndex = 0; }
+            $msg2 = $ScS->ticker[$ScS->tickerIndex];
+        }
         if (!isset($ScS->msg1)) { return; }
-        $msg = ' * ' . $ScS->msg1 . '...' . ScStatus::strrepeat(' ',25-(strlen($ScS->msg1)+2)) . $msg2;
+        $msg = ' * ' . $ScS->msg1 . '...' . ScStatus::strrepeat(' ',25-(strlen($ScS->msg1)+2)) . substr($msg2,0,50);
         $msg .= ScStatus::strrepeat(' ',79-strlen($msg));
         fwrite($ScS->stderr, $msg . "\r");
     }

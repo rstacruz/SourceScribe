@@ -56,7 +56,7 @@
             <div class="heading"><div class="heading-c">
                 <h2><span><?php echo $block->getTitle(); ?></span></h2>
                 <div class="brief">
-                <?php echo strip_tags($block->getBrief(), "<a><code><b><strong><em><i>"); ?>
+                <?php echo strip_tags($this->_processContent($block->getBrief()), "<a><code><b><strong><em><i>"); ?>
                 <?php if (count($block->getTags()) > 0) { ?>
                     <?php foreach ($block->getTags() as $tag) { ?>
                         <span class="tag"><?php echo $tag; ?></span>
@@ -83,7 +83,7 @@
                                         <span class="tag"><?php echo $tag; ?></span>
                                     <?php } ?>
                                 <?php } ?>
-                                <?php echo strip_tags($node->getBrief(), '<a><code><strong><b><i><em>'); ?>
+                                <?php echo strip_tags($this->_processContent($node->getBrief()), '<a><code><strong><b><i><em>'); ?>
                             </dd>
                         <?php } ?>
                     </dl>

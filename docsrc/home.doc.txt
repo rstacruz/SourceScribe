@@ -38,6 +38,7 @@ File format:
 
   For more information on this file format, see the [YAML in 5 minutes][l1]
   tutorial, the [YAML Wikipedia entry][l2], or the official [YAML site][l3].
+  Also, test: [[Scribe]].
 
   [l1]: http://yaml.kwiki.org/?YamlInFiveMinutes
   [l2]: http://en.wikipedia.org/wiki/YAML

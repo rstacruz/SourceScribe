@@ -673,7 +673,7 @@ class ScBlock
             "\n\\1\n: \\2\\3", $str);
         
         // Convert [[]] links
-        $str = preg_replace('~\[\[(.*?)\]\]~s', "<a href=#>\\1</a>", $str);
+        $str = preg_replace('~\[\[(.*?)\]\]~s', "<a href=\"##\\1\">\\1</a>", $str);
         
         // return '<pre>' . htmlentities($str) . '</pre>';
         $str = markdown($str);
@@ -694,15 +694,6 @@ class ScBlock
         return $str;
     }
     
-    function _toLinkCallback($m)
-    {
-        $url = '#';
-        $results = $this->Project->lookup($m[1]);
-        if (count($results) > 0)
-            { $url = '##' . $results[0]->getID(); }
-        return "<a href=\"$url\">$m[1]</a>";
-    }
-    
     /*
      * Function: finalize()
      * Ran when building is done.
@@ -712,29 +703,21 @@ class ScBlock
      *   (Don't call this function.)
      * 
      * Description:
-     *   This function takes care of resolving `[[..]]` links. You may
-     *   override this to do more post-build actions for the block.
+     *   You may override this to do more post-build actions for the block.
      * 
      * [Protected, grouped under "Protected methods"]
      */
 
     function finalize()
-    {                                
-       // Links:
-       $this->content = preg_replace_callback('~\<a href=#\>(.*?)\</a\>~s',
-                 array($this, '_toLinkCallback'), $this->content);
-       $this->brief = preg_replace_callback('~\<a href=#\>(.*?)\</a\>~s',
-                 array($this, '_toLinkCallback'), $this->brief);
+    {
     }
     
     function preFinalize()
     {     
         if ((!$this->hasParent()) && (!is_null($this->_supposed_parent)))
         {
-            // remap
-            echo "\nremap for\n";
-            echo $this->getID() . "\n";
-            echo "\n";
+            // Found a "Filed under", now look up it's supposed parent and
+            // put them there
             $results =& $this->Project->lookup($this->_supposed_parent, $this);
             if (count($results) > 0)
             {

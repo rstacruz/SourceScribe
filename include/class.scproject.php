@@ -673,7 +673,7 @@ class ScProject
 
     function _doPostBuild()
     {
-        
+        ScStatus::updateStart("Post build");
         // If there's no homepage,
         // Make one!
         if (is_null($this->data['home']))
@@ -682,8 +682,13 @@ class ScProject
         }
         
         // Finalize everything
+        $block_count = 0;
         foreach ($this->data['blocks'] as &$block)
-            { $block->preFinalize(); }
+        {
+            $block->preFinalize();
+            if (++$block_count % 5 == 0)
+                { ScStatus::update($block_count); }
+        }
                 
         // [1] If there's a home, [2] each of the tree firstlevels
         // [3] that isn't the homepage [4] will be the child of the homepage.
@@ -693,11 +698,15 @@ class ScProject
                     { $this->data['home']->registerChild($this->data['tree'][$i]); }
                     
         // Finalize everything
+        $block_count = 0;
         foreach ($this->data['blocks'] as &$block)
-            { $block->finalize(); }
+        {
+            $block->finalize();
+            if (++$block_count % 5 == 0)
+                { ScStatus::update($block_count); }
+        }
         
-        
-
+        ScStatus::updateDone("$block_count blocks.");
     }
     
     /* ======================================================================
