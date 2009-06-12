@@ -26,13 +26,6 @@ class Scribe
     var $Project;
     
     /*
-     * Property: $Controller
-     * The [[ScController]] sub-singleton.
-     */
-     
-    var $Controller;
-    
-    /*
      * Property: $Readers
      * Key/value pairs of file reader drivers.
      * 
@@ -140,7 +133,6 @@ class Scribe
         // Finally, initialize
         $this->cwd        = dirname($config_file);
         $this->Project    = new ScProject($this);
-        $this->Controller = new ScController($this);
         $this->Readers['default'] = new DefaultReader($this);
     }
     

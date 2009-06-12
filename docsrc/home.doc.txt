@@ -2,6 +2,8 @@
 
 Page: SourceScribe manual
 
+## What is SourceScribe?
+
   SourceScribe is a documentation-generation tool which takes your formatted
   source code comments and creates a full heirarchal manual in HTML or PDF,
   like this one you're viewing now.
@@ -13,9 +15,6 @@ Page: SourceScribe manual
   This is the manual for SourceScribe version 0.0 and 0.1 series. 
 
 Downloading:
-
-  You may download the latest version of SourceScribe from
-  [SourceScribe's github page][gh].
 
   You may download the latest version of SourceScribe from [SourceScribe's
   github page][gh]. If you have **git** installed, you may also do a pull of the
