@@ -48,26 +48,23 @@ Downloading:
 
 Installation:
 
-  Before you can use SourceScribe, you must first install the `ss` command.
-  
-<table>
-<tr><td>
-<h4>Installation method (Win/Mac/Linux):</h4>
-<ol>
-<li>Unzip the entire package somewhere (maybe <code>c:\Program Files\SourceScribe</code>
-or <code>~/sourcescribe/</code>).</li>
-<li>Add that path in your PATH statement. </li>
-</ol>
-</td><td>
-<h4>Installation method (MacOS/Linux):</h4>
-<ol>
-<li>Unzip the entire package somewhere (maybe <code>c:\Program Files\SourceScribe</code>
-or <code>~/sourcescribe/</code>).</li>
-<li>Make a symbolic link to the file <code>ss</code> in a directory that's in your PATH statement.<br />
-     Example for Mac/Linux: <code>sudo ln -s `pwd`/ss /usr/local/bin/ss</code></li>
-</ol>
-</td></tr>
-</table>
+ - Unzip the entire package somewhere,
+   maybe *c:\Program Files\SourceScribe* or *~/sourcescribe/*.
+
+ - **For Mac and Linux:** you can make a symbolic link to the
+   file <code>ss</code> in a directory that's in your *PATH* environment variable.  
+   Example for Mac/Linux: <code>sudo ln -s \`pwd\`/ss /usr/local/bin/ss</code>
+
+ - **For all:** Alternatively, you can add that path in the beginning of
+   your *PATH* environment variable.
+
+   - For Windows, this is under System Properties &rarr; Advanced Tab &rarr;
+     Environment variables &rarr; PATH &rarr; Edit. Add it to the beginning,
+     followed by a semi-colon (;).
+
+   - For MacOS/Linux, you can do this by adding the line to your *~/.profile*.
+     Example:  
+     <code>echo export PATH=/Users/rsc/sourcescribe:\$PATH | tee ~/.profile</code>
 
 ## Rock on!
 

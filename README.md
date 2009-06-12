@@ -6,27 +6,35 @@ tree, parses out the comments, and outputs nicely-formatted documentation.
 At the moment, it supports *all* languages that support comments in either
 //, #, or /**/.
 
-This readme sucks and will be improved later on, I promise.
-
 To install
 ----------
 
- - Place all these files somewhere (maybe `/usr/local/share/sourcescribe`)
- - Edit the `ss` file to point to that location
- - Copy `ss` to a bin folder like /usr/local/bin
+ - Unzip the entire package somewhere,
+   maybe *c:\Program Files\SourceScribe* or *~/sourcescribe/*.
+
+ - **For Mac and Linux:** you can make a symbolic link to the
+   file <code>ss</code> in a directory that's in your *PATH* environment variable.  
+   Example for Mac/Linux: <code>sudo ln -s \`pwd\`/ss /usr/local/bin/ss</code>
+
+ - **For all:** Alternatively, you can add that path in the beginning of
+   your *PATH* environment variable.
+
+   - For Windows, this is under System Properties &rarr; Advanced Tab &rarr;
+     Environment variables &rarr; PATH &rarr; Edit. Add it to the beginning,
+     followed by a semi-colon (;).
+
+   - For MacOS/Linux, you can do this by adding the line to your *~/.profile*.
+     Example:  
+     <code>echo export PATH=/Users/rsc/sourcescribe:\$PATH | tee ~/.profile</code>
 
 Try it!
 -------
 
- - Type `ss` in the SourceScribe directory. This will build the SourceScribe
-   documentation in `doc/` by default.
+ - Once installed, type `ss` in the SourceScribe directory. This will build
+   the SourceScribe documentation in `doc/` by default. This documentation has
+   all information you'll need to use SourceScribe in your projects.
 
 Using in your projects
 ----------------------
 
- - To use in your projects, document your functions like the sourcescribe src,
-   and put the `sourcescribe.conf` file in your project's root and edit it to
-   your needs.
-   
- - SourceScribe only documents explicitly-commented sections. It will not parse
-   out your code at all; it will only scan through your comments.
+ - The manual contains all the information you need.
