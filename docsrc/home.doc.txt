@@ -2,7 +2,22 @@
 
 Page: SourceScribe manual
 
-Hello! Welcome to the SourceScribe manual.
+  SourceScribe is a documentation-generation tool which takes your formatted
+  source code comments and creates a full heirarchal manual in HTML or PDF,
+  like this one you're viewing now.
+
+  It is written in PHP and is ran from the command line. Being written in PHP,
+  it has very little requirements: it can run on any OS that supports PHP4
+  (Mac, Linux, Windows) and requires no other libraries.
+
+  This is the manual for SourceScribe version 0.0 and 0.1 series. 
+
+Downloading:
+
+  You may download the latest version of SourceScribe from
+  [SourceScribe's github page][gh].
+
+  [gh]: (http://github.com/rstacruz/SourceScribe/)
 
 *//////////////////////////////////////////////////////////////////////////////*
 
