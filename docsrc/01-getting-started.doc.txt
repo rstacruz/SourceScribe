@@ -24,10 +24,10 @@ Start now:
 
 Download and contribute:
 
-  This project is hosted in GitHub. You may download [SourceScribe's latest version](http://github.com/rstacruz/SourceScribe/zipball/master)
+  This project is hosted in GitHub. You may download [SourceScribe's latest version](http://github.com/rstacruz/sourcescribe/zipball/master)
   there.
 
-  <http://github.com/rstacruz/SourceScribe>
+  <http://github.com/rstacruz/sourcescribe>
 
 *//////////////////////////////////////////////////////////////////////////////*
 
@@ -42,7 +42,7 @@ documented with a nice manual with these 5 easy steps.
 
 ## Dig in right away!
 
-  1. [Download it.](http://github.com/rstacruz/SourceScribe/zipball/master)  
+  1. [Download it.](http://github.com/rstacruz/sourcescribe/zipball/master)  
      The latest version is always available in the SourceScribe github page.
 
   2. [Install it.](##Installing SourceScribe)  
@@ -80,10 +80,10 @@ Downloading:
   you may also do a pull of the
   latest sources from the tree. Simply type:
 
-    git pull git@github.com:rstacruz/SourceScribe.git
+    git pull git@github.com:rstacruz/sourcescribe.git
 
-  [gh]: http://github.com/rstacruz/SourceScribe/
-  [latest]: http://github.com/rstacruz/SourceScribe/zipball/master
+  [gh]: http://github.com/rstacruz/sourcescribe/
+  [latest]: http://github.com/rstacruz/sourcescribe/zipball/master
 
 Installation:
 
@@ -234,31 +234,31 @@ Continue:
   <strong>Configuration all set?</strong>  
   [Start documenting your code! &rarr;](##Documenting your code)
 
-*//////////////////////////////////////////////////////////////////////////////*
+*//////////////////////////////////////////////////////////////////////////////
 
-Page: Documenting your code
-[Grouped under "Getting started"]
+// Page: Documenting your code
+// [Grouped under "Getting started"]
+// 
+// Do something like
+// 
+//     /*
+//      * Class: MyClass
+//      * This is my classname.
+//      *
+//      * More documentation goes here.
+//      */
+//     class MyClass
+//     {
+//         ...
+// 
+// And stuff!
+// 
+// Continue:
+// 
+//   <strong>Let's make documentation!</strong>  
+//   [Generating documentation &rarr;](##Generating documentation)
 
-Do something like
-
-*     /*
-*      * Class: MyClass
-*      * This is my classname.
-*      *
-*      * More documentation goes here.
-*      * /
-*     class MyClass
-*     {
-*         ...
-
-And stuff!
-
-Continue:
-
-  <strong>Let's make documentation!</strong>  
-  [Generating documentation &rarr;](##Generating documentation)
-
-*//////////////////////////////////////////////////////////////////////////////*
+//////////////////////////////////////////////////////////////////////////////*
 
 Page: Generating documentation
 [Grouped under "Getting started"]
