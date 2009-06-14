@@ -4,6 +4,7 @@
  * Class: ScReader
  * Yeah!
  * 
+ * 
  * [Filed under "API reference"]
  */
  
@@ -14,6 +15,7 @@ class ScReader
     /*
      * Constructor: ScReader()
      * Constructor. Called by Scribe::Scribe()
+     * Go [[parse]] something.
      */
     function ScReader(&$Sc)
     {

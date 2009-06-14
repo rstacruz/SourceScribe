@@ -2,13 +2,14 @@
 
 class ScProject
 {
+    // ========================================================================
     /* Class: ScProject
      * The project.
      * 
      * Description:
-     *   This is a sub-singleton of class [[Scribe]], and is initialized on it's
-     *   constructor. It may be accessed through the main singleton (the `$Sc`
-     *   global variable) using something like the example below.
+     *   This is a sub-singleton of class [[Scribe]], and is initialized on 
+     *   it's constructor. It may be accessed through the main singleton (the 
+     *   `$Sc` global variable) using something like the example below: 
      * 
      *      global $Sc;
      *      echo "The project's name is:" . $Sc->Project->getName();
@@ -36,6 +37,7 @@ class ScProject
          * 
          * [Grouped under "Constructor"]
          */
+         
         $this->Sc =& $Sc;
         $this->cwd = $Sc->cwd;
 
@@ -61,8 +63,8 @@ class ScProject
          *   1. The source path is scanned for files recursively, and it'll
          *      delegate each file to it's respective `reader` to be read.
          * 
-         *   2. These readers will parse out the files and call [[register()]] when
-         *      it finds a block.
+         *   2. These readers will parse out the files and call [[register()]]
+         *      when it finds a block.
          *   
          *   3. It checks the outputs to be made (defined in the configuration
          *      file) and delegates to each output driver the task of producing
@@ -109,7 +111,7 @@ class ScProject
                     ScStatus::update("[$reader_name] $file_min");
                     $file_count++;
                 
-                    // And read it I
+                    // And read it
                     $this->registerStart();
                     $reader = $this->Sc->Readers[$reader_name];
                     $blocks = $reader->parse($file, $this);
@@ -159,15 +161,16 @@ class ScProject
     
     function& lookup($raw_keyword, $reference = NULL)
     {
-    /* Function: lookup()
-     * Looks up a keyword and returns the matching blocks.
-     *
-     * Usage:
-     *     $this->lookup($keyword, $reference)
-     *
-     * Returns:
-     *   Unspecified.
-     */
+        /* Function: lookup()
+         * Looks up a keyword and returns the matching blocks.
+         *
+         * Usage:
+         *     $this->lookup($keyword, $reference)
+         *
+         * Returns:
+         *   Unspecified.
+         */
+         
         // Split keywords (e.g., Scribe::lookup() will be [scribe,lookup])
         preg_match_all('~([A-Za-z0-9-_\. ]+)~s', $raw_keyword, $m);
         $keyword_array = $m[1];
@@ -204,15 +207,20 @@ class ScProject
                 ((is_null($parent_keyword)) || (in_array($block->getParent(), $parents)))
                )
             {
-                // Child bonus (reference is the parent of the block)
-                if (($block->hasParent()) && ($block->getParent() == $reference))
-                    { $priority += 256; }
+                if ((!is_null($reference)) && (is_callable(array($reference, 'hasParent'))))
+                {
+                    // Not really working
+                    // Child bonus (reference is the parent of the block)
+                    if (($block->hasParent()) && ($block->getParent() == $reference))
+                        { $priority += 256; }
                     
-                // Sibling bonus (the block and the reference share same parent)
-                if (($block->hasParent()) && (!is_null($reference)) &&
-                    ($reference->hasParent()) &&
-                    ($block->getParent() == $reference->getParent()))
-                    { $priority += 128; }
+                    // Not really working
+                    // Sibling bonus (the block and the reference share same parent)
+                    if (($block->hasParent()) &&
+                        ($reference->hasParent()) &&
+                        ($block->getParent() == $reference->getParent()))
+                        { $priority += 128; }
+                }
                 
                 $results[] = array(
                     'block' => &$this->data['blocks'][$id],
@@ -248,16 +256,16 @@ class ScProject
      
     function register($blockData)
     {
-    /* Function: register()
-     * Registers a block.
-     * 
-     * Description:
-     *   This is called by readers.
-     * 
-     *   Sample input would be something like below.
-     *
-     *     "Function: test()\nDescription.\n\nEtc etc"
-     */
+        /* Function: register()
+         * Registers a block.
+         * 
+         * Description:
+         *   This is called by readers.
+         * 
+         *   Sample input would be something like below.
+         *
+         *     "Function: test()\nDescription.\n\nEtc etc"
+         */
         global $Sc;
         
         $block =& ScBlock::factory($blockData, $this);
@@ -419,7 +427,7 @@ class ScProject
         }
         
         // Load configuration variables
-        foreach (array('block_types', 'name', 'output', 'src_path', 'exclude', 'tags') as $k)
+        foreach (array('name', 'output', 'src_path', 'exclude', 'tags') as $k)
         {
             if (!isset($Sc->_config[$k])) { continue; }
             $this->options[$k] = $Sc->_config[$k];
@@ -595,33 +603,25 @@ class ScProject
         ScStatus::updateDone("$block_count blocks.");
     }
     
-    /* ======================================================================
-     * Properties
+    /* Properties
      * ====================================================================== */
      
-    /*
-     * Property: $Sc
+    /* Property: $Sc
      * Reference to the [[Scribe]] singleton.
      */
-     
     var $Sc;
     
-    /*
-     * Property: $cwd
+    /* Property: $cwd
      * The current working directory of the project (i.e., where the config is).
      */
-     
     var $cwd;
     
-    /*
-     * Property: $outputs
+    /* Property: $outputs
      * Array of output drivers ([[ScOutput]] instances).
      */
-     
     var $outputs = array();
     
-    /* ======================================================================
-     * Data properties
+    /* Data properties
      * ====================================================================== */
     
     /* Property: $data['blocks']

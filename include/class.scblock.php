@@ -31,6 +31,11 @@ class ScBlock
     // ========================================================================
     
     /*
+     * Function: parse()
+     * Test
+     */
+     
+    /*
      * Function: factory()
      * Creates an ScBlock instance with the right class as needed.
      * [Static, grouped under "Factory"]
