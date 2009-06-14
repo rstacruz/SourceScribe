@@ -157,7 +157,6 @@ class ScProject
         $output = serialize($this->Sc);
     }
     
-
     function& lookup($raw_keyword, $reference = NULL)
     {
     /* Function: lookup()
@@ -197,14 +196,24 @@ class ScProject
                 return $results;
             }
             
+            
+            // Check if the last search keyword matches that of the block's
+            // (If last keyword is a match, and the parent keyword is a match too if it applies)
             $title = $this->_distill($block->getKeyword());
             if (($title == $keyword) &&
-                (
-                  (is_null($parent_keyword)) ||
-                  (in_array($block->getParent(), $parents))
-                )
+                ((is_null($parent_keyword)) || (in_array($block->getParent(), $parents)))
                )
             {
+                // Child bonus (reference is the parent of the block)
+                if (($block->hasParent()) && ($block->getParent() == $reference))
+                    { $priority += 256; }
+                    
+                // Sibling bonus (the block and the reference share same parent)
+                if (($block->hasParent()) && (!is_null($reference)) &&
+                    ($reference->hasParent()) &&
+                    ($block->getParent() == $reference->getParent()))
+                    { $priority += 128; }
+                
                 $results[] = array(
                     'block' => &$this->data['blocks'][$id],
                     'priority' => $priority);
@@ -544,7 +553,6 @@ class ScProject
         }
     }
     
-
     function _doPostBuild()
     {
     /* Function: _doPostBuild()
@@ -587,7 +595,6 @@ class ScProject
         ScStatus::updateDone("$block_count blocks.");
     }
     
-
     /* ======================================================================
      * Properties
      * ====================================================================== */
