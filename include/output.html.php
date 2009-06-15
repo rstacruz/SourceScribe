@@ -108,42 +108,141 @@ class HtmlOutput extends ScOutput
         {
             $file_count++;
             ScStatus::update($block->getID());
-            $index_file = $path . '/' . $block->getID() . '.html';
-            ob_start();
+            $options = $this->_getOptions($block, $project);
             
             // Template
-            $blocks = array($block);
-            $assets_path = 'assets/';
-            $id = $block->getID();
-            $project =& $this->Project;
-            
-            // Variables:
-            // $block
-            $home    =& $this->Project->data['home'];
-            $tree_parents =& $block->getAncestry(array('exclude_home' => TRUE, 'include_this' => TRUE));
-            $breadcrumbs =& $block->getAncestry(array('include_this' => TRUE));
-            
-            // If this node has no children...
-            if ((!$block->hasChildren()) && ($block->hasParent()))
-            {
-                // Use it's siblings instead.
-                $parent =& $block->getParent();
-                $tree =& $parent->getMemberLists();
-                
-                // Pop one out of the tree parents
-                array_splice($tree_parents, count($tree_parents)-1, 1, array());
-            }
-            else {
-                $tree =& $block->getMemberLists();
-            }
+            ob_start();
             include($template_path. '/single.php');
+            $output = ob_get_clean();
         
             // Out
-            $output = ob_get_clean();
-            file_put_contents($index_file, $output);
+            file_put_contents($path . '/' . $block->getID() . '.html', $output);
         }
         ScStatus::updateDone("$file_count files written.");
     }
+    
+    function& _getOptions(&$block, &$project)
+    {
+        /* Function: _getOptions()
+         * To be documented.
+         * [Private]
+         */
+         
+        $result = array();     
+        $null = array();
+        
+        // assets_path
+        $result['assets_path'] = 'assets/';
+        
+        // tree_parents
+        $tree_parents =& $block->getAncestry(array('exclude_home' => TRUE, 'include_this' => TRUE));
+        $result['tree_parents'] = array();
+        foreach ($tree_parents as $i => &$node)
+        {
+            $result['tree_parents'][] = $this->_getNodeOptions($node, $block, 1);
+        }
+        
+        // breadcrumbs
+        $breadcrumbs =& $block->getAncestry(array('include_this' => TRUE));
+        $result['breadcrumbs'] = array();
+        foreach ($breadcrumbs as $i => &$node)
+        {
+            $index = count($result['breadcrumbs']);
+            $result['breadcrumbs'][$index] = $this->_getNodeOptions($node, $block, 1);
+            $result['breadcrumbs'][$index]['li_class'] = 'item-'.(count($breadcrumbs) - (int)$i - 1);
+        }
+
+        // is_homepage
+        $result['is_homepage'] = $block->isHomePage();
+        
+        // title
+        $result['title'] = ($block->isHomePage()) ?
+                            ($this->Project->getName()) :
+                            ($block->getTitle() . ' &mdash; ' . $this->Project->getName());
+        
+        // homepage
+        // Setting $result['home'] somehow trips something. I don't know why.
+        $home    =& $this->Project->data['home'];
+        $result['homepage'] = $this->_getNodeOptions($home, $block, 1);
+             
+        // Prepare for tree
+        if ((!$block->hasChildren()) && ($block->hasParent()))
+        {
+            // Use it's siblings instead.
+            $parent =& $block->getParent();
+            $tree =& $parent->getMemberLists();
+            
+            // Pop one out of the tree parents
+            array_splice($result['tree_parents'], count($result['tree_parents'])-1, 1, array());
+        }
+        else {
+            $tree =& $block->getMemberLists();
+        }
+        
+        // Tree
+        $result['tree'] = array();
+        foreach ($tree as $subtree)
+        {
+            $index = count($result['tree']);
+            $result['tree'][$index] = array(
+                'title' => $subtree['title'],
+                'members' => array(),
+            );
+            foreach ($subtree['members'] as $i => &$node)
+            {
+                $result['tree'][$index]['members'][] = $this->_getNodeOptions($node, $block, 1);
+            }
+        }
+        
+        // has_tree_parents
+        $result['has_tree_parents'] = (count($result['tree_parents'] > 0)) ? TRUE : FALSE;
+        
+        // has_tree
+        $result['has_tree'] = (count($result['tree'] > 0)) ? TRUE : FALSE;
+        
+        // block
+        $result['the_block'] = $this->_getNodeOptions($block, $block, 6);
+        $result['the_block']['member_lists'] = array();
+        foreach ($block->getMemberLists() as $member_list)
+        {
+            $index = count($result['the_block']['member_lists']);
+            $result['the_block']['member_lists'][$index] = array
+            (
+                'title' => $member_list['title'],
+                'members' => array()
+            );
+            foreach ($member_list['members'] as $node) {
+                $index2 = count($result['the_block']['member_lists'][$index]['members']);
+                $result['the_block']['member_lists'][$index]['members'][$index2] = $this->_getNodeOptions($node, $block, 3);
+            }
+        }
+        
+        
+        return $result;
+    }
+    
+    function& _getNodeOptions(&$block, &$reference, $level = 1)
+    {
+        $result = array();
+        $result['class'       ] = ('block-' . strtolower($block->typename) . ' blocktype-' . strtolower($block->type));
+        $result['title'       ] = $block->getTitle();
+        $result['id'          ] = $block->getID();
+        $result['id_trimmed'  ] = str_replace('.','-',$block->getID());
+        $result['a_class'     ] = $this->linkClass($block);
+        $result['a_href'      ] = $this->link($block);
+        $result['li_class'    ] = ($block->getID() == $reference->getID()) ? 'active' : '';
+        $result['has_children'] = $block->hasChildren();
+        if ($level >= 3) {
+            $result['brief'       ] = strip_tags($this->_processContent($block->getBrief()), "<a><code><b><strong><em><i>");
+            $result['has_tags'    ] = (count($block->getTags()) > 0);
+            $result['tags'        ] = $block->getTags();
+        }
+        if ($level >= 6) {
+            $result['description' ] = $this->_processContent($block->getContent());
+        }
+        return $result;
+    }
+    
     
     /*
      * Function: _processContent()

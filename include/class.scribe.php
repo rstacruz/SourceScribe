@@ -76,6 +76,7 @@ class Scribe
                 'priority' => 8,
                 'title_prefix' => 'Class ',
                 // 'block_class' => 'ScClassBlock',
+                'tags' => array('interface', 'abstract'),
                 'short' => 'class',
             ),
             'module' => array(
