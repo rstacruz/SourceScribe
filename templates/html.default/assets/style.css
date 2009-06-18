@@ -36,9 +36,9 @@ ul { margin-left: 2em; }
 .c1 { clear: both; }
 
 /* Links */
-a         { color: #4096b0; text-decoration: none; font-weight: bold; padding: 1px; }
+a         { color: #4096b0; text-decoration: none; font-weight: bold; border-bottom: dotted 1px #49b; font-size: 0.9em; }
 a:visited { color: #4096b0; }
-a:hover   { color: #4096b0; text-decoration: underline; }
+a:hover   { color: #4096b0; border-bottom: solid 1px #49b; }
 a img     { border: 0; }
 
 /*
@@ -50,14 +50,17 @@ a img     { border: 0; }
         { margin: 0; padding: 0; }
         
     body, td, input
-        { font-family: 'lucida grande', arial, helvetica, sans-serif; font-size: 1em; }
+        { font-family: helvetica, arial, sans-serif; font-size: 1em; }
         
     body
-        { font-size: 0.9em; line-height: 1.6em;
+        { font-size: 0.9em; line-height: 1.5em;
         background: #dbe1e7; color: #333; }
 
     body
         { font-size: 0.85em; }
+        
+    div.brief
+        { font-size: 1.1em; }
           
     /* Side */
     h1
@@ -66,17 +69,17 @@ a img     { border: 0; }
       
     h1 a,
     h1 a:visited
-      { color: #333; display: block; width: 160px; }
+      { color: #333; display: block; width: 160px; border: 0; }
         
     #side
       { width: 170px; padding: 0 0 5px 0; float: left;
         font-size: 0.8em; line-height: 1.4em; margin-left: -181px; }
       
     #side a
-      { color: #333; display: block; padding: 4px 10px 4px 30px; }
+      { color: #333; display: block; padding: 3px 10px 3px 30px; font-size: 1em; border: 0; }
       
     #side a:hover
-      { text-decoration: none; } 
+      { text-decoration: none; border: 0; } 
     
     #side a:focus
       { outline: 0; }
@@ -104,10 +107,12 @@ a img     { border: 0; }
     
     #index h4
       { margin: 0; padding: 0; font-weight: bold; font-size: 1em;
-        padding: 12px 10px 4px 20px; background: transparent; color: #85AA72;
-        border-bottom: solid 1px #ccc; }
+        padding: 12px 10px 1px 20px; background: transparent; color: #85AA72;
+        border-bottom: solid 1px #ccc; margin-bottom: 4px; }
         
-    #side a:hover,
+    #side a:hover
+      { background: #cbd8e5; }
+      
     #side .active a
       { background: #bbcee2; }
 
@@ -191,6 +196,14 @@ a img     { border: 0; }
     .content h3 span
       { float: left; width: 20%; position: relative; left: 10px;
         padding-top: 1em; color: #85aa72; }
+        
+    .content h4,
+    .content h5,
+    .content h6
+      { color: #7285aa; margin-left: 25%; margin-bottom: 0; }
+      
+    .content h4 + p
+      { margin-top: 0; }
       
     .content p,
     .content pre,
@@ -235,8 +248,7 @@ a img     { border: 0; }
       
     dl dt
       { float: left; width: 30%; margin-right: 3%; clear: left;
-        font-weight: bold; font-size: 0.9em; color: #579;
-        text-align: left; }
+        font-weight: bold; color: #579; text-align: left; }
         
     dl dd
       { float: left; width: 67%; color: #777; }
@@ -244,26 +256,34 @@ a img     { border: 0; }
     dl dt,
     dl dd
       { margin-bottom: 5px; line-height: 1.4em; } 
+    
+    dl dt a,
+    dl dt a:hover
+      { border: 0; }
       
+    dl span.tag
+      { float: right; line-height: 1.2em; margin-left: 5px; position: relative;
+        top: 1px; }
     
     /* DT dashing */
     dl dt
-      { border-bottom: dashed 1px #aaa; height: 1.3em; position: relative; } 
+      { border-bottom: dotted 1px #aaa; height: 1.3em; position: relative;
+        top: -6px; } 
     
     dl dt span.term
-      { background: white; padding: 3px 5px 10px 5px; float: left; }
+      { background: white; padding: 3px 5px 10px 0; float: left;
+        position: relative; top: 3px; }
     /* DT dashing end */
     
     pre
-      { background: #dfe8ec; padding: 10px; font-size: 0.9em;
+      { background: #dfe8ec; padding: 10px; font-size: 0.8em;
         line-height: 1.6em; color: #506272; }
     
     pre code
       { background: transparent; font-size: 1em; border: 0; padding: 0; }
       
-    code
-      { background: #dfe8ec; color: #444; padding: 1px 6px; font-size: 0.9em;
-        border-bottom: solid 1px #ccc; }
+    code, tt
+      { font-size: 0.8em; color: #888; }
         
     #all .content h3 + pre
       { margin-top: 1px; margin-bottom: 1px; font-size: 1em;
@@ -273,13 +293,18 @@ a img     { border: 0; }
       { margin-top: 0; }
       
     #all pre,
-    #all code
+    #all code,
+    #all tt
       { font-family: monaco, 'lucida console', courier new, monospace; }
     
     #all a.stub,
     #all a.stub:hover
-      { color: #888; cursor: default; text-decoration: none; }
+      { color: #555; cursor: default; text-decoration: none; border: 0; }
 
+    #side a.stub,
+    #side a.stub:hover
+      { color: #666; border: 0; }
+      
     /* Highlight for hashjump */
     #all dl dd.jump-highlight,
     #all dl dt.jump-highlight span.term,
