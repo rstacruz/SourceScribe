@@ -233,12 +233,12 @@ class HtmlOutput extends ScOutput
         $result['li_class'    ] = ($block->getID() == $reference->getID()) ? 'active' : '';
         $result['has_children'] = $block->hasChildren();
         if ($level >= 3) {
-            $result['brief'       ] = strip_tags($this->_processContent($block->getBrief()), "<a><code><b><strong><em><i>");
-            $result['has_tags'    ] = (count($block->getTags()) > 0);
-            $result['tags'        ] = $block->getTags();
+            $result['brief'   ] = strip_tags($this->_processContent($block->getBrief()), "<a><code><b><br><strong><em><i>");
+            $result['has_tags'] = (count($block->getTags()) > 0);
+            $result['tags'    ] = $block->getTags();
         }
         if ($level >= 6) {
-            $result['description' ] = $this->_processContent($block->getContent());
+            $result['description'] = $this->_processContent($block->getContent());
         }
         return $result;
     }

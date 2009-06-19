@@ -7,4 +7,4 @@
     <script src="assets/jquery.js" type="text/javascript" charset="utf-8"></script>
     <script src="assets/jquery.hashjump.js" type="text/javascript" charset="utf-8"></script>
 </head>
-<body>
+<body class="<?php echo $body_class; ?>">

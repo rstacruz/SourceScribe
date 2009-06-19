@@ -6,53 +6,9 @@
     <h1><a class="<?php echo $homepage['a_class']; ?>" href="<?php echo $homepage['a_href']; ?>"><span><?php echo $homepage['title']; ?></span></a></h1>
     
     <div id="all">
-        <!-- Breadcrumbs -->
-        <div class="breadcrumbs"><div class="breadcrumbs-c">
-            <ul>
-                <?php foreach ($breadcrumbs as $node) { ?>
-                    <li class="<?php echo $node['li_class']; ?>">
-                        <a class="<?php echo $node['a_class']; ?>" href="<?php echo $node['a_href']; ?>"><?php echo $node['title']; ?></a>
-                    </li>
-                <?php } ?>
-            </ul>
-        </div></div>
-        
     <div id="all-c">
-
-        <!-- Sidebar -->
-        <div id="side">
-            <div id="parents"><div id="parents-c">
-                <?php if ($has_tree_parents) { ?>
-                    <ul>
-                    <?php foreach ($tree_parents as $node) {  ?>
-                        <li class="<?php echo $node['li_class']; ?>">
-                            <a class="<?php echo $node['a_class']; ?>" href="<?php echo $node['a_href']; ?>">
-                                <span class="arrow">&uarr;</span><strong><?php echo $node['title']; ?></strong>
-                            </a>
-                        </li>
-                    <?php } ?>
-                    </ul>
-                <?php } ?>
-            </div></div><!-- #parents-c and #parents -->
+    <?php foreach ($blocks as $the_block) { ?>
     
-            <div id="index"><div id="index-c">
-                <?php if ((is_array($tree)) && (count($tree) > 0)) { ?>
-                    <ul>
-                        <?php foreach ($tree as $subtree) { ?>
-                            <li><h4><?php echo $subtree['title']; ?></h4><ul>
-                            <?php foreach ($subtree['members'] as $i => $node) { ?>
-                                <li class="<?php echo $node['li_class']; ?>">
-                                    <a class="<?php echo $node['a_class']; ?>" href="<?php echo $node['a_href']; ?>"><?php echo $node['title']; ?></a>
-                                </li>
-                            <?php } ?>
-                            </ul></li>
-                        <?php } ?>
-                    </ul>
-                <?php } ?>
-            </div></div><!-- #index-c and #index -->
-        </div><!-- #side -->
-
-
         <div class="block <?php echo $the_block['class']; ?>"><div class="block-c">
             
             <!-- Heading -->
@@ -98,6 +54,7 @@
             
             <div class="clear"></div>
         </div>
+    <?php } /* foreach $blocks */ ?>
     </div></div><!-- #all-c and #all -->
 
 <?php include dirname(__FILE__) . '/footer.php'; ?>
