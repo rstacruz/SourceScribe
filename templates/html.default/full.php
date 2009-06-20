@@ -3,8 +3,7 @@
     $body_class = 'single';
     include dirname(__FILE__) . '/header.php';
 ?>
-    <h1><a class="<?php echo $homepage['a_class']; ?>" href="<?php echo $homepage['a_href']; ?>"><span><?php echo $homepage['title']; ?></span></a></h1>
-    
+<h1></h1>
     <div id="all">
     <div id="all-c">
     <?php foreach ($blocks as $the_block) { ?>

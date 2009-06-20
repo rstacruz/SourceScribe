@@ -1184,11 +1184,6 @@ class ScBlock
      * ====================================================================== */
 }
 
-/*
- * Class: ScClassBlock
- * [Inherits ScBlock]
- */
- 
 class ScClassBlock extends ScBlock
 {   
     function getTitle()

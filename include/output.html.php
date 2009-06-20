@@ -49,50 +49,7 @@ class HtmlOutput extends ScOutput
         // Output
         // $this->out_content_index($path, $template_path);
         $this->out_singles($path, $template_path);
-    }
-    
-    /*
-     * Function: out_full()
-     * Outputs the single-file megaindex.
-     */
-     
-    function out_full($path, $template_path)
-    {
-        $index_file = $path . '/index.html';
-        ob_start();
-        
-        // Template
-        $blocks = $this->Project->data['blocks'];
-        $tree   = $this->Project->data['tree'];
-        $project =& $this->Project;
-        $assets_path = 'assets/';
-        include($template_path. '/full.php');
-        
-        // Out
-        $output = ob_get_clean();
-        file_put_contents($index_file, $output);
-    }
-    
-    /*
-     * Function: out_full()
-     * Outputs the single-file megaindex.
-     */
-     
-    function out_content_index($path, $template_path)
-    {
-        $index_file = $path . '/index.html';
-        ob_start();
-        
-        // Template
-        $blocks = $this->Project->data['blocks'];
-        $tree   = $this->Project->data['tree'];
-        $project =& $this->Project;
-        $assets_path = 'assets/';
-        include($template_path. '/content_index.php');
-        
-        // Out
-        $output = ob_get_clean();
-        file_put_contents($index_file, $output);
+        $this->out_full($path, $template_path);
     }
     
     /*
@@ -121,6 +78,51 @@ class HtmlOutput extends ScOutput
         ScStatus::updateDone("$file_count files written.");
     }
     
+    /*
+     * Function: out_full()
+     * Outputs all in one file
+     */
+     
+    function out_full($path, $template_path)
+    {
+        global $Sc;
+        $file_count = 0;
+        $options = array('blocks' => array());
+        $options['assets_path'] = 'assets/';
+        
+        foreach ($this->Project->data['blocks'] as &$block)
+        {
+            $file_count++;
+            ScStatus::update($block->getID());
+            $options['blocks'][$block->getID()] = $this->_getNodeOptions($block, $block, 8);
+        }
+        
+        // Template
+        ob_start();
+        include($template_path. '/full.php');
+        $output = ob_get_clean();
+    
+        // Out
+        file_put_contents($path . '/full.html', $output);
+
+        // ScStatus::updateDone("1 file written.");
+    }
+    
+    function& _getOptionsBase(&$project)
+    {
+        $result = array();
+        
+        // assets_path
+        $result['assets_path'] = 'assets/';
+        
+        // homepage
+        // Setting $result['home'] somehow trips something. I don't know why.
+        $home    =& $this->Project->data['home'];
+        $result['homepage'] = $this->_getNodeOptions($home, $home, 1);
+        
+        return $result;
+    }
+    
     function& _getOptions(&$block, &$project)
     {
         /* Function: _getOptions()
@@ -128,11 +130,9 @@ class HtmlOutput extends ScOutput
          * [Private]
          */
          
-        $result = array();     
+        $result = $this->_getOptionsBase($project);
         $null = array();
         
-        // assets_path
-        $result['assets_path'] = 'assets/';
         
         // tree_parents
         $tree_parents =& $block->getAncestry(array('exclude_home' => TRUE, 'include_this' => TRUE));
@@ -159,11 +159,6 @@ class HtmlOutput extends ScOutput
         $result['title'] = ($block->isHomePage()) ?
                             ($this->Project->getName()) :
                             ($block->getTitle() . ' &mdash; ' . $this->Project->getName());
-        
-        // homepage
-        // Setting $result['home'] somehow trips something. I don't know why.
-        $home    =& $this->Project->data['home'];
-        $result['homepage'] = $this->_getNodeOptions($home, $block, 1);
              
         // Prepare for tree
         if ((!$block->hasChildren()) && ($block->hasParent()))
@@ -201,23 +196,7 @@ class HtmlOutput extends ScOutput
         $result['has_tree'] = (count($result['tree'] > 0)) ? TRUE : FALSE;
         
         // block
-        $result['the_block'] = $this->_getNodeOptions($block, $block, 6);
-        $result['the_block']['member_lists'] = array();
-        foreach ($block->getMemberLists() as $member_list)
-        {
-            $index = count($result['the_block']['member_lists']);
-            $result['the_block']['member_lists'][$index] = array
-            (
-                'title' => $member_list['title'],
-                'members' => array()
-            );
-            foreach ($member_list['members'] as $node) {
-                $index2 = count($result['the_block']['member_lists'][$index]['members']);
-                $result['the_block']['member_lists'][$index]['members'][$index2] = $this->_getNodeOptions($node, $block, 3);
-            }
-        }
-        
-        
+        $result['the_block'] = $this->_getNodeOptions($block, $block, 8);
         return $result;
     }
     
@@ -239,6 +218,23 @@ class HtmlOutput extends ScOutput
         }
         if ($level >= 6) {
             $result['description'] = $this->_processContent($block->getContent());
+            $result['member_lists'] = array();
+        }
+        if ($level >= 8) {
+            foreach ($block->getMemberLists() as $member_list)
+            {
+                $index = count($result['member_lists']);
+                $result['member_lists'][$index] = array
+                (
+                    'title' => $member_list['title'],
+                    'members' => array()
+                );
+                foreach ($member_list['members'] as $node) {
+                    $index2 = count($result['member_lists'][$index]['members']);
+                    $result['member_lists'][$index]['members'][$index2] = $this->_getNodeOptions($node, $block, 3);
+                }
+            }
+        
         }
         return $result;
     }
