@@ -191,7 +191,7 @@ class ScBlock
                 continue;
             }
             
-            
+            // Filed under ...
             preg_match('~^(?:filed )?under(?: the (?:.*?))? (?:")?(.*?)(?:")?$~i',
               $tag, $m);
             if (count($m) > 0)
@@ -201,7 +201,17 @@ class ScBlock
                 continue;
             }
             
+            // Inherits/extends ...
+            preg_match('~^(?:inherits|extends) (?:")?(.*?)(?:")?$~i',
+              $tag, $m);
+            if (count($m) > 0)
+            {
+                $parent_keyword = $m[count($m)-1];
+                $this->_inherit_parent = $parent_keyword;
+                continue;
+            }
             
+            // No brief
             preg_match('~^(?:no|skip) (?:intro|introduction|brief|introductory(?: (?:paragraph|(?:desc(?:ription)))?)?)?$~i',
               $tag, $m);
             if (count($m) > 0)
@@ -735,6 +745,26 @@ class ScBlock
                         { unset($this->Project->data['tree'][$id]); break; }
             }
         }
+        
+        if (!is_null($this->_inherit_parent))
+        {
+            // Found a "Inherits", now duplicate the children of it's
+            // "parent class" and add it to this
+            $results =& $this->Project->lookup($this->_inherit_parent, $this);
+            if (count($results) > 0)
+            {
+                // This next line will duplicate the children
+                $children = $results[0]->getChildren();
+                foreach ($children as &$child)
+                {
+                    // Add to subgroups and children
+                    $this->registerChild($child);
+                    
+                    // Cheap version of ScProject::register()
+                    $this->Project->data['blocks'][] =& $child;
+                }
+            }
+        }
     }
     
     /*
@@ -1119,6 +1149,13 @@ class ScBlock
     
     var $_supposed_parent = NULL;
     
+    /*
+     * Property: $_inherit_parent
+     * Used by finalize
+     */
+    
+    var $_inherit_parent = NULL;
+    
     /* ======================================================================
      * End
      * ====================================================================== */
@@ -1131,3 +1168,8 @@ class ScClassBlock extends ScBlock
         return 'Class ' . $this->title;
     }
 }
+
+/*
+ * Class: LOL
+ * [Inherits ScBlock]
+ */

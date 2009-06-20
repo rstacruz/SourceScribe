@@ -266,8 +266,8 @@ class ScProject
          *
          *     "Function: test()\nDescription.\n\nEtc etc"
          */
+         
         global $Sc;
-        
         $block =& ScBlock::factory($blockData, $this);
         
         // Die if not valid
