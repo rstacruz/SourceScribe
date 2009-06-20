@@ -1168,8 +1168,3 @@ class ScClassBlock extends ScBlock
         return 'Class ' . $this->title;
     }
 }
-
-/*
- * Class: LOL
- * [Inherits ScBlock]
- */
