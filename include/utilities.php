@@ -78,3 +78,10 @@ if (!function_exists('file_put_contents')) {
 	return TRUE;
   }
 }
+
+if (version_compare(phpversion(), '5.0') >= 0)
+    { include dirname(__FILE__) . '/utilities.php5.php'; } 
+else
+    { include dirname(__FILE__) . '/utilities.php4.php'; } 
+
+    

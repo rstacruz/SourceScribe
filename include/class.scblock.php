@@ -746,6 +746,11 @@ class ScBlock
             }
         }
         
+        $this->_doInheritance();
+    }
+    
+    function _doInheritance()
+    {
         if (!is_null($this->_inherit_parent))
         {
             // Found a "Inherits", now duplicate the children of it's
@@ -753,10 +758,28 @@ class ScBlock
             $results =& $this->Project->lookup($this->_inherit_parent, $this);
             if (count($results) > 0)
             {
-                // This next line will duplicate the children
-                $children = $results[0]->getChildren();
+                // Make sure the parent's inheritances are resolved before
+                // we continue
+                $results[0]->_doInheritance();
+                
+                // This next line will duplicate the children SUPPOSEDLY
+                $childrenx = $results[0]->getChildren();
+                $children = array();
+                foreach ($childrenx as $child)
+                    { $children []= _clone($child); }
+                
                 foreach ($children as &$child)
                 {
+                    // If there's already something with the same name, norget it
+                    foreach ($this->getChildren() as $other_child)
+                    {
+                        if (($other_child->getType() == $child->getType()) &&
+                            ($other_child->getTitle() == $child->getTitle()))
+                            { continue 2; }
+                    }
+                    
+                    $child->_tags[] = 'inherited';
+                    
                     // Add to subgroups and children
                     $this->registerChild($child);
                     
@@ -1161,6 +1184,11 @@ class ScBlock
      * ====================================================================== */
 }
 
+/*
+ * Class: ScClassBlock
+ * [Inherits ScBlock]
+ */
+ 
 class ScClassBlock extends ScBlock
 {   
     function getTitle()
