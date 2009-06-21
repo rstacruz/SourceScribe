@@ -31,11 +31,6 @@ class ScBlock
     // ========================================================================
     
     /*
-     * Function: parse()
-     * Test
-     */
-     
-    /*
      * Function: factory()
      * Creates an ScBlock instance with the right class as needed.
      * [Static, grouped under "Factory"]
@@ -139,6 +134,9 @@ class ScBlock
         
         $this->content = $this->toHTML($this->_lines);
         $this->valid = TRUE;
+        
+        if (is_null($this->_order))
+            { $this->_order = (int) $td['default_order']; }
         
         unset($this->_lines);
         unset($this->_data);
@@ -1218,7 +1216,7 @@ class ScBlock
      * Used by finalize
      */
     
-    var $_order = 0;
+    var $_order = NULL;
     
     /* ======================================================================
      * End

@@ -49,7 +49,8 @@ class Scribe
                 'title_plural' => 'Pages',
                 'short' => '',
                 'has_brief' => FALSE,
-                'synonyms' => array('page', 'section')
+                'synonyms' => array('page', 'section'),
+                'default_order' => 10,
             ),
             'function' => array(
                 'title_plural' => 'Functions',
@@ -58,7 +59,8 @@ class Scribe
                 'short' => 'fn',
                 'title_suffix' => '()',
                 'synonyms' => array('constructor', 'ctor', 'destructor', 'dtor', 'method'),
-                'tags' => array('static', 'private', 'public', 'protected', 'virtual')
+                'tags' => array('static', 'private', 'public', 'protected', 'virtual'),
+                'default_order' => 0,
             ),
             'var' => array(
                 'title_plural' => 'Properties',
@@ -67,7 +69,8 @@ class Scribe
                 'short' => 'var',
                 'synonyms' => array('property'),
                 'title_prefix' => '$',
-                'tags' => array('read-only', 'private', 'public', 'protected', 'constant')
+                'tags' => array('read-only', 'private', 'public', 'protected', 'constant'),
+                'default_order' => -5,
             ),
             'class' => array(
                 'title_plural' => 'Classes',
@@ -78,6 +81,7 @@ class Scribe
                 // 'block_class' => 'ScClassBlock',
                 'tags' => array('interface', 'abstract'),
                 'short' => 'class',
+                'default_order' => 0,
             ),
             'module' => array(
                 'title_plural' => 'Sections',
@@ -85,7 +89,8 @@ class Scribe
                 'priority' => 4,
                 'starts_group_for' => array('page', 'class', 'function', 'var'),
                 'short' => 'mod',
-                'synonyms' => array('file')
+                'synonyms' => array('file'),
+                'default_order' => 20,
             ),
         ),
         

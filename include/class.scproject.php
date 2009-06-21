@@ -376,6 +376,9 @@ class ScProject
             if (!isset($block_type['priority']))
                 { $block_type['priority'] = NULL; }
                 
+            if (!isset($block_type['default_order']))
+                { $block_type['default_order'] = 0; }
+                
             if (!is_array($block_type['tags']))
                 { $block_type['tags'] = (array) $block_type['tags']; }
                 
