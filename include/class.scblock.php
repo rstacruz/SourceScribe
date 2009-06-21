@@ -144,33 +144,33 @@ class ScBlock
         unset($this->_data);
     }
     
-    /*
-     * Function: parseTag()
-     * Parses a tag (A delegate task of [[ScBlock()]]).
-     * 
-     * Usage:
-     *     $block->parseTag($tag_line)
-     *     (Don't call this function.)
-     * 
-     * Parameters:
-     *   $tag_line  - The line; the text inside the `[` and `]` brackets
-     * 
-     * Description:
-     *   This function parses out a tag line in the comment block
-     *   (e.g., `[read-only, private]`). It will then set [[$_tags]] and other
-     *   effects as needed. It is called by the [[ScBlock()]] constructor
-     *   during the process of parsing the comment block.
-     * 
-     *   You may override this function parse out special commands from the
-     *   tag line (`[...]`) blocks.
-     *
-     * Returns:
-     *   Nothing; this function will do things (set groups, add tags, etc)
-     *   in place.
-     */
 
     function parseTag($tags)
     {
+        /* Function: parseTag()
+         * Parses a tag (A delegate task of [[ScBlock()]]).
+         * 
+         * Usage:
+         *     $block->parseTag($tag_line)
+         *     (Don't call this function.)
+         * 
+         * Parameters:
+         *   $tag_line  - The line; the text inside the `[` and `]` brackets
+         * 
+         * Description:
+         *   This function parses out a tag line in the comment block
+         *   (e.g., `[read-only, private]`). It will then set [[$_tags]] and other
+         *   effects as needed. It is called by the [[ScBlock()]] constructor
+         *   during the process of parsing the comment block.
+         * 
+         *   You may override this function parse out special commands from the
+         *   tag line (`[...]`) blocks.
+         *
+         * Returns:
+         *   Nothing; this function will do things (set groups, add tags, etc)
+         *   in place.
+         */
+     
         // Input looks like: "read-only, grouped under mygroup, private"
         $tag_list = array_map('trim', explode(',', $tags));
         $valid_tags = array_keys($this->Project->options['tags']);
@@ -208,6 +208,14 @@ class ScBlock
             {
                 $parent_keyword = $m[count($m)-1];
                 $this->_inherit_parent = $parent_keyword;
+                continue;
+            }
+            
+            // Order #x...
+            preg_match('~^(?:sort )?(?:order|priority|order priority) (?:#)?(.*?)$~i', $tag, $m);
+            if (count($m) > 0)
+            {
+                $this->_order = (int) $m[count($m)-1];
                 continue;
             }
             
@@ -710,26 +718,66 @@ class ScBlock
         return $str;
     }
     
-    /*
-     * Function: finalize()
-     * Ran when building is done.
-     * 
-     * Usage:
-     *   $block->finalize()
-     *   (Don't call this function.)
-     * 
-     * Description:
-     *   You may override this to do more post-build actions for the block.
-     * 
-     * [Protected, grouped under "Protected methods"]
-     */
 
     function finalize()
     {
+        /* Function: finalize()
+         * Ran when building is done.
+         * 
+         * Usage:
+         *   $block->finalize()
+         *   (Don't call this function.)
+         * 
+         * Description:
+         *   You may override this to do more post-build actions for the block.
+         * 
+         * [Protected, grouped under "Protected methods"]
+         */
+     
+        // Sort by order priority
+        usort($this->_children, array(&$this, '_sortChildren'));
+        
+        // Subgroups
+        foreach ($this->_children as &$child_block)
+        {
+            $group = $child_block->getGroup();
+            if (is_null($group)) { $group = $child_block->getTypeData('title_plural'); }
+            
+            // Initialize the group if it hasn't been yet
+            if (!isset($this->_subgroups[$group]))
+            {
+                $this->_subgroups[$group] = array(
+                    'title'  => $group,
+                    'members' => array()
+                );
+            }
+        
+            $this->_subgroups[$group]['members'][] =& $child_block;
+        }
+    }
+    
+    function _sortChildren($a, $b)
+    {
+        if ($a == $b) { return 0; }
+        $ap = (int) $a->_order;
+        $bp = (int) $b->_order;
+        
+        // To preserve order
+        if ($ap == $bp) {
+            $parent = $a->getParent();
+            foreach ($parent->getChildren() as $child) {
+                if ($child == $a) { return -1; }
+                if ($child == $b) { return 1; }
+            }
+            return 0;
+        }
+        return ($ap > $bp) ? -1 : 1;
     }
     
     function preFinalize()
-    {     
+    {
+        
+        // Filed under
         if ((!$this->hasParent()) && (!is_null($this->_supposed_parent)))
         {
             // Found a "Filed under", now look up it's supposed parent and
@@ -746,6 +794,7 @@ class ScBlock
             }
         }
         
+        // Inherit
         $this->_doInheritance();
     }
     
@@ -790,28 +839,27 @@ class ScBlock
         }
     }
     
-    /*
-     * Function: registerChild()
-     * Registers a block as a child of this block.
-     *
-     * Usage:
-     * > $block->registerChild($child)
-     * 
-     * Parameters:
-     *   $child   - (ScBlock) The child.
-     * 
-     * Description:
-     *   This is called by [[ScProject::register()]]. The block passed onto
-     *   this function should be already fully initialized.
-     *
-     * Returns:
-     *   Nothing.
-     *      
-     * [Protected, grouped under "Protected methods"]
-     */
-
     function registerChild(&$child_block)
     {
+        /* Function: registerChild()
+         * Registers a block as a child of this block.
+         *
+         * Usage:
+         * > $block->registerChild($child)
+         * 
+         * Parameters:
+         *   $child   - (ScBlock) The child.
+         * 
+         * Description:
+         *   This is called by [[ScProject::register()]]. The block passed onto
+         *   this function should be already fully initialized.
+         *
+         * Returns:
+         *   Nothing.
+         *      
+         * [Protected, grouped under "Protected methods"]
+         */
+
         // Register to children and parent
         $this->_children[] =& $child_block;
         $child_block->_parent =& $this;
@@ -819,20 +867,6 @@ class ScBlock
         // Reset the ID so it can be recomputed according to the new parent
         $child_block->_id = NULL;
         
-        // Register to subgroups
-        $group = $child_block->getGroup();
-        if (is_null($group)) { $group = $child_block->getTypeData('title_plural'); }
-        
-        // Initialize the group if it hasn't been yet
-        if (!isset($this->_subgroups[$group]))
-        {
-            $this->_subgroups[$group] = array(
-                'title'  => $group,
-                'members' => array()
-            );
-        }
-        
-        $this->_subgroups[$group]['members'][] = $child_block;
         return;
     }
     
@@ -1178,6 +1212,13 @@ class ScBlock
      */
     
     var $_inherit_parent = NULL;
+    
+    /*
+     * Property: $_order
+     * Used by finalize
+     */
+    
+    var $_order = 0;
     
     /* ======================================================================
      * End
