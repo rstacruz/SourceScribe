@@ -691,7 +691,7 @@ class ScBlock
             "\n## \\1\n\n", $str);
             
         // Convert to dl/dt/dd
-        $str = preg_replace('~ *([\[\]\(\)/a-zA-Z0-9`_\$\.\\\'"\*]+) +- (.*?)([\\r\\n$])~s',
+        $str = preg_replace('~ *([\[\]\(\)/a-zA-Z0-9\-`_\$\.\\\'"\*]+) +- (.*?)([\\r\\n$])~s',
             "\n\\1\n: \\2\\3", $str);
         
         // Convert [[]] links

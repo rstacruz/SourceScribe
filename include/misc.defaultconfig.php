@@ -43,7 +43,7 @@ src_path: [ . ]
 #   This list is completely optional and may be omitted.
 #
 exclude:
- - !.git/!
- - !.svn/!
- - !\.html$!
- - !/cache/!
+ - \.git/
+ - \.svn/
+ - \.html$
+ - /cache/
