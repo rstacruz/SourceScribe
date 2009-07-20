@@ -137,14 +137,14 @@ class Scribe
      * Constructor
      * ====================================================================== */
      
-    /*
-     * Function: Scribe()
-     * Constructor.
-     * 
-     * [In group "Constructor"]
-     */
     function Scribe()
     {   
+        /* Function: Scribe()
+         * Constructor.
+         * 
+         * [In group "Constructor"]
+         */
+         
         // Find config file
         $config_file = $this->findConfigFile();
         if ($config_file === FALSE)
@@ -165,19 +165,19 @@ class Scribe
      * Methods
      * ====================================================================== */
      
-    /*
-     * Function: loadOutputDriver()
-     * Loads an output driver.
-     *
-     * Usage:
-     *     $this->loadOutputDriver($driver[, $options])
-     *
-     * Returns:
-     *   Driver on success, FALSE on failure.
-     */
 
     function& loadOutputDriver($driver, &$project, $options = array())
     {
+        /* Function: loadOutputDriver()
+         * Loads an output driver.
+         *
+         * Usage:
+         *     $this->loadOutputDriver($driver[, $options])
+         *
+         * Returns:
+         *   Driver on success, FALSE on failure.
+         */
+     
         // TODO: Proofing: This should make sure $driver is sanitized
         require_once SCRIBE_PATH . DS . 'include' . DS . "output.$driver.php";
         $classname = "{$driver}Output";
@@ -189,22 +189,21 @@ class Scribe
         return $output;
     }
     
-    /*
-     * Function: findConfigFile()
-     * Tries to find the configuration file.
-     *
-     * Usage:
-     *     $this->findConfigFile()
-     *
-     * Returns:
-     *   The configuration file as a string if found, otherwise FALSE on failure.
-     * 
-     * References:
-     *   Used by [[Scribe::Scribe()]].
-     */
-
     function findConfigFile()
     {
+        /* Function: findConfigFile()
+         * Tries to find the configuration file.
+         *
+         * Usage:
+         *     $this->findConfigFile()
+         *
+         * Returns:
+         *   The configuration file as a string if found, otherwise FALSE on failure.
+         * 
+         * References:
+         *   Used by [[Scribe::Scribe()]].
+         */
+
         $names = array('sourcescribe.conf', 'scribe.conf', 'ss.conf');
         $path = explode(DS, realpath(getcwd()));
         for ($i = count($path); $i >= 1; --$i)
