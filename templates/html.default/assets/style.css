@@ -69,7 +69,7 @@ a img     { border: 0; }
       
     h1 a,
     h1 a:visited
-      { color: #333; display: block; width: 160px; border: 0; }
+      { color: #333; display: block; width: 160px; border: 0; text-decoration: none; }
         
     #side
       { width: 170px; padding: 0 0 5px 0; float: left;

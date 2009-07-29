@@ -7,6 +7,7 @@ define('DS', DIRECTORY_SEPARATOR);
 include SCRIBE_PATH . 'include/utilities.php';
 include SCRIBE_PATH . 'include/class.scblock.php';
 include SCRIBE_PATH . 'include/class.scribe.php';
+include SCRIBE_PATH . 'include/class.scconfig.php';
 include SCRIBE_PATH . 'include/class.scproject.php';
 include SCRIBE_PATH . 'include/class.screader.php';
 include SCRIBE_PATH . 'include/class.sccontroller.php';
