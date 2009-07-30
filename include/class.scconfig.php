@@ -8,7 +8,7 @@ class ScConfig
      * [Filed under "API Reference"]
      */
     
-    function ScConfig(&$Sc)
+    function ScConfig(&$Sc, $variant = NULL)
     {
         /* Function: ScConfig()
          * Constructor.
@@ -26,6 +26,17 @@ class ScConfig
         $this->_config = yaml($config_file);
         if (!is_array($this->_config))
             { ScStatus::error('Configuration file is invalid.'); return; }
+            
+        if (!is_null($variant))
+        {
+            $vfile = str_replace('.conf', ".$variant.conf", $config_file);
+            if (!is_file($vfile))
+                { ScStatus::error("Configuration for variant '$variant' not found."); return; }
+            $arr = yaml($vfile);
+            if (!is_array($arr))
+                { ScStatus::error("Configuration for variant '$variant' is invalid."); return; }
+            $this->_config = array_merge($this->_config, $arr);
+        }
     }
     
     

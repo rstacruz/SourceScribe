@@ -10,13 +10,14 @@
 class ScController
 {
     var $Sc = NULL;
+    var $variant = NULL;
     
     function ScController() {}
         
     function& getSc()
     {
         if (!is_null($this->Sc)) { return $this->Sc; }
-        $this->Sc = new Scribe();
+        $this->Sc = new Scribe($this->variant);
         return $this->Sc;
     }
     
@@ -30,6 +31,11 @@ class ScController
     function go()
     {
         $args = array_slice($_SERVER['argv'], 1);
+
+        if ((isset($args[0])) && (substr($args[0],0,1) == '-'))
+            { $this->variant = substr($args[0], 1); $args = array_slice($args, 1); }
+            
+        // Default is build
         if (count($args) == 0) { $args = array('build'); }
         
         if (!is_callable(array($this, 'do_'.$args[0])))

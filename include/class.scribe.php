@@ -47,7 +47,7 @@ class Scribe
      * Constructor
      * ====================================================================== */
      
-    function Scribe()
+    function Scribe($variant = NULL)
     {
         /* Function: Scribe()
          * Constructor.
@@ -56,7 +56,7 @@ class Scribe
          */
          
         // Load config and stuff
-        $this->Config     = new ScConfig($this);
+        $this->Config     = new ScConfig($this, $variant);
         
         // Finally, initialize
         $this->cwd        = $this->Config->cwd;
