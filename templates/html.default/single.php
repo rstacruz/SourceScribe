@@ -73,7 +73,7 @@
                     <?php echo $the_block['description']; ?>
                 </div>
                 
-                <?php if ($the_block['has_children']) { ?>
+                <?php if (($the_block['has_children']) && ($the_block['show_members'])) { ?>
                     <div class="members">
                     <?php foreach ($the_block['member_lists'] as $member_list) { ?>
                         <?php if (count($member_list['members']) == 0) { continue; } ?>

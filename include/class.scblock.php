@@ -193,6 +193,7 @@ class ScBlock
          *   - $this->_inherit_parent ("inherits ...")
          *   - $this->_order ("priority #")
          *   - $this->_skip_brief ("No brief")
+         *   - $this->_skip_member_list ("Skip member list")
          *   - $this->_tags (everything else)
          */
      
@@ -250,6 +251,15 @@ class ScBlock
             if (count($m) > 0)
             {
                 $this->_skip_brief = 1;
+                continue;
+            }
+            
+            // No member list
+            preg_match('~^(?:no|skip) (?:the )?(?:members? list)?$~i',
+              $tag, $m);
+            if (count($m) > 0)
+            {
+                $this->_skip_member_list = 1;
                 continue;
             }
              
@@ -1260,6 +1270,14 @@ class ScBlock
      */
     
     var $_inherit_parent = NULL;
+    
+    
+    /*
+     * Property: $_skip_member_list
+     * Used by finalize
+     */
+    
+    var $_skip_member_list = NULL;
     
     /*
      * Property: $_order

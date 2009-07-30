@@ -209,6 +209,7 @@ class HtmlOutput extends ScOutput
         $result['id_trimmed'  ] = str_replace('.','-',$block->getID());
         $result['a_class'     ] = $this->linkClass($block);
         $result['a_href'      ] = $this->link($block);
+        $result['show_members'] = $block->_skip_member_list ? FALSE : TRUE;
         $result['li_class'    ] = ($block->getID() == $reference->getID()) ? 'active' : '';
         $result['has_children'] = $block->hasChildren();
         if ($level >= 3) {

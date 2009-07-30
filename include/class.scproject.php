@@ -84,9 +84,8 @@ class ScProject
         if (isset($this->options['exclude']))
         {
             $options['exclude'] = array();
-            foreach ($this->options['exclude'] as $ex) {
-            $options['exclude'][] = ':' . $ex . ':';
-            }
+            foreach ($this->options['exclude'] as $ex)
+                { $options['exclude'][] = ':' . $ex . ':'; /* Regex, you see */ }
         }
         
         // For each source path...
