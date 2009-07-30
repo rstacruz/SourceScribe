@@ -84,6 +84,12 @@ class ScConfig
         
         if (isset($this->_config['exclude_tags']))
         {
+            // Add to `tags` the tags that aren't there yet
+            // (but are in 'exclude_tags')
+            foreach ($this->_config['exclude_tags'] as $tag)
+                if (!in_array($tag, $this->options['tags']))
+                    $this->options['tags'][] = $tag;
+                
             $this->options['exclude_tags'] = (array) $this->_config['exclude_tags'];
         }
         
@@ -367,7 +373,7 @@ class ScConfig
             '\.doc.txt$' => 'default'
         ),
         
-        'tags' => array('deprecated', 'unimplemented', 'internal'),
+        'tags' => array('deprecated', 'unimplemented'),
         
         'exclude_tags' => array(),
         
