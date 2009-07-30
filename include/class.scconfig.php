@@ -378,9 +378,9 @@ class ScConfig
         'exclude_tags' => array(),
         
         'tag_synonyms' => array(
-            'read-only' => array('readonly'),
+            'read-only'  => array('readonly'),
             'deprecated' => array('deprec'),
-            'constant' => array('const'),
+            'constant'   => array('const'),
         ),
     );
 }

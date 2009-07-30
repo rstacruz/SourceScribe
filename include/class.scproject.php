@@ -391,7 +391,9 @@ class ScProject
         // Remove blocks that are in the "exclude_tags" list
         while (TRUE) {
             foreach ($this->data['blocks'] as &$block)
-                if (count(array_intersect_i((array) $block->_tags, (array) $this->options['exclude_tags'])) > 0)
+                if (0 < count(array_intersect_i(
+                            (array) $block->_tags, 
+                            (array) $this->options['exclude_tags'])))
                         { $block->unregister(); continue 2; }
             break;
         }

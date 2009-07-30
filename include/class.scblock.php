@@ -159,6 +159,13 @@ class ScBlock
             if ($block->getID() == $this->getID())
                 { unset($this->Project->data['tree'][$key]); break; }
         
+        // Remove it from parent's member list.
+        $parent =& $this->getParent();
+        if (!is_null($parent))
+            foreach ($parent->_children as $id => &$child)
+                if ($child->getID() == $this->getID())
+                    { unset($parent->_children[$id]); break; }
+        
         foreach ($descendants as &$grandchild)
             { $grandchild->unregister(); }
     }
@@ -1093,7 +1100,7 @@ class ScBlock
     function& getMemberLists()
     {
         return $this->_subgroups;
-        
+        /*
         $f = array();
         foreach ($this->getChildren() as $node)
         {
@@ -1107,7 +1114,7 @@ class ScBlock
             
             $f[$type]['members'][] = $node;
         }
-        return $f;
+        return $f;*/
     }
 
     /* ======================================================================
