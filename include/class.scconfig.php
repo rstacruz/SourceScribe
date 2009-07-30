@@ -71,6 +71,11 @@ class ScConfig
                 (array) $this->_config['tags']);
         }
         
+        if (isset($this->_config['exclude_tags']))
+        {
+            $this->options['exclude_tags'] = (array) $this->_config['exclude_tags'];
+        }
+        
         if (isset($this->_config['tag_synonyms']))
         {
             $this->options['tag_synonyms'] = array_merge_recursive(
@@ -188,6 +193,7 @@ class ScConfig
          * 
          * Returns:
          *   TRUE on success; dies if something is wrong.
+         * 
          * [Private, grouped under "Private functions"]
          */
          
@@ -350,7 +356,9 @@ class ScConfig
             '\.doc.txt$' => 'default'
         ),
         
-        'tags' => array('deprecated', 'unimplemented'),
+        'tags' => array('deprecated', 'unimplemented', 'internal'),
+        
+        'exclude_tags' => array(),
         
         'tag_synonyms' => array(
             'read-only' => array('readonly'),

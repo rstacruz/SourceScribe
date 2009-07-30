@@ -142,6 +142,26 @@ class ScBlock
         unset($this->_data);
     }
     
+    function unregister()
+    {
+        /* Function: unregister()
+         * Removes the block from the tree.
+         */
+         
+        $descendants =& $this->getDescendants();
+
+        // Remove it from 'blocks'
+        foreach ($this->Project->data['blocks'] as $key => &$block)
+            if ($block->getID() == $this->getID())
+                { unset($this->Project->data['blocks'][$key]); break; }
+                
+        foreach ($this->Project->data['tree'] as $key => &$block)
+            if ($block->getID() == $this->getID())
+                { unset($this->Project->data['tree'][$key]); break; }
+        
+        foreach ($descendants as &$grandchild)
+            { $grandchild->unregister(); }
+    }
 
     function parseTag($tags)
     {
@@ -166,7 +186,14 @@ class ScBlock
          *
          * Returns:
          *   Nothing; this function will do things (set groups, add tags, etc)
-         *   in place.
+         *   in place. Specifically, it will set:
+         * 
+         *   - $this->_group ("grouped under ...")
+         *   - $this->_supposed_parent ("filed under ...")
+         *   - $this->_inherit_parent ("inherits ...")
+         *   - $this->_order ("priority #")
+         *   - $this->_skip_brief ("No brief")
+         *   - $this->_tags (everything else)
          */
      
         // Input looks like: "read-only, grouped under mygroup, private"
@@ -890,6 +917,24 @@ class ScBlock
         return $this->_children;
     }
     
+    function& getDescendants()
+    {
+        $return = array();
+        $descendants = array();
+        $i = 0;
+        foreach ($this->_children as &$child)
+        {
+            $return[] =& $child;
+            $descendants[$i] =& $child->getDescendants();
+            foreach ($descendants[$i] as &$subchild)
+                { $return[] =& $subchild; }
+            
+            $i++;
+        }
+        
+        return $return;
+    }
+    
     /*
      * Function: hasChildren()
      * Checks if the block has children.
@@ -1059,6 +1104,11 @@ class ScBlock
      * Private properties
      * ====================================================================== */
     
+    /*
+     * Property: $Project
+     * Reference to the parent [[ScProject]] instance.
+     */
+     
     var $Project;
     
     var $_data;

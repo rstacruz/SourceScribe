@@ -326,15 +326,16 @@ class ScProject
     
     function getName()
     {
-    /* Function: getName()
-     * Returns the name of the project.
-     *
-     * Usage:
-     *      $this->getName()
-     *
-     * Returns:
-     *   The name of the project as defined in the configuration file.
-     */
+        /* Function: getName()
+         * Returns the name of the project.
+         *
+         * Usage:
+         *      $this->getName()
+         *
+         * Returns:
+         *   The name of the project as defined in the configuration file.
+         */
+     
         // This should never have to be done; 'name' is a required field
         return isset($this->options['name']) ? $this->options['name'] : 'Manual';
     }
@@ -366,10 +367,11 @@ class ScProject
     
     function _doPostBuild()
     {
-    /* Function: _doPostBuild()
-     * Does post-build actions like modifying the homepage.
-     * [Private, grouped under "Private functions"]
-     */
+        /* Function: _doPostBuild()
+         * Does post-build actions like modifying the homepage.
+         * [Private, grouped under "Private functions"]
+         */
+     
         ScStatus::updateStart("Post build");
         // If there's no homepage,
         // Make one!
@@ -386,6 +388,14 @@ class ScProject
             if (++$block_count % 5 == 0)
                 { ScStatus::update($block_count); }
         }
+        
+        // Remove blocks that are in the "exclude_tags" list
+        while (TRUE) {
+            foreach ($this->data['blocks'] as &$block)
+                if (count(array_intersect_i((array) $block->_tags, (array) $this->options['exclude_tags'])) > 0)
+                        { $block->unregister(); continue 2; }
+            break;
+        }
                 
         // [1] If there's a home, [2] each of the tree firstlevels
         // [3] that isn't the homepage [4] will be the child of the homepage.
@@ -393,7 +403,7 @@ class ScProject
             foreach ($this->data['tree'] as $i => &$block)
                 if ($block->getID() != 'index')
                     { $this->data['home']->registerChild($this->data['tree'][$i]); }
-                    
+        
         // Finalize everything
         $block_count = 0;
         foreach ($this->data['blocks'] as &$block)

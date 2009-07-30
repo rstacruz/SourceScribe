@@ -84,4 +84,9 @@ if (version_compare(phpversion(), '5.0') >= 0)
 else
     { include dirname(__FILE__) . '/utilities.php4.php'; } 
 
-    
+function array_intersect_i($a1, $a2)
+{
+    $a1 = (array) $a1; foreach ($a1 as &$i) { $i = strtolower((string) $i); }
+    $a2 = (array) $a2; foreach ($a2 as &$i) { $i = strtolower((string) $i); }
+    return array_intersect($a1, $a2);
+}
