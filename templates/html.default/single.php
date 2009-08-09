@@ -80,8 +80,8 @@
                         <h3><span><?php echo $member_list['title']; ?></span></h3>
                         <dl>
                             <?php foreach ($member_list['members'] as $node) { ?>
-                                <dt class="<?php echo $node['id_trimmed']; ?>"><span class="term"><a name="<?php echo $node['id'] ?>" class="<?php echo $node['a_class']; ?>" href="<?php echo $node['a_href']; ?>"><?php echo $node['title']; ?></a></span></dt>
-                                <dd class="<?php echo $node['id_trimmed']; ?>">
+                                <dt class="<?php echo (strlen($node['brief'])) ? "has-definition" : "no-definition"; ?> <?php echo $node['id_trimmed']; ?>"><span class="term"><a name="<?php echo $node['id'] ?>" class="<?php echo $node['a_class']; ?>" href="<?php echo $node['a_href']; ?>"><?php echo $node['title']; ?></a></span></dt>
+                                <dd class="<?php echo (strlen($node['brief'])) ? "has-definition" : "no-definition"; ?> <?php echo $node['id_trimmed']; ?>">
                                     <?php if ($node['has_tags']) { ?>
                                         <?php foreach ($node['tags'] as $tag) { ?>
                                             <span class="tag"><?php echo $tag; ?></span>

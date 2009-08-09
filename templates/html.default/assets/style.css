@@ -247,8 +247,7 @@ a img     { border: 0; }
 /* Elements */  
     dl
       { overflow: hidden; }
-      
-      
+     
     dl dt
       { float: left; width: 30%; margin-right: 3%; clear: left;
         font-weight: bold; color: #579; text-align: left; }
@@ -272,6 +271,12 @@ a img     { border: 0; }
     dl dt
       { border-bottom: dotted 1px #aaa; height: 1.3em; position: relative;
         top: -6px; } 
+        
+    dl dt.no-definition
+      { border-bottom: 0; width: 100%; }
+      
+    dl dd.no-definition
+      { display: none; }
     
     dl dt span.term
       { background: white; padding: 3px 5px 10px 0; float: left;
