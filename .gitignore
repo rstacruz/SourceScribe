@@ -2,4 +2,7 @@
 doc
 *.tmproj
 dompdf
+*.swo
+*.swp
+*~
 .sourcescribe_index
