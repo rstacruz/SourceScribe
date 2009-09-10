@@ -100,6 +100,9 @@ Advanced options:
     > &nbsp; - write-only  
     > &nbsp; - unimplemented  
     > &nbsp; - in debate</code>
+
+  exclude_tags
+  : Excludes any block that is tagged with the tags in this list.
   
   reset_tags
   : This will remove all the built-in tag types defined so you may define
