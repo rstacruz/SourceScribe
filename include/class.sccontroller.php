@@ -25,7 +25,7 @@ class ScController
      * Function: go()
      * Starts the controller.
      * 
-     * ## Description
+     * Description:
      *    This function is called by the bootstrapper.
      */
     function go()
@@ -122,10 +122,12 @@ class ScController
             if (count($results) == 0)
                 { return ScStatus::error("Sorry, no matches for \"$str\"."); }
 
-            if ($show_html) { $this->_showHtmlResults($str, $path, $results); return; }
+            if ($show_html)
+                { $this->_showHtmlResults($str, $path, $results); return; }
             
             // If only one is requested, discard the other results
-            if (!$show_all) { $results = array($results[0]); }
+            if (!$show_all)
+                { $results = array($results[0]); }
 
             foreach ($results as $result)
             {
@@ -142,7 +144,10 @@ class ScController
             // Optimization: don't load statefile if HTML
             $return = realpath($path . DS . 'index.html');
             if (!is_file($return))
-                { return ScStatus::error("Can't find the output documentation. Try building it first."); }
+            {
+                return ScStatus::error("Can't find the output documentation. ".
+                                       "Try building it first.");
+            }
             echo "file://" . $return . "\n";
             return;
         }
@@ -188,7 +193,7 @@ class ScController
     function do_help($args = array())
     {
         echo "SourceScribe\n";
-        echo "Usage: ss [command] [options]\n";
+        echo "Usage: ss [-<variant>] [<command>] [<options>]\n";
         echo "Commands:\n";
         echo "  build        Builds documentation\n";
         echo "  open         Opens the documentation in the browser\n";
@@ -256,7 +261,9 @@ class ScController
         }
         
         echo "<html><head>\n";
-        echo '<link rel="stylesheet" href="file://' . $path . '/assets/style.css" media="all" />' . "\n";
+        echo '<link rel="stylesheet" '.
+                   'href="file://' . $path . '/assets/style.css" '.
+                   'media="all" />' . "\n";
         echo "</head><body>\n";
         echo "<div id=\"disambiguation\">\n";
         echo "<h1><code>$keyword</code> may refer to:</h1>\n";
@@ -264,14 +271,18 @@ class ScController
         
         foreach ($results as $result)
         {
-            $url = "file://" . realpath($path) . "/" .
-                 $this->Sc->Project->outputs[0]->link($result);
+            $url   = "file://" . realpath($path) . "/" .
+                     $this->Sc->Project->outputs[0]->link($result);
             $title = htmlentities($result->getTitle());
-            $desc = "";
-            if ($result->hasParent()) {
+            $desc  = "";
+            
+            if ($result->hasParent())
+            {
                 $parent =& $result->getParent();
-                $desc = " a " . strtolower($result->getTypeName()) . " of " . $parent->getTitle();
+                $desc   = " a " . strtolower($result->getTypeName()) .
+                          " of " . $parent->getTitle();
             }
+            
             echo "<li><a href=\"$url\"><strong>$title</strong>$desc</a></li>\n";
         }
         
