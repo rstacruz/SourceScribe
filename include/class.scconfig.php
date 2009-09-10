@@ -318,6 +318,13 @@ class ScConfig
                 'tags' => array('static', 'private', 'public', 'protected', 'virtual'),
                 'default_order' => 0,
             ),
+            'constant' => array(
+                'title_plural' => 'Constants',
+                'has_brief' => TRUE,
+                'short' => 'def',
+                'synonyms' => array('define'),
+                'default_order' => -5,
+            ),
             'var' => array(
                 'title_plural' => 'Properties',
                 'has_brief' => TRUE,
