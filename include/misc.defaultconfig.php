@@ -36,7 +36,8 @@ output:
 #   ~/myproject/sourcescribe.conf, this src_path line will direct
 #   SourceScribe to check on both ~/myproject/src and ~/myproject/www.
 #
-src_path: [ . ]
+src_path:
+ - .
 
 # Exclusions (Optional)
 #   These are files to be excluded in regex format.
@@ -47,3 +48,6 @@ exclude:
  - \.svn/
  - \.html$
  - /cache/
+ - \.swp$
+ - \.swo$
+ - ~$ 
