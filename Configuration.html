@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Configuration &mdash; SourceScribe manual</title>
+    <link rel="stylesheet" href="assets/style.css" type="text/css" media="screen" charset="utf-8" />
+    <script src="assets/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="assets/jquery.hashjump.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body class="single">    <h1><a class="" href="index.html"><span>SourceScribe manual</span></a></h1>
+    
+    <div id="all">
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs"><div class="breadcrumbs-c">
+            <ul>
+                                    <li class="item-1">
+                        <a class="" href="index.html">SourceScribe manual</a>
+                    </li>
+                                    <li class="item-0">
+                        <a class="" href="Configuration.html">Configuration</a>
+                    </li>
+                            </ul>
+        </div></div>
+        
+    <div id="all-c">
+
+        <!-- Sidebar -->
+        <div id="side">
+            <div id="parents"><div id="parents-c">
+                                    <ul>
+                                        </ul>
+                            </div></div><!-- #parents-c and #parents -->
+    
+            <div id="index"><div id="index-c">
+                                    <ul>
+                                                    <li><h4>Getting started</h4><ul>
+                                                            <li class="">
+                                    <a class="" href="Using_SourceScribe.html">Using SourceScribe</a>
+                                </li>
+                                                            <li class="">
+                                    <a class="" href="Installing_SourceScribe.html">Installing SourceScribe</a>
+                                </li>
+                                                            <li class="active">
+                                    <a class="" href="Configuration.html">Configuration</a>
+                                </li>
+                                                            <li class="">
+                                    <a class="" href="Documenting_your_code.html">Documenting your code</a>
+                                </li>
+                                                            <li class="">
+                                    <a class="" href="Generating_documentation.html">Generating documentation</a>
+                                </li>
+                                                        </ul></li>
+                                                    <li><h4>References</h4><ul>
+                                                            <li class="">
+                                    <a class="" href="Documentation_reference.html">Documentation reference</a>
+                                </li>
+                                                            <li class="">
+                                    <a class="" href="API_reference.html">API reference</a>
+                                </li>
+                                                        </ul></li>
+                                            </ul>
+                            </div></div><!-- #index-c and #index -->
+        </div><!-- #side -->
+
+
+        <div class="block block-page blocktype-page"><div class="block-c">
+            
+            <!-- Heading -->
+            <div class="heading"><div class="heading-c">
+                <h2><span>Configuration</span></h2>
+                <div class="brief">
+                                                </div>
+            </div></div><!-- .heading-c and .heading -->
+            
+            <div class="content">
+                <div class="description">
+                    <h3><span>Starting up</span></h3>
+
+<p>For SourceScribe to work on your code, it must first have a configuration file.</p>
+
+<p>Start by typing <code>ss makeconfig</code> in your project folder. This will create a bare
+  configuration file <code>sourcescribe.conf</code>. It already has defaults, so you don't
+  need to edit it at all. After you've done this (and documented your codebase
+  of course), you can simply type <code>ss</code> to generate your documentation.</p>
+
+<p>When running <code>ss</code>, SourceScribe will look for this <code>sourcescribe.conf</code> file.
+  SourceScribe will check in the current folder and it's parent folders, so you
+  may call <code>ss</code> anywhere inside your source tree.</p>
+
+<h3><span>File format</span></h3>
+
+<p>The configuration file is in YAML format, which is a simple format for
+  defining key/value pairs and arrays.</p>
+
+<p>For more information on this file format, see the <a href="http://yaml.kwiki.org/?YamlInFiveMinutes">YAML in 5 minutes</a>
+  tutorial, the <a href="http://en.wikipedia.org/wiki/YAML">YAML Wikipedia entry</a>, or the official <a href="http://www.yaml.org">YAML site</a>.</p>
+
+<h3><span>Creating your config file</span></h3>
+
+<p>In the command line, change to the directory of your project and type
+  <code>ss makeconfig</code>. This will output a sample <code>sourcescribe.conf</code> for you
+  to edit to your needs.</p>
+
+<h3><span>Sample file</span></h3>
+
+<p>Here's a sample file with bare options:</p>
+
+<pre><code># My sourcescribe.conf file
+# Lines starting with pound signs are ignored as comments.
+
+name: My Project
+output:                   # "output" is an array of key-value pairs.
+ - driver: "html"
+   path: "doc/"
+   template: "default"
+ - driver: "pdf"
+   path: "pdf/"
+exclude:                  # "exclude" is an array.
+ - \.svn$
+ - \.git$
+</code></pre>
+
+<h3><span>Another sample</span></h3>
+
+<p>The only required options are <code>name</code> and <code>output</code>. This is also
+  a valid configuration file:</p>
+
+<pre><code># sourcescribe.conf
+name: My project
+output: [{ driver: "html", path: "doc/" }]
+</code></pre>
+
+<h3><span>Required options</span></h3>
+
+<dl>
+<dt><span class="term">name</span></dt>
+<dd><span class="definition">
+<p>The project name. This will be the title of the entire documentation.</p>
+
+<blockquote>
+  <p><code>name: My API reference</code></p>
+</blockquote>
+
+<p>A home page for your manual may be created by defining a page with the
+same name listed here.</p>
+</span></dd>
+
+<dt><span class="term">output</span></dt>
+<dd><span class="definition">
+<p>The outputs to spit out. This is an array of key-value pairs, each pair
+requiring a <em>driver</em>, and a <em>path</em> to define where the output will be
+saved to.</p>
+
+<blockquote>
+  <p><code>output:<br />
+  - driver: "html"<br />
+  &nbsp; template: "default"<br />
+  &nbsp; path: "doc/"</code></p>
+</blockquote>
+</span></dd>
+</dl>
+
+<h3><span>More options</span></h3>
+
+<dl>
+<dt><span class="term">src_path</span></dt>
+<dd><span class="definition">
+<p>The path where the source files are. In this example, SourceScribe will scan
+the <em>doc</em> folder (under where the configuration file resides):</p>
+
+<blockquote>
+  <p><code>src_path: doc</code></p>
+</blockquote>
+
+<p>Multiple paths may also be defined using an array.</p>
+
+<blockquote>
+  <p><code>src_path:<br />
+  &nbsp; - src<br />
+  &nbsp; - include</code></p>
+</blockquote>
+</span></dd>
+
+<dt><span class="term">exclude</span></dt>
+<dd><span class="definition">
+<p>An array of regex patterns to match filenames against.
+Any file that matches will not be parsed. In this example below,
+SourceScribe will skip files under the folders <em>.svn</em>, <em>.git</em>, and <em>cache</em>:</p>
+
+<blockquote>
+  <p><code>exclude:<br />
+  &nbsp; - .svn/<br />
+  &nbsp; - .git/<br />
+  &nbsp; - /cache/</code></p>
+</blockquote>
+</span></dd>
+</dl>
+
+<h3><span>Advanced options</span></h3>
+
+<p>More advanced options are available. <a href=Advanced_configuration.html>Advanced configuration</a>.</p>
+
+<h3><span>Continue</span></h3>
+
+<p><strong>Configuration all set?</strong><br />
+  <a href=Documenting_your_code.html>Start documenting your code! &rarr;</a></p>
+                </div>
+                
+                            </div><!-- .content -->
+            
+            <div class="clear"></div>
+        </div>
+    </div></div><!-- #all-c and #all -->
+
+</body>
+</html>

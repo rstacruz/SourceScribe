@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Installing SourceScribe &mdash; SourceScribe manual</title>
+    <link rel="stylesheet" href="assets/style.css" type="text/css" media="screen" charset="utf-8" />
+    <script src="assets/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="assets/jquery.hashjump.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body class="single">    <h1><a class="" href="index.html"><span>SourceScribe manual</span></a></h1>
+    
+    <div id="all">
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs"><div class="breadcrumbs-c">
+            <ul>
+                                    <li class="item-1">
+                        <a class="" href="index.html">SourceScribe manual</a>
+                    </li>
+                                    <li class="item-0">
+                        <a class="" href="Installing_SourceScribe.html">Installing SourceScribe</a>
+                    </li>
+                            </ul>
+        </div></div>
+        
+    <div id="all-c">
+
+        <!-- Sidebar -->
+        <div id="side">
+            <div id="parents"><div id="parents-c">
+                                    <ul>
+                                        </ul>
+                            </div></div><!-- #parents-c and #parents -->
+    
+            <div id="index"><div id="index-c">
+                                    <ul>
+                                                    <li><h4>Getting started</h4><ul>
+                                                            <li class="">
+                                    <a class="" href="Using_SourceScribe.html">Using SourceScribe</a>
+                                </li>
+                                                            <li class="active">
+                                    <a class="" href="Installing_SourceScribe.html">Installing SourceScribe</a>
+                                </li>
+                                                            <li class="">
+                                    <a class="" href="Configuration.html">Configuration</a>
+                                </li>
+                                                            <li class="">
+                                    <a class="" href="Documenting_your_code.html">Documenting your code</a>
+                                </li>
+                                                            <li class="">
+                                    <a class="" href="Generating_documentation.html">Generating documentation</a>
+                                </li>
+                                                        </ul></li>
+                                                    <li><h4>References</h4><ul>
+                                                            <li class="">
+                                    <a class="" href="Documentation_reference.html">Documentation reference</a>
+                                </li>
+                                                            <li class="">
+                                    <a class="" href="API_reference.html">API reference</a>
+                                </li>
+                                                        </ul></li>
+                                            </ul>
+                            </div></div><!-- #index-c and #index -->
+        </div><!-- #side -->
+
+
+        <div class="block block-page blocktype-page"><div class="block-c">
+            
+            <!-- Heading -->
+            <div class="heading"><div class="heading-c">
+                <h2><span>Installing SourceScribe</span></h2>
+                <div class="brief">
+                                                </div>
+            </div></div><!-- .heading-c and .heading -->
+            
+            <div class="content">
+                <div class="description">
+                    <h3><span>Downloading</span></h3>
+
+<p>You may download the latest version of SourceScribe from <a href="http://github.com/rstacruz/sourcescribe/">SourceScribe's
+  github page</a> (<a href="latest">direct link</a>). If you have <strong>git</strong> installed,
+  you may also do a pull of the
+  latest sources from the tree. Simply type:</p>
+
+<pre><code>git pull git@github.com:rstacruz/sourcescribe.git
+</code></pre>
+
+<h3><span>Installation</span></h3>
+
+<ul>
+<li><p>Unzip the entire package somewhere,
+maybe <em>c:\Program Files\SourceScribe</em> or <em>~/sourcescribe/</em>.</p></li>
+<li><p><strong>For Mac and Linux:</strong><br />
+Make a symbolic link to the file <em>ss</em> in a directory that's in your <em>PATH</em>
+environment variable. Example:<br />
+<code>sudo ln -s `pwd`/ss /usr/local/bin/ss</code></p></li>
+<li><p><strong>For all:</strong><br />
+Alternatively, you can add that installation path in the beginning of
+your <em>PATH</em> environment variable.</p>
+
+<ul>
+<li><p>For Windows, this is under System Properties &rarr; Advanced Tab &rarr;
+Environment variables &rarr; PATH &rarr; Edit. Add it to the beginning,
+followed by a semi-colon (;).</p></li>
+<li><p>For MacOS/Linux, you can do this by adding the line to your <em>~/.profile</em>.
+Example:<br />
+<code>echo export PATH=/Users/rsc/sourcescribe:\$PATH | tee ~/.profile</code></p></li>
+</ul></li>
+</ul>
+
+<h3><span>Rock on!</span></h3>
+
+<p>Once you've installed SourceScribe, you are now ready to configure
+  SourceScribe for project. After that, you can start documenting your code,
+  and generate your first documentation manual!</p>
+
+<h3><span>Continue</span></h3>
+
+<p><strong>Got it installed?</strong><br />
+  <a href=Configuration.html>Configure SourceScribe for your project! &rarr;</a></p>
+                </div>
+                
+                            </div><!-- .content -->
+            
+            <div class="clear"></div>
+        </div>
+    </div></div><!-- #all-c and #all -->
+
+</body>
+</html>

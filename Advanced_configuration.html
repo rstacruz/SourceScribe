@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Advanced configuration &mdash; SourceScribe manual</title>
+    <link rel="stylesheet" href="assets/style.css" type="text/css" media="screen" charset="utf-8" />
+    <script src="assets/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="assets/jquery.hashjump.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body class="single">    <h1><a class="" href="index.html"><span>SourceScribe manual</span></a></h1>
+    
+    <div id="all">
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs"><div class="breadcrumbs-c">
+            <ul>
+                                    <li class="item-2">
+                        <a class="" href="index.html">SourceScribe manual</a>
+                    </li>
+                                    <li class="item-1">
+                        <a class="" href="Documentation_reference.html">Documentation reference</a>
+                    </li>
+                                    <li class="item-0">
+                        <a class="" href="Advanced_configuration.html">Advanced configuration</a>
+                    </li>
+                            </ul>
+        </div></div>
+        
+    <div id="all-c">
+
+        <!-- Sidebar -->
+        <div id="side">
+            <div id="parents"><div id="parents-c">
+                                    <ul>
+                                            <li class="">
+                            <a class="" href="Documentation_reference.html">
+                                <span class="arrow">&uarr;</span><strong>Documentation reference</strong>
+                            </a>
+                        </li>
+                                        </ul>
+                            </div></div><!-- #parents-c and #parents -->
+    
+            <div id="index"><div id="index-c">
+                                    <ul>
+                                                    <li><h4>Pages</h4><ul>
+                                                            <li class="active">
+                                    <a class="" href="Advanced_configuration.html">Advanced configuration</a>
+                                </li>
+                                                        </ul></li>
+                                            </ul>
+                            </div></div><!-- #index-c and #index -->
+        </div><!-- #side -->
+
+
+        <div class="block block-page blocktype-page"><div class="block-c">
+            
+            <!-- Heading -->
+            <div class="heading"><div class="heading-c">
+                <h2><span>Advanced configuration</span></h2>
+                <div class="brief">
+                                                </div>
+            </div></div><!-- .heading-c and .heading -->
+            
+            <div class="content">
+                <div class="description">
+                    <h3><span>Required options</span></h3>
+
+<dl>
+<dt><span class="term">name</span></dt>
+<dd><span class="definition">
+<p>The project name. This will be the title of the entire documentation.</p>
+
+<blockquote>
+  <p><code>name: My API reference</code></p>
+</blockquote>
+
+<p>A home page for your manual may be created by defining a page with the
+same name listed here.</p>
+</span></dd>
+
+<dt><span class="term">output</span></dt>
+<dd><span class="definition">
+<p>The outputs to spit out. This is an array of key-value pairs, each pair
+requiring a <em>driver</em>, and a <em>path</em> to define where the output will be
+saved to.</p>
+
+<blockquote>
+  <p><code>output:<br />
+  - driver: "html"<br />
+  &nbsp; template: "default"<br />
+  &nbsp; path: "doc/"</code></p>
+</blockquote>
+
+<p>Currently only the <em>html</em> driver is supported. Plugins may give more
+driver types (e.g., <em>pdf</em>, <em>latex</em>, etc). Additional templates for
+the <em>html</em> driver may be added: see <em>templates_path</em> (not yet implemented)</p>
+</span></dd>
+</dl>
+
+<h3><span>More basic options</span></h3>
+
+<dl>
+<dt><span class="term">src_path</span></dt>
+<dd><span class="definition">
+<p>The path where the source files are. In this example, SourceScribe will scan
+the <em>doc</em> folder (under where the configuration file resides):</p>
+
+<blockquote>
+  <p><code>src_path: doc</code></p>
+</blockquote>
+
+<p>Multiple paths may also be defined using an array.</p>
+
+<blockquote>
+  <p><code>src_path:<br />
+  &nbsp; - src<br />
+  &nbsp; - include</code></p>
+</blockquote>
+</span></dd>
+
+<dt><span class="term">exclude</span></dt>
+<dd><span class="definition">
+<p>An array of regex patterns to match filenames against.
+Any file that matches will not be parsed. In this example below,
+SourceScribe will skip files under the folders <em>.svn</em>, <em>.git</em>, and <em>cache</em>:</p>
+
+<blockquote>
+  <p><code>exclude:<br />
+  &nbsp; - .svn/<br />
+  &nbsp; - .git/<br />
+  &nbsp; - /cache/</code></p>
+</blockquote>
+</span></dd>
+
+<dt><span class="term">include</span></dt>
+<dd><span class="definition">
+<p>File types to include. This is an array of regex patterns. Defining this
+option will override all defaults, so be sure to include here all filetypes
+that your project uses. In the example below, this will make SourceScribe
+scan <em>php3</em> and <em>php4</em> file types:</p>
+
+<blockquote>
+  <p><code>include:<br />
+  &nbsp; - \.php3$<br />
+  &nbsp; - \.php4$</code></p>
+</blockquote>
+
+<p>If you have a plugin that provides an alternate reader, you can define which
+reader to use for each file type.</p>
+
+<blockquote>
+  <p><code>include:<br />
+  &nbsp; \.php3$: default<br />
+  &nbsp; \.php4$: default</code></p>
+</blockquote>
+</span></dd>
+</dl>
+
+<h3><span>Advanced options</span></h3>
+
+<dl>
+<dt><span class="term">block_types</span></dt>
+<dd><span class="definition">
+<p>Add your own block types, or modify built-in types (...)</p>
+
+<blockquote>
+  <p><code>block_types:<br />
+  &nbsp; ... # it's complicated</code></p>
+</blockquote>
+</span></dd>
+
+<dt><span class="term">reset_block_types</span></dt>
+<dd><span class="definition">
+<p>This will remove all the built-in block types defined so you may define
+your own. Use this in conjunction with <em>block_types</em>. (...)</p>
+
+<blockquote>
+  <p><code>reset_block_types: true</code></p>
+</blockquote>
+</span></dd>
+
+<dt><span class="term">tags</span></dt>
+<dd><span class="definition">
+<p>Adds more project-wide tags. (...)</p>
+
+<blockquote>
+  <p><code>tags:<br />
+  &nbsp; - write-only<br />
+  &nbsp; - unimplemented<br />
+  &nbsp; - in debate</code></p>
+</blockquote>
+</span></dd>
+
+<dt><span class="term">exclude_tags</span></dt>
+<dd><span class="definition">Excludes any block that is tagged with the tags in this list.</span></dd>
+
+<dt><span class="term">reset_tags</span></dt>
+<dd><span class="definition">
+<p>This will remove all the built-in tag types defined so you may define
+your own. Use this in conjunction with <em>tags</em>.</p>
+
+<blockquote>
+  <p><code>reset_tags: true</code></p>
+</blockquote>
+
+<p>This option will clear only the project-wide tags. It will not clear the
+tag types in each block type.</p>
+</span></dd>
+
+<dt><span class="term">tag_synonyms</span></dt>
+<dd><span class="definition">
+<p>Sets up synonyms for tags. (...)</p>
+
+<blockquote>
+  <p><code>tag_synonyms:<br />
+  &nbsp; write-only: [ writeonly, no-read, wo ]<br />
+  &nbsp; unimplemented: [ not done ]</code></p>
+</blockquote>
+</span></dd>
+
+<dt><span class="term">templates_path</span></dt>
+<dd><span class="definition">
+<p>(To be implemented) additional path to look for templates in</p>
+
+<blockquote>
+  <p><code>templates_path: templates/     # not implemented!</code></p>
+</blockquote>
+</span></dd>
+
+<dt><span class="term">plugins_path</span></dt>
+<dd><span class="definition">
+<p>(To be implemented) path to look for plugins in</p>
+
+<blockquote>
+  <p><code>plugins_path: ssplugins/     # not implemented!</code></p>
+</blockquote>
+</span></dd>
+</dl>
+
+<h3><span>For block types</span></h3>
+
+<p>Every <code>block_types</code> entry can have any of these options.
+  Note that <em>all</em> of them are optional.</p>
+
+<dl>
+<dt><span class="term">has_brief</span></dt>
+<dd><span class="definition">.</span></dd>
+
+<dt><span class="term">title_plural</span></dt>
+<dd><span class="definition">.</span></dd>
+
+<dt><span class="term">parent_in_id</span></dt>
+<dd><span class="definition">.</span></dd>
+
+<dt><span class="term">starts_group_for</span></dt>
+<dd><span class="definition">.</span></dd>
+
+<dt><span class="term">block_class</span></dt>
+<dd><span class="definition">.</span></dd>
+
+<dt><span class="term">title_prefix</span></dt>
+<dd><span class="definition">.</span></dd>
+
+<dt><span class="term">title_suffix</span></dt>
+<dd><span class="definition">.</span></dd>
+
+<dt><span class="term">tags</span></dt>
+<dd><span class="definition">.</span></dd>
+
+<dt><span class="term">short</span></dt>
+<dd><span class="definition">.
+synonyms         - .</span></dd>
+</dl>
+                </div>
+                
+                            </div><!-- .content -->
+            
+            <div class="clear"></div>
+        </div>
+    </div></div><!-- #all-c and #all -->
+
+</body>
+</html>
